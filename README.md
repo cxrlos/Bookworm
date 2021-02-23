@@ -1,7 +1,8 @@
 <div align="center">
-    <h1>Bookworm</h1>
+    <h1>
+     <img width = 500px, src=Bookworm.jpg />
+    </h1>
     <h4>Welcome to your organized reading life</h4>
-    <img width = 500px, src=Bookworm.jpg/>
 </div>
 
 ## Descripcion
