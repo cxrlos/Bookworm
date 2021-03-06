@@ -110,10 +110,10 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
     - Si se quiere leer: + botón para eliminar de la biblioteca
     - Si ya se leyó: + botón para eliminar de la biblioteca y fechas leídas
 #### Elementos a utilizar:
-    - Barra de búsqueda
-    - Drop down menu con filtros de búsqueda
-    - 3 botones (Go to, eliminar de la biblioteca, eliminar de la biblioteca y fechas leídas)
-    - Dependiendo del estado del libro, se va a mostrar solo un botón
+- Barra de búsqueda
+- Drop down menu con filtros de búsqueda
+- 3 botones (Go to, eliminar de la biblioteca, eliminar de la biblioteca y fechas leídas)
+- Dependiendo del estado del libro, se va a mostrar solo un botón
 
 ### Estadísticas
 #### Funcionalidades a implementar:
