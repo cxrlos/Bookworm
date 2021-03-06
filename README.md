@@ -183,5 +183,6 @@ A continuación se encuentra la división del trabajo por etapas y la leyenda pa
 
 ## Referencias
 ---------------------------------------
-Gruvbox - [https://github.com/morhetz/gruvbox/](https://github.com/morhetz/gruvbox/)\\
+Gruvbox - [https://github.com/morhetz/gruvbox/](https://github.com/morhetz/gruvbox/)
+<br/>
 React Docs - [https://reactjs.org/docs/](https://reactjs.org/docs/)
