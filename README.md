@@ -16,7 +16,7 @@ Crear una herramienta tecnológica que permita a un usuario establecer una meta 
 
 ## Gama de Colores 
 ---------------------------------------
-Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollada con el fin de evitar la fatiga visual y creemos que esto beneficiará al usuario final. El proyecto se encuentra en el GitHub del autor[^1], la paleta que utilizaremos es la siguiente:
+Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollada con el fin de evitar la fatiga visual y creemos que esto beneficiará al usuario final. El proyecto se encuentra en el GitHub del autor, la paleta que utilizaremos es la siguiente:
 ![Palette Dark](http://i.imgur.com/wa666xg.png)
 
 ## Funcionalidades y elementos a utilizar
@@ -130,8 +130,62 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
 - Dropdown
 - Statistic graphs
 
+## Roadmap
+
+A continuación se encuentra la división del trabajo por etapas y la leyenda para ver de manera sencilla la asignación de las tareas.
+
+⚫ Carlos García
+🟠  Daniela Vignau
+🟣 Héctor Reyes
+🟡 Jesus González
+🟤 Sergio Hernández
+
+- Layout general de las pantallas
+    - [ ] Sidebar del menú. 🟣
+    - [ ] Barra de navegación inferior. 🟠
+- Desarrollo del contenido principal de las pantallas
+  - [ ] Log-in / Registro
+    - [ ] Desarrollo de la distribución de elementos en pantalla. 🟠
+    - [ ] Creación de formularios y botones para el ingreso de la información. 🟣
+  - [ ] Configuraciones
+    - [ ] Desarrollo de la distribución de elementos en pantalla. 🟣
+    - [ ] Creación de formularios y botones de funcionalidad. 🟠
+  - [ ] Biblioteca
+    - [ ] Desarrollo del componente unitario del libro. 🟣
+    - [ ] Inclusión de filtro para diferenciar libros por el criterio definido por el  usuario. 🟠
+    - [ ] Implementar barra de búsqueda. 🟠
+    - [ ] Crear el layout del menú para mostrar todos los libros del usuario. 🟣
+  - [ ] Home
+    - [ ] Desarrollo del layout general incorporando los componentes desarrollados anteriormente (la barra de búsqueda y componente unitario de libro). 🟠
+    - [ ] Creación de barra de progreso para identificar avance en los libros que el usuario esta leyendo.  🟣
+  - [ ] Vista del libro
+    - [ ] Desarrollo de la distribución de elementos en pantalla. 🟣
+    - [ ] Creación de menú dropdown para modificar el estatus del libro (leyendo, por leer, terminado). 🟠
+    - [ ] Desarrollo de la lógica en frontend del cronometro de lectura. 🟣
+    - [ ] Desarrollo de la lógica en frontend de los botones y paginas leídas . 🟠
+  - [ ]  Estadísticas
+    - [ ] Desarrollo de la distribución de elementos en pantalla. 🟠
+    - [ ] Creación del filtro basado en unidades temporales. 🟣
+- Funcionalidades lógicas
+    - [ ] Base de datos
+        - [ ] Desarrollo de arquitectura de las bases de datos
+            - [ ] Base de datos para los usuarios. 🟡 🟤 ⚫
+        - [ ] APIs
+            - [ ] Operaciones CRUD para la base de datos de Google Books
+                - [ ] GET 🟡
+            - [ ] Operaciones CRUD para la base de datos de usuarios
+                - [ ] POST 🟤
+                - [ ] DELETE ⚫
+                - [ ] GET 🟤
+                - [ ] UPDATE ⚫
+                - [ ] PUT 🟡
+    - [ ] Desarrollo de funcionalidades lógicas de la aplicación
+        - [ ] Lógica para la obtención de datos desde los botones y barras de progreso. 🟤
+        - [ ] Transmisión de datos a los componentes que requieran información de las APIs. 🟡 ⚫
+
+
 
 ## Referencias
 ---------------------------------------
-[^1]:Gruvbox - [https://github.com/morhetz/gruvbox/](https://github.com/morhetz/gruvbox/)
-[^2]: React Docs - [https://reactjs.org/docs/](https://reactjs.org/docs/)
+Gruvbox - [https://github.com/morhetz/gruvbox/](https://github.com/morhetz/gruvbox/)
+React Docs - [https://reactjs.org/docs/](https://reactjs.org/docs/)
