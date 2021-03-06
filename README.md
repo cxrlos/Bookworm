@@ -134,11 +134,7 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
 
 A continuación se encuentra la división del trabajo por etapas y la leyenda para ver de manera sencilla la asignación de las tareas.
 
-⚫ Carlos García
-🟠  Daniela Vignau
-🟣 Héctor Reyes
-🟡 Jesus González
-🟤 Sergio Hernández
+⚫ Carlos García | 🟠  Daniela Vignau | 🟣 Héctor Reyes | 🟡 Jesus González | 🟤 Sergio Hernández
 
 - Layout general de las pantallas
     - [ ] Sidebar del menú. 🟣
@@ -187,5 +183,5 @@ A continuación se encuentra la división del trabajo por etapas y la leyenda pa
 
 ## Referencias
 ---------------------------------------
-Gruvbox - [https://github.com/morhetz/gruvbox/](https://github.com/morhetz/gruvbox/)
+Gruvbox - [https://github.com/morhetz/gruvbox/](https://github.com/morhetz/gruvbox/)\\
 React Docs - [https://reactjs.org/docs/](https://reactjs.org/docs/)
