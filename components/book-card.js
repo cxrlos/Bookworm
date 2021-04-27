@@ -1,52 +1,74 @@
-import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import {
-  Button,
-  Card,
-  Title,
-  ProgressBar,
-  Colors,
-  Paragraph,
-  Subheading,
-} from 'react-native-paper';
+import * as React from 'react';
+import { Dimensions, Image, Text, View } from 'react-native';
+import { Button, Card, ProgressBar } from 'react-native-paper';
+import { material } from 'react-native-typography';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const LeftContent = props => (
-  <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-);
+export const SLIDER_WIDTH = Dimensions.get('window').width;
+export const ITEM_WIDTH = SLIDER_WIDTH - 96;
 
-const BookCard = () => (
-  <Card style={{ marginTop: 15 }}>
-    <Card.Content>
-      <View style={styles.row}>
+const BookCard = ({ item }) => (
+  <Card
+    onPress={() => item.navigation.navigate('Libro', { bookId: item.id })}
+    style={{ padding: 12 }}
+  >
+    <View
+      style={{
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginBottom: 12,
+      }}
+    >
+      <View
+        style={{
+          flex: 1,
+          height: 128,
+          marginRight: 12,
+        }}
+      >
         <Image
-          source={require('../assets/ken-follet.jpg')}
-          style={styles.book}
+          source={{ uri: item.thumbnail }}
+          style={{
+            borderRadius: 2.5,
+            flex: 1,
+            resizeMode: 'contain',
+          }}
         />
-        <View>
-          <Title>The Pillars of the Earth</Title>
-          <Subheading>Ken Follet</Subheading>
-          <Paragraph>Página 50 de 100</Paragraph>
-          <ProgressBar progress={0.5} color={Colors.red800} />
+      </View>
+      <View style={{ flex: 3 }}>
+        <View style={{ marginBottom: 12 }}>
+          <Text style={material.body2}>{item.title}</Text>
+          <Text style={material.body1}>{item.author}</Text>
+        </View>
+        <View style={{ alignItems: 'flex-start' }}>
+          <Button
+            icon={({ size, color }) => (
+              <MaterialCommunityIcons color={color} name="play" size={size} />
+            )}
+            mode="contained"
+            // onPress={() => navigation.navigate('Leyendo', { bookInfo })}
+          >
+            Leer
+          </Button>
         </View>
       </View>
-    </Card.Content>
-    <Card.Actions>
-      <Button mode="contained" onPress={() => console.log('Pressed')}>
-        Reanudar lectura
-      </Button>
-    </Card.Actions>
+    </View>
+    <View
+      style={{
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      }}
+    >
+      <View style={{ marginRight: 8 }}>
+        <Text style={material.caption}>Progreso:</Text>
+      </View>
+      <View style={{ flexGrow: 1, flexShrink: 1, marginRight: 8 }}>
+        <ProgressBar progress={0.5} />
+      </View>
+      <Text style={material.caption}>página 1 de {item.pageCount}</Text>
+    </View>
   </Card>
 );
-
-const styles = StyleSheet.create({
-  book: {
-    width: 66,
-    height: '100%',
-  },
-  row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-});
 
 export default BookCard;

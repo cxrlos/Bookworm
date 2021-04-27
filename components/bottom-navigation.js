@@ -1,25 +1,30 @@
 import React, { useState } from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
-import AwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const HomeRoute = () => <Text>Home</Text>;
-const LibraryRoute = () => <Text>Biblioteca</Text>;
-const StatisticsRoutes = () => <Text>Estadísticas</Text>;
-const ProfilesRoute = () => <Text>Perfil</Text>;
+const HomeRoute = () => <></>;
+const LibraryRoute = () => <></>;
+const StatisticsRoutes = () => <></>;
+const ProfilesRoute = () => <></>;
 
-const BottomNavigationMenu = () => {
+export default () => {
   const [index, setIndex] = useState(0);
+
   const [routes] = useState([
-    { key: 'home', title: 'Home', icon: 'book' },
-    { key: 'library', title: 'Biblioteca', icon: 'book' },
-    { key: 'satistics', title: 'Estadísticas', icon: 'book' },
+    { key: 'home', title: 'Inicio', icon: 'home' },
+    { key: 'library', title: 'Biblioteca', icon: 'bookshelf' },
+    {
+      key: 'statistics',
+      title: 'Estadísticas',
+      icon: 'chart-pie',
+    },
     { key: 'profile', title: 'Perfil', icon: 'face' },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
     library: LibraryRoute,
-    satistics: StatisticsRoutes,
+    statistics: StatisticsRoutes,
     profile: ProfilesRoute,
   });
 
@@ -31,5 +36,3 @@ const BottomNavigationMenu = () => {
     />
   );
 };
-
-export default BottomNavigationMenu;
