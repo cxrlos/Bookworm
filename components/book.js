@@ -6,17 +6,32 @@ export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = SLIDER_WIDTH - 280;
 
 const Book = ({ item }) => {
+  const {
+    author,
+    currentPage,
+    description,
+    id,
+    navigation,
+    pageCount,
+    publisher,
+    shelf,
+    thumbnail,
+    title,
+  } = item;
+
   return (
     <TouchableOpacity
       onPress={() =>
-        item.navigation.navigate('Libro', {
-          author: item.author,
-          description: item.description,
-          id: item.id,
-          pageCount: item.pageCount,
-          publisher: item.publisher,
-          thumbnail: item.thumbnail,
-          title: item.title,
+        navigation.navigate('Libro', {
+          author,
+          currentPage,
+          description,
+          id,
+          pageCount,
+          publisher,
+          shelf,
+          thumbnail,
+          title,
         })
       }
     >
@@ -25,11 +40,10 @@ const Book = ({ item }) => {
           flex: 1,
           height: 128,
           marginBottom: 6,
-          // backgroundColor: 'red',
         }}
       >
         <Image
-          source={{ uri: item.thumbnail }}
+          source={{ uri: thumbnail }}
           style={{
             borderRadius: 2.5,
             flex: 1,
@@ -38,12 +52,8 @@ const Book = ({ item }) => {
         />
       </View>
       <View>
-        <Text style={{ ...material.body2, textAlign: 'center' }}>
-          {item.title}
-        </Text>
-        <Text style={{ ...material.body1, textAlign: 'center' }}>
-          {item.author}
-        </Text>
+        <Text style={{ ...material.body2, textAlign: 'center' }}>{title}</Text>
+        <Text style={{ ...material.body1, textAlign: 'center' }}>{author}</Text>
       </View>
     </TouchableOpacity>
   );

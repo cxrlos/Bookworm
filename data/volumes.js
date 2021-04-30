@@ -1,6 +1,7 @@
 export default [
   {
     id: '1',
+    currentPage: 100,
     volumeInfo: {
       title: 'Ficciones',
       authors: ['Jorge Luis Borges'],

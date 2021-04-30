@@ -3,18 +3,35 @@ import React from 'react';
 
 import BookScreen from '../screens/book-screen';
 import HomeScreen from '../screens/home-screen';
-import NavigationBar from '../components/navigation-bar';
+import ProgressScreen from '../screens/progress-screen';
 import ReadingScreen from '../screens/reading-screen';
+import SearchScreen from '../screens/search-screen';
+
+import Search from '../components/search';
 
 const Stack = createStackNavigator();
 
 const HomeNavigator = () => (
-  <Stack.Navigator
-  // screenOptions={{ header: props => <NavigationBar {...props} /> }}
-  >
+  <Stack.Navigator>
     <Stack.Screen name="Inicio" component={HomeScreen} />
-    <Stack.Screen name="Libro" component={BookScreen} />
-    <Stack.Screen name="Leyendo" component={ReadingScreen} />
+    <Stack.Screen
+      name="Buscar"
+      component={SearchScreen}
+      options={{
+        headerTitle: () => <Search />,
+      }}
+    />
+    <Stack.Screen
+      name="Libro"
+      component={BookScreen}
+      options={() => ({ title: null })}
+    />
+    <Stack.Screen
+      name="Leyendo"
+      component={ReadingScreen}
+      options={() => ({ title: null })}
+    />
+    <Stack.Screen name="Actualizar progreso" component={ProgressScreen} />
   </Stack.Navigator>
 );
 

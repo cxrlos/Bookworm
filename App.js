@@ -7,15 +7,15 @@ import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import BookshelvesNavigator from './navigators/bookshelves-navigator';
 import HomeNavigator from './navigators/home-navigator';
+import LibraryNavigator from './navigators/library-navigator';
 import ProfileNavigator from './navigators/profile-navigator';
 import StatisticsNavigator from './navigators/statistics-navigator';
 
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  const hideRoutes = ['Leyendo', 'Actualizar progreso'];
+  const hideRoutes = ['Leyendo', 'Actualizar progreso', 'Buscar'];
 
   const getTabBarVisibility = route => {
     const routeName = getFocusedRouteNameFromRoute(route) || '';
@@ -34,16 +34,17 @@ const App = () => {
           <Tab.Screen
             name="Inicio"
             component={HomeNavigator}
-            options={{
+            options={({ route }) => ({
               tabBarLabel: 'Inicio',
               tabBarIcon: ({ color }) => (
                 <MaterialCommunityIcons name="home" color={color} size={26} />
               ),
-            }}
+              tabBarVisible: getTabBarVisibility(route),
+            })}
           />
           <Tab.Screen
             name="Biblioteca"
-            component={BookshelvesNavigator}
+            component={LibraryNavigator}
             options={({ route }) => ({
               tabBarLabel: 'Biblioteca',
               tabBarIcon: ({ color }) => (
@@ -59,7 +60,7 @@ const App = () => {
           <Tab.Screen
             name="Estadísticas"
             component={StatisticsNavigator}
-            options={{
+            options={({ route }) => ({
               tabBarLabel: 'Estadísticas',
               tabBarIcon: ({ color }) => (
                 <MaterialCommunityIcons
@@ -68,7 +69,8 @@ const App = () => {
                   size={26}
                 />
               ),
-            }}
+              tabBarVisible: getTabBarVisibility(route),
+            })}
           />
           <Tab.Screen
             name="Perfil"

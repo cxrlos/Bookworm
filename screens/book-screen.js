@@ -5,7 +5,6 @@ import {
   Dialog,
   Divider,
   Portal,
-  ProgressBar,
   RadioButton,
   Snackbar,
 } from 'react-native-paper';
@@ -13,18 +12,21 @@ import HTML from 'react-native-render-html';
 import { material } from 'react-native-typography';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import Progress from '../components/progress';
+
 const BookScreen = ({ navigation, route }) => {
   const {
     author,
+    currentPage,
     description,
-    id,
     pageCount,
     publisher,
+    shelf: shelfId,
     thumbnail,
     title,
   } = route.params;
 
-  const [bookshelfId, setBookshelfId] = useState(-1);
+  const [shelf, setShelf] = useState(shelfId);
   const [visible, setVisible] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const [dialog, setDialog] = useState(false);
@@ -32,18 +34,18 @@ const BookScreen = ({ navigation, route }) => {
   const handleAddToLibrary = () => {
     setSnackBarMessage('add');
     setVisible(true);
-    setBookshelfId(2);
+    setShelf('2');
   };
 
   const handleRemoveFromLibrary = () => {
     setSnackBarMessage('remove');
     setVisible(true);
-    setBookshelfId(-1);
+    setShelf('-1');
   };
 
   const onDismissSnackBar = () => setVisible(false);
 
-  const bookshelfIds = {
+  const Shelfs = {
     0: 'Favoritos',
     2: 'Por leer',
     3: 'Leyendo ahora',
@@ -56,7 +58,7 @@ const BookScreen = ({ navigation, route }) => {
   };
 
   const BookStatus = () =>
-    bookshelfId === -1 ? (
+    shelf === '-1' ? (
       <Button onPress={handleAddToLibrary}>Añadir a la biblioteca</Button>
     ) : (
       <>
@@ -70,7 +72,7 @@ const BookScreen = ({ navigation, route }) => {
           )}
           onPress={() => setDialog(true)}
         >
-          {bookshelfIds[bookshelfId]}
+          {Shelfs[shelf]}
         </Button>
         {dialog === true && (
           <Portal>
@@ -78,13 +80,13 @@ const BookScreen = ({ navigation, route }) => {
               <Dialog.Title>Seleccionar estantería</Dialog.Title>
               <Dialog.Content>
                 <RadioButton.Group
-                  onValueChange={bookshelfId => setBookshelfId(bookshelfId)}
-                  value={bookshelfId}
+                  onValueChange={shelf => setShelf(shelf)}
+                  value={shelf}
                 >
-                  <RadioButton.Item label="Favoritos" value={0} />
-                  <RadioButton.Item label="Por leer" value={2} />
-                  <RadioButton.Item label="Leyendo ahora" value={3} />
-                  <RadioButton.Item label="Leídos" value={4} />
+                  <RadioButton.Item label="Favoritos" value="0" />
+                  <RadioButton.Item label="Por leer" value="2" />
+                  <RadioButton.Item label="Leyendo ahora" value="3" />
+                  <RadioButton.Item label="Leídos" value="4" />
                 </RadioButton.Group>
               </Dialog.Content>
               <Dialog.Actions>
@@ -128,7 +130,7 @@ const BookScreen = ({ navigation, route }) => {
                 position: 'absolute',
               }}
             >
-              {bookshelfId === 3 && (
+              {shelf === '3' && (
                 <Button
                   icon={({ size, color }) => (
                     <MaterialCommunityIcons
@@ -141,6 +143,7 @@ const BookScreen = ({ navigation, route }) => {
                   onPress={() =>
                     navigation.navigate('Leyendo', {
                       author,
+                      currentPage,
                       pageCount,
                       thumbnail,
                       title,
@@ -161,28 +164,14 @@ const BookScreen = ({ navigation, route }) => {
             </View>
             <BookStatus />
           </View>
-          {bookshelfId === 3 && (
+          {shelf === '3' && (
             <View
               style={{
                 marginHorizontal: 16,
                 marginBottom: 16,
               }}
             >
-              <View
-                style={{
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <View style={{ marginRight: 8 }}>
-                  <Text style={material.caption}>Progreso:</Text>
-                </View>
-                <View style={{ flexGrow: 1, flexShrink: 1, marginRight: 8 }}>
-                  <ProgressBar progress={0.5} />
-                </View>
-                <Text style={material.caption}>página 1 de {pageCount}</Text>
-              </View>
+              <Progress currentPage={currentPage} pageCount={pageCount} />
             </View>
           )}
           <Divider />
@@ -206,7 +195,7 @@ const BookScreen = ({ navigation, route }) => {
               >
                 {publisher} &#183; {pageCount} páginas
               </Text>
-              {bookshelfId !== -1 && (
+              {shelf !== '-1' && (
                 <View style={{ alignItems: 'center', flex: 1 }}>
                   <Button
                     color="red"

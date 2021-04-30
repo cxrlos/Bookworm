@@ -4,13 +4,16 @@ import { IconButton, TextInput } from 'react-native-paper';
 import { material } from 'react-native-typography';
 
 import BookCard from '../components/book-card';
+import Progress from '../components/progress';
 import Time from '../components/time';
 
 const ProgressScreen = ({ route, navigation }) => {
-  const { time, pageCount } = route.params;
+  const { currentPage: propCurrentPage, pageCount, time } = route.params;
 
   const textInputRef = useRef();
-  const [text, setText] = useState('1');
+  const [currentPage, setCurrentPage] = useState(propCurrentPage || '0');
+
+  const [dialog, setDialog] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -18,7 +21,11 @@ const ProgressScreen = ({ route, navigation }) => {
         <IconButton icon="close" onPress={handleUpdateProgress} />
       ),
       headerRight: () => (
-        <IconButton icon="check" onPress={handleUpdateProgress} />
+        <IconButton
+          icon="check"
+          onPress={handleUpdateProgress}
+          disabled={!currentPage}
+        />
       ),
     });
   });
@@ -37,7 +44,7 @@ const ProgressScreen = ({ route, navigation }) => {
     >
       <View>
         <View style={{ marginBottom: 34 }}>
-          <BookCard item={route.params} />
+          <BookCard disabled currentPage={currentPage} item={route.params} />
         </View>
         <View style={{ alignItems: 'center' }}>
           <View
@@ -47,7 +54,7 @@ const ProgressScreen = ({ route, navigation }) => {
               flexDirection: 'row',
             }}
           >
-            <Text style={{ ...material.body1, marginRight: 8 }}>
+            <Text style={{ ...material.subheading, marginRight: 8 }}>
               Tiempo leído:
             </Text>
             <Time time={time} />
@@ -58,24 +65,27 @@ const ProgressScreen = ({ route, navigation }) => {
               alignItems: 'center',
             }}
           >
-            <Text style={{ ...material.body1, marginRight: 8 }}>
+            <Text style={{ ...material.subheading, marginRight: 8 }}>
               En la página
             </Text>
-
             <TextInput
-              ref={textInputRef}
+              dense
+              keyboardType="numeric"
               mode="flat"
-              dense={true}
-              value={text}
-              onChangeText={text => setText(text)}
+              onChangeText={currentPage =>
+                currentPage <= pageCount &&
+                setCurrentPage(currentPage.replace(/^0+/, ''))
+              }
+              ref={textInputRef}
               style={{
                 ...material.headline,
                 marginRight: 8,
                 width: 64,
                 textAlign: 'center',
               }}
+              value={currentPage.toString()}
             />
-            <Text style={material.body1}>de {pageCount}</Text>
+            <Text style={material.subheading}>de {pageCount}</Text>
           </View>
         </View>
       </View>

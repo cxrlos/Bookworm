@@ -12,7 +12,7 @@ import { material } from 'react-native-typography';
 import Time from '../components/time';
 
 const ReadingScreen = ({ route, navigation }) => {
-  const { author, pageCount, thumbnail, title } = route.params;
+  const { author, currentPage, pageCount, thumbnail, title } = route.params;
 
   const [dialog, setDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState();
@@ -47,6 +47,7 @@ const ReadingScreen = ({ route, navigation }) => {
     setDialog(false);
     navigation.navigate('Actualizar progreso', {
       author,
+      currentPage,
       pageCount,
       thumbnail,
       time,
@@ -168,7 +169,7 @@ const ReadingScreen = ({ route, navigation }) => {
         }}
       >
         <View style={{ alignItems: 'center', padding: 16 }}>
-          <Text style={material.body1}>Tiempo leído:</Text>
+          <Text style={material.subheading}>Tiempo leído:</Text>
           <Time time={time} />
         </View>
         <Divider />

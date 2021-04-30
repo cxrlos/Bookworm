@@ -11,7 +11,7 @@ const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
-const BookshelfScreen = ({ navigation }) => {
+const SearchScreen = ({ navigation, route }) => {
   const [books, setBooks] = useState([]);
 
   useFocusEffect(
@@ -31,16 +31,16 @@ const BookshelfScreen = ({ navigation }) => {
   );
 
   return (
-    <ScrollView>
+    // <ScrollView>
       <View style={{ padding: 16 }}>
-        {books.map(book => (
+        {/* {books.map(book => (
           <View key={book.id} style={{ marginVertical: 6 }}>
             <BookCard item={book} />
           </View>
-        ))}
+        ))} */}
       </View>
-    </ScrollView>
+    // </ScrollView>
   );
 };
 
-export default BookshelfScreen;
+export default SearchScreen;

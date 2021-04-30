@@ -1,28 +1,25 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { IconButton } from 'react-native-paper';
 
 import BookScreen from '../screens/book-screen';
-import BookshelfScreen from '../screens/bookshelf-screen';
-import BookshelvesScreen from '../screens/bookshelves-screen';
+import LibraryScreen from '../screens/library-screen';
 import ProgressScreen from '../screens/progress-screen';
 import ReadingScreen from '../screens/reading-screen';
+import ShelfScreen from '../screens/shelf-screen';
 
 const Stack = createStackNavigator();
 
-const BookshelvesNavigator = () => (
-  <Stack.Navigator
-  // screenOptions={{ header: props => <NavigationBar {...props} /> }}
-  >
-    <Stack.Screen name="Biblioteca" component={BookshelvesScreen} />
+const LibraryNavigator = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Biblioteca" component={LibraryScreen} />
     <Stack.Screen
       name="Libro"
       component={BookScreen}
       options={() => ({ title: null })}
     />
     <Stack.Screen
-      name="Librero"
-      component={BookshelfScreen}
+      name="Estantería"
+      component={ShelfScreen}
       options={({ route }) => ({ title: route.params.name })}
     />
     <Stack.Screen
@@ -34,4 +31,4 @@ const BookshelvesNavigator = () => (
   </Stack.Navigator>
 );
 
-export default BookshelvesNavigator;
+export default LibraryNavigator;

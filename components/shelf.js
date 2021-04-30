@@ -1,17 +1,17 @@
 import React, { useRef } from 'react';
 import { Text, View } from 'react-native';
-import { Divider, TouchableRipple } from 'react-native-paper';
+import { TouchableRipple } from 'react-native-paper';
 import Carousel from 'react-native-snap-carousel';
 import { material } from 'react-native-typography';
 
 import Book, { SLIDER_WIDTH, ITEM_WIDTH } from '../components/book';
 
-const Shelf = ({ books, title }) => {
+const Shelf = ({ books, navigation, shelf, title }) => {
   const isCarousel = useRef(null);
 
   return (
     <TouchableRipple
-      onPress={() => navigation.navigate('Librero', { name: title })}
+      onPress={() => navigation.navigate('Estantería', { name: title, shelf })}
     >
       <View style={{ marginTop: 16 }}>
         <View
@@ -47,7 +47,6 @@ const Shelf = ({ books, title }) => {
           renderItem={Book}
           sliderWidth={SLIDER_WIDTH}
         />
-        <Divider style={{ marginHorizontal: 16 }} />
       </View>
     </TouchableRipple>
   );

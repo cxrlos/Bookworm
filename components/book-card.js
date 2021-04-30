@@ -1,74 +1,110 @@
 import * as React from 'react';
-import { Dimensions, Image, Text, View } from 'react-native';
-import { Button, Card, ProgressBar } from 'react-native-paper';
+import { Image, Text, View } from 'react-native';
+import { Button, Card } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export const SLIDER_WIDTH = Dimensions.get('window').width;
-export const ITEM_WIDTH = SLIDER_WIDTH - 96;
+import Progress from '../components/progress';
 
-const BookCard = ({ item }) => (
-  <Card
-    onPress={() => item.navigation.navigate('Libro', { bookId: item.id })}
-    style={{ padding: 12 }}
-  >
-    <View
-      style={{
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginBottom: 12,
-      }}
+const BookCard = ({
+  currentPage: propCurrentPage,
+  disabled,
+  item,
+  navigation,
+  shelf,
+}) => {
+  const {
+    author,
+    currentPage: itemCurrentPage,
+    description,
+    id,
+    pageCount,
+    publisher,
+    thumbnail,
+    title,
+  } = item;
+
+  const currentPage = propCurrentPage || itemCurrentPage;
+
+  return (
+    <Card
+      onPress={
+        !disabled &&
+        (() =>
+          navigation.navigate('Libro', {
+            author,
+            currentPage,
+            description,
+            id,
+            pageCount,
+            publisher,
+            shelf,
+            thumbnail,
+            title,
+          }))
+      }
+      style={{ padding: 12 }}
     >
       <View
         style={{
-          flex: 1,
-          height: 128,
-          marginRight: 12,
+          alignItems: 'center',
+          flexDirection: 'row',
         }}
       >
-        <Image
-          source={{ uri: item.thumbnail }}
+        <View
           style={{
-            borderRadius: 2.5,
             flex: 1,
-            resizeMode: 'contain',
+            height: 128,
+            marginRight: 12,
           }}
-        />
-      </View>
-      <View style={{ flex: 3 }}>
-        <View style={{ marginBottom: 12 }}>
-          <Text style={material.body2}>{item.title}</Text>
-          <Text style={material.body1}>{item.author}</Text>
+        >
+          <Image
+            source={{ uri: thumbnail }}
+            style={{
+              borderRadius: 2.5,
+              flex: 1,
+              resizeMode: 'contain',
+            }}
+          />
         </View>
-        <View style={{ alignItems: 'flex-start' }}>
-          <Button
-            icon={({ size, color }) => (
-              <MaterialCommunityIcons color={color} name="play" size={size} />
-            )}
-            mode="contained"
-            // onPress={() => navigation.navigate('Leyendo', { bookInfo })}
-          >
-            Leer
-          </Button>
+        <View style={{ flex: 3 }}>
+          <View style={{ marginBottom: 12 }}>
+            <Text style={material.body2}>{title}</Text>
+            <Text style={material.body1}>{author}</Text>
+          </View>
+          {shelf === '3' && (
+            <View style={{ alignItems: 'flex-start' }}>
+              <Button
+                icon={({ size, color }) => (
+                  <MaterialCommunityIcons
+                    color={color}
+                    name="play"
+                    size={size}
+                  />
+                )}
+                mode="contained"
+                onPress={() =>
+                  navigation.navigate('Leyendo', {
+                    author,
+                    pageCount,
+                    thumbnail,
+                    title,
+                  })
+                }
+              >
+                Leer
+              </Button>
+            </View>
+          )}
         </View>
       </View>
-    </View>
-    <View
-      style={{
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      }}
-    >
-      <View style={{ marginRight: 8 }}>
-        <Text style={material.caption}>Progreso:</Text>
-      </View>
-      <View style={{ flexGrow: 1, flexShrink: 1, marginRight: 8 }}>
-        <ProgressBar progress={0.5} />
-      </View>
-      <Text style={material.caption}>página 1 de {item.pageCount}</Text>
-    </View>
-  </Card>
-);
+      {(disabled || shelf === '3') && (
+        <View style={{ marginTop: 12 }}>
+          <Progress currentPage={currentPage} pageCount={pageCount} />
+        </View>
+      )}
+    </Card>
+  );
+};
 
 export default BookCard;
