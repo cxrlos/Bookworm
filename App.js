@@ -15,7 +15,7 @@ import StatisticsNavigator from './navigators/statistics-navigator';
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  const hideRoutes = ['Leyendo', 'Actualizar progreso', 'Buscar'];
+  const hideRoutes = ['Leyendo', 'Actualizar progreso'];
 
   const getTabBarVisibility = route => {
     const routeName = getFocusedRouteNameFromRoute(route) || '';
@@ -30,7 +30,7 @@ const App = () => {
   return (
     <PaperProvider>
       <NavigationContainer>
-        <Tab.Navigator>
+        <Tab.Navigator screenOptions={{ default: false }}>
           <Tab.Screen
             name="Inicio"
             component={HomeNavigator}
@@ -75,7 +75,7 @@ const App = () => {
           <Tab.Screen
             name="Perfil"
             component={ProfileNavigator}
-            options={{
+            options={({ route }) => ({
               tabBarLabel: 'Perfil',
               tabBarIcon: ({ color }) => (
                 <MaterialCommunityIcons
@@ -84,7 +84,7 @@ const App = () => {
                   size={26}
                 />
               ),
-            }}
+            })}
           />
         </Tab.Navigator>
       </NavigationContainer>

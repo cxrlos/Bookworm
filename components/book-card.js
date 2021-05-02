@@ -51,29 +51,37 @@ const BookCard = ({
           flexDirection: 'row',
         }}
       >
-        <View
-          style={{
-            flex: 1,
-            height: 128,
-            marginRight: 12,
-          }}
-        >
-          <Image
-            source={{ uri: thumbnail }}
+        {thumbnail && (
+          <View
             style={{
-              borderRadius: 2.5,
               flex: 1,
-              resizeMode: 'contain',
+              height: 128,
+              marginRight: 12,
             }}
-          />
-        </View>
+          >
+            <Image
+              source={{ uri: thumbnail }}
+              style={{
+                borderRadius: 2.5,
+                flex: 1,
+                resizeMode: 'contain',
+              }}
+            />
+          </View>
+        )}
         <View style={{ flex: 3 }}>
-          <View style={{ marginBottom: 12 }}>
-            <Text style={material.body2}>{title}</Text>
-            <Text style={material.body1}>{author}</Text>
+          <View>
+            <Text numberOfLines={1} style={material.body2}>
+              {title}
+            </Text>
+            {author && (
+              <Text numberOfLines={1} style={material.body1}>
+                {author.join(', ')}
+              </Text>
+            )}
           </View>
           {shelf === '3' && (
-            <View style={{ alignItems: 'flex-start' }}>
+            <View style={{ alignItems: 'flex-start', paddingTop: 12 }}>
               <Button
                 icon={({ size, color }) => (
                   <MaterialCommunityIcons

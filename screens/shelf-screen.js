@@ -15,7 +15,7 @@ const ShelfScreen = ({ navigation, route }) => {
     useCallback(() => {
       setBooks(
         volumes.map(book => ({
-          author: book.volumeInfo.authors.join(', '),
+          author: book.volumeInfo.authors,
           description: book.volumeInfo.description,
           currentPage: book.currentPage,
           id: book.id,

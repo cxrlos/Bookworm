@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { Image, ScrollView, Text, View } from 'react-native';
 import {
   Button,
   Dialog,
   Divider,
+  IconButton,
   Portal,
   RadioButton,
   Snackbar,
@@ -26,10 +27,21 @@ const BookScreen = ({ navigation, route }) => {
     title,
   } = route.params;
 
-  const [shelf, setShelf] = useState(shelfId);
+  const [shelf, setShelf] = useState(shelfId || '-1');
   const [visible, setVisible] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState('');
   const [dialog, setDialog] = useState(false);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IconButton
+          icon="magnify"
+          onPress={() => navigation.navigate('Buscar')}
+        />
+      ),
+    });
+  });
 
   const handleAddToLibrary = () => {
     setSnackBarMessage('add');
@@ -101,36 +113,59 @@ const BookScreen = ({ navigation, route }) => {
   return (
     <>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View
-          style={{
-            flex: 1,
-            paddingVertical: 16,
-          }}
-        >
+        {thumbnail && (
           <View
             style={{
               flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
+              paddingVertical: 16,
             }}
           >
-            <Image
-              source={{
-                uri: thumbnail,
-              }}
-              style={{
-                borderRadius: 2.5,
-                height: 192,
-                width: 192,
-                resizeMode: 'contain',
-              }}
-            />
             <View
               style={{
-                position: 'absolute',
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              {shelf === '3' && (
+              <Image
+                source={{
+                  uri: thumbnail,
+                }}
+                style={{
+                  borderRadius: 2.5,
+                  height: 192,
+                  width: 192,
+                  resizeMode: 'contain',
+                }}
+              />
+            </View>
+          </View>
+        )}
+        <View style={{ backgroundColor: 'white', padding: 16, flex: 2 }}>
+          <View style={{ alignItems: 'center', marginBottom: 16 }}>
+            <View style={{ marginBottom: 16 }}>
+              <Text style={{ ...material.title, textAlign: 'center' }}>
+                {title}
+              </Text>
+              {author && (
+                <Text style={{ ...material.subheading, textAlign: 'center' }}>
+                  {author.join(', ')}
+                </Text>
+              )}
+            </View>
+            <BookStatus />
+          </View>
+          {shelf === '3' && (
+            <>
+              <View
+                style={{
+                  marginHorizontal: 16,
+                  marginBottom: 16,
+                }}
+              >
+                <Progress currentPage={currentPage} pageCount={pageCount} />
+              </View>
+              <View style={{ alignItems: 'center', marginBottom: 16 }}>
                 <Button
                   icon={({ size, color }) => (
                     <MaterialCommunityIcons
@@ -152,27 +187,8 @@ const BookScreen = ({ navigation, route }) => {
                 >
                   Leer
                 </Button>
-              )}
-            </View>
-          </View>
-        </View>
-        <View style={{ backgroundColor: 'white', padding: 16, flex: 2 }}>
-          <View style={{ alignItems: 'center', marginBottom: 16 }}>
-            <View style={{ alignItems: 'center', marginBottom: 16 }}>
-              <Text style={material.title}>{title}</Text>
-              <Text style={material.subheading}>{author}</Text>
-            </View>
-            <BookStatus />
-          </View>
-          {shelf === '3' && (
-            <View
-              style={{
-                marginHorizontal: 16,
-                marginBottom: 16,
-              }}
-            >
-              <Progress currentPage={currentPage} pageCount={pageCount} />
-            </View>
+              </View>
+            </>
           )}
           <Divider />
           <View
@@ -181,20 +197,33 @@ const BookScreen = ({ navigation, route }) => {
             }}
           >
             <View style={{ marginBottom: 16, flex: 1 }}>
-              <Text style={material.title}>Descripción</Text>
-              {<HTML source={{ html: description || '<p></p>' }} /> || (
+              <Text style={{ ...material.title, marginBottom: 12 }}>
+                Descripción
+              </Text>
+              {description ? (
+                <HTML source={{ html: description || '<p></p>' }} />
+              ) : (
                 <Text>No hay descripción disponible.</Text>
               )}
             </View>
-            <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  ...material.caption,
-                  textAlign: 'center',
-                }}
-              >
-                {publisher} &#183; {pageCount} páginas
-              </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+              }}
+            >
+              {publisher && (
+                <Text style={{ ...material.caption }}>{publisher}</Text>
+              )}
+              {publisher && pageCount && (
+                <Text style={{ ...material.caption }}> &#183; </Text>
+              )}
+              {pageCount && (
+                <Text style={{ ...material.caption }}>{pageCount} páginas</Text>
+              )}
+            </View>
+            <View>
               {shelf !== '-1' && (
                 <View style={{ alignItems: 'center', flex: 1 }}>
                   <Button

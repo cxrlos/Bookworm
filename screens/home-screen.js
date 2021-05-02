@@ -19,7 +19,7 @@ const HomeScreen = ({ navigation }) => {
     useCallback(() => {
       setBooks(
         volumes.map(book => ({
-          author: book.volumeInfo.authors.join(', '),
+          author: book.volumeInfo.authors,
           currentPage: book.currentPage,
           description: book.volumeInfo.description,
           id: book.id,
@@ -44,10 +44,12 @@ const HomeScreen = ({ navigation }) => {
   });
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: 'white' }}>
       <View style={{ padding: 16 }}>
         <View style={{ marginBottom: 16 }}>
-          <Text style={material.title}>Buenos días, Daniela</Text>
+          <Text style={{ ...material.title, marginBottom: 12 }}>
+            Buenos días, Daniela
+          </Text>
           <View
             style={{
               flexDirection: 'row',
@@ -55,7 +57,7 @@ const HomeScreen = ({ navigation }) => {
             }}
           >
             <Text style={material.subheading}>
-              Te faltan 10 páginas para completar tu objetivo del día.
+              Te faltan 10 páginas para completar tu objetivo diario.
             </Text>
           </View>
         </View>

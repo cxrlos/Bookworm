@@ -2,10 +2,9 @@ import { useFocusEffect } from '@react-navigation/core';
 import React, { useCallback, useLayoutEffect, useState } from 'react';
 import { Dimensions, ScrollView, Text, View } from 'react-native';
 import { ContributionGraph } from 'react-native-chart-kit';
-import { Divider, IconButton, Menu } from 'react-native-paper';
+import { Divider, IconButton, Menu, ProgressBar } from 'react-native-paper';
 import { material } from 'react-native-typography';
 
-import Shelf from '../components/shelf';
 import Time from '../components/time';
 
 import volumes from '../data/volumes';
@@ -95,14 +94,15 @@ const StatisticsScreen = ({ navigation, route }) => {
     useCallback(() => {
       setBooks(
         volumes.map(book => ({
-          author: book.volumeInfo.authors.join(', '),
+          author: book.volumeInfo.authors,
           currentPage: book.currentPage,
           description: book.volumeInfo.description,
           id: book.id,
           navigation: navigation,
           pageCount: book.volumeInfo.pageCount,
           publisher: book.volumeInfo.publisher,
-          thumbnail: book.volumeInfo.imageLinks.thumbnail,
+          thumbnail:
+            book.volumeInfo.imageLinks && book.volumeInfo.imageLinks.thumbnail,
           title: book.volumeInfo.title,
         }))
       );
@@ -136,15 +136,15 @@ const StatisticsScreen = ({ navigation, route }) => {
   const width = name === 'Este año' ? 1177 : screenWidth;
 
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
+    <ScrollView
+      style={{ backgroundColor: 'white' }}
+      // contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
+    >
       <View style={{ padding: 16 }}>
-        <Text style={{ ...material.title, marginBottom: 12 }}>
-          Estadísticas
-        </Text>
+        <Text style={{ ...material.title, marginBottom: 6 }}>Estadísticas</Text>
         <View
           style={{
             alignItems: 'center',
-            marginBottom: 12,
             flexDirection: 'row',
             flexWrap: 'wrap',
           }}
@@ -166,20 +166,14 @@ const StatisticsScreen = ({ navigation, route }) => {
           <Text style={material.headline}>100</Text>
         </View>
       </View>
-      <Divider style={{ marginHorizontal: 16 }} />
-      <Shelf
-        books={books}
-        navigation={navigation}
-        title={`Leídos ${name.toLowerCase()}`}
-      />
-      {Object.keys(numDays).includes(name) && (
+      {Object.keys(numDays).includes(name) ? (
         <>
           <Divider style={{ marginHorizontal: 16 }} />
           <View key={name} style={{ paddingTop: 16 }}>
             <Text
               style={{
                 ...material.title,
-                marginBottom: 12,
+                marginBottom: 6,
                 paddingHorizontal: 16,
               }}
             >
@@ -201,6 +195,35 @@ const StatisticsScreen = ({ navigation, route }) => {
                 showOutOfRangeDays
               />
             </ScrollView>
+          </View>
+        </>
+      ) : (
+        <>
+          <Divider style={{ marginHorizontal: 16 }} />
+          <View key={name} style={{ padding: 16 }}>
+            <Text
+              style={{
+                ...material.title,
+                marginBottom: 6,
+              }}
+            >
+              Objetivo diario
+            </Text>
+            <Text style={{ ...material.subheading, marginBottom: 12 }}>
+              Te faltan 10 páginas para completar tu objetivo diario.
+            </Text>
+            <View
+              style={{
+                alignItems: 'center',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
+            >
+              <View style={{ flexGrow: 1, flexShrink: 1, marginRight: 8 }}>
+                <ProgressBar progress={0.0} />
+              </View>
+              <Text style={material.caption}>0 de 10</Text>
+            </View>
           </View>
         </>
       )}

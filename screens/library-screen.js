@@ -20,7 +20,7 @@ const LibraryScreen = ({ navigation }) => {
     useCallback(() => {
       setBookshelves({
         0: volumes.map(book => ({
-          author: book.volumeInfo.authors.join(', '),
+          author: book.volumeInfo.authors,
           description: book.volumeInfo.description,
           id: book.id,
           navigation,
@@ -31,7 +31,7 @@ const LibraryScreen = ({ navigation }) => {
           title: book.volumeInfo.title,
         })),
         2: volumes.map(book => ({
-          author: book.volumeInfo.authors.join(', '),
+          author: book.volumeInfo.authors,
           description: book.volumeInfo.description,
           id: book.id,
           navigation,
@@ -42,7 +42,7 @@ const LibraryScreen = ({ navigation }) => {
           title: book.volumeInfo.title,
         })),
         3: volumes.map(book => ({
-          author: book.volumeInfo.authors.join(', '),
+          author: book.volumeInfo.authors,
           currentPage: book.currentPage,
           description: book.volumeInfo.description,
           id: book.id,
@@ -54,7 +54,7 @@ const LibraryScreen = ({ navigation }) => {
           title: book.volumeInfo.title,
         })),
         4: volumes.map(book => ({
-          author: book.volumeInfo.authors.join(', '),
+          author: book.volumeInfo.authors,
           description: book.volumeInfo.description,
           id: book.id,
           navigation,

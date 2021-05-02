@@ -14,13 +14,7 @@ const Stack = createStackNavigator();
 const HomeNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen name="Inicio" component={HomeScreen} />
-    <Stack.Screen
-      name="Buscar"
-      component={SearchScreen}
-      options={{
-        headerTitle: () => <Search />,
-      }}
-    />
+    <Stack.Screen name="Buscar" component={SearchScreen} />
     <Stack.Screen
       name="Libro"
       component={BookScreen}
