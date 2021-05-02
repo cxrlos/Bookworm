@@ -1,31 +1,34 @@
-import { useFocusEffect } from "@react-navigation/core";
-import { observer } from "mobx-react-lite";
-import React, { Fragment, useCallback, useContext } from "react";
-import { ScrollView, View } from "react-native";
-import { Divider } from "react-native-paper";
+import { observer } from 'mobx-react-lite';
+import React, { Fragment, useContext, useEffect } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { Divider } from 'react-native-paper';
 
-import Shelf from "../components/shelf";
-import BookStore from "../stores/book-store";
+import Shelf from '../components/shelf';
+import BookStore from '../stores/book-store';
 
-import { LIBRARY } from "../constants";
+import { LIBRARY } from '../constants';
 
 const LibraryScreen = ({ navigation }) => {
   const bookStore = useContext(BookStore);
 
-  useFocusEffect(
-    useCallback(() => {
-      bookStore.getLibrary();
-    }, [bookStore])
-  );
+  useEffect(() => {
+    bookStore.getLibrary();
+  }, []);
 
-  const { library } = bookStore;
+  if (bookStore.loading) {
+    return (
+      <View style={{ flex: 1 }}>
+        <Text>Loading</Text>
+      </View>
+    );
+  }
 
   return (
-    <ScrollView style={{ backgroundColor: "white" }}>
-      {Object.keys(library).map((shelf) => (
+    <ScrollView style={{ backgroundColor: 'white' }}>
+      {Object.keys(bookStore.library).map(shelf => (
         <Fragment key={shelf}>
           <Shelf
-            books={library[shelf]}
+            books={bookStore.library[shelf]}
             navigation={navigation}
             shelf={shelf}
             title={LIBRARY[shelf]}

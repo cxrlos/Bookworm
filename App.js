@@ -3,6 +3,7 @@ import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
 } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -92,4 +93,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default observer(App);

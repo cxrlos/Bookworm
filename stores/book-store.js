@@ -1,30 +1,32 @@
-import { createContext } from "react";
-import { makeAutoObservable } from "mobx";
-import requests from "../api/requests";
+import { makeAutoObservable, runInAction } from 'mobx';
+import { createContext } from 'react';
+
+import requests from '../api/requests';
 
 class BookStore {
   constructor() {
     makeAutoObservable(this);
   }
 
-  // Observables
-  library = {
-    0: [],
-    2: [],
-    3: [],
-    4: [],
-  };
+  library = { 0: [], 2: [], 3: [], 4: [] };
+  loading = false;
 
-  // Actions
   getLibrary = async () => {
     try {
+      this.loading = true;
       const library = await requests.getLibrary();
-      Object.keys(library).forEach((shelf) => {
-        shelf.forEach((book) => {
-          this.library[shelf].push(book);
+      runInAction(() => {
+        Object.keys(library).forEach(shelf => {
+          library[shelf].forEach(book => {
+            this.library[shelf].push(book);
+          });
         });
+        this.loading = false;
       });
     } catch (e) {
+      runInAction(() => {
+        this.loading = false;
+      });
       alert(e);
     }
   };

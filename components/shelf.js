@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React, { useRef } from 'react';
 import { Text, View } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
@@ -52,4 +53,4 @@ const Shelf = ({ books, navigation, shelf, title }) => {
   );
 };
 
-export default Shelf;
+export default observer(Shelf);

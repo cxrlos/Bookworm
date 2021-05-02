@@ -19,6 +19,8 @@
     "expo-status-bar": "~1.0.3",
     "formik": "^2.2.6",
     "lodash": "^4.17.21",
+    "mobx": "^6.3.0",
+    "mobx-react-lite": "^3.2.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
