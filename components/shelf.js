@@ -1,15 +1,11 @@
-import { observer } from 'mobx-react-lite';
-import React, { useRef } from 'react';
-import { Text, View } from 'react-native';
-import { TouchableRipple } from 'react-native-paper';
-import Carousel from 'react-native-snap-carousel';
+import React from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { Divider, TouchableRipple } from 'react-native-paper';
 import { material } from 'react-native-typography';
 
-import Book, { SLIDER_WIDTH, ITEM_WIDTH } from '../components/book';
+import Book, { ITEM_WIDTH } from '../components/book';
 
 const Shelf = ({ books, navigation, shelf, title }) => {
-  const isCarousel = useRef(null);
-
   return (
     <TouchableRipple
       onPress={() => navigation.navigate('Estantería', { name: title, shelf })}
@@ -30,27 +26,35 @@ const Shelf = ({ books, navigation, shelf, title }) => {
           >
             <Text style={material.title}>{title}</Text>
             <Text style={material.subheading}>
-              {books.length} {`libro${books.length > 1 ? 's' : ''}`}
+              {books.length}{' '}
+              {`libro${books.length > 1 || books.length === 0 ? 's' : ''}`}
             </Text>
           </View>
         </View>
-        <Carousel
-          activeSlideAlignment="start"
-          contentContainerCustomStyle={{
-            marginHorizontal: 16,
+        <ScrollView
+          contentContainerStyle={{
             paddingBottom: 16,
             paddingTop: 12,
+            paddingHorizontal: 10,
           }}
-          data={books}
-          enableMomentum={true}
-          itemWidth={ITEM_WIDTH}
-          ref={isCarousel}
-          renderItem={Book}
-          sliderWidth={SLIDER_WIDTH}
-        />
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          {books.map(book => (
+            <View
+              key={book.id}
+              style={{
+                marginHorizontal: 6,
+                width: ITEM_WIDTH,
+              }}
+            >
+              <Book item={book} navigation={navigation} />
+            </View>
+          ))}
+        </ScrollView>
       </View>
     </TouchableRipple>
   );
 };
 
-export default observer(Shelf);
+export default Shelf;

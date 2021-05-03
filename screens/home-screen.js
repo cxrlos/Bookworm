@@ -6,31 +6,12 @@ import { material } from 'react-native-typography';
 
 import BookCard from '../components/book-card';
 
-import volumes from '../data/volumes';
-
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
 const HomeScreen = ({ navigation }) => {
   const [books, setBooks] = useState([]);
-
-  useFocusEffect(
-    useCallback(() => {
-      setBooks(
-        volumes.map(book => ({
-          author: book.volumeInfo.authors,
-          currentPage: book.currentPage,
-          description: book.volumeInfo.description,
-          id: book.id,
-          pageCount: book.volumeInfo.pageCount,
-          publisher: book.volumeInfo.publisher,
-          thumbnail: book.volumeInfo.imageLinks.thumbnail,
-          title: book.volumeInfo.title,
-        }))
-      );
-    }, [])
-  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -46,8 +27,8 @@ const HomeScreen = ({ navigation }) => {
   return (
     <ScrollView style={{ backgroundColor: 'white' }}>
       <View style={{ padding: 16 }}>
-        <View style={{ marginBottom: 16 }}>
-          <Text style={{ ...material.title, marginBottom: 12 }}>
+        <View style={{ marginBottom: 32 }}>
+          <Text style={{ ...material.title, marginBottom: 6 }}>
             Buenos días, Daniela
           </Text>
           <View
@@ -61,15 +42,14 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </View>
         </View>
-        <Divider />
-        <View style={{ marginBottom: 6, paddingTop: 16 }}>
+        <View style={{ marginBottom: 6 }}>
           <Text style={material.title}>Leyendo ahora</Text>
         </View>
-        {books.map(book => (
+        {/* {books.map(book => (
           <View key={book.id} style={{ marginVertical: 6 }}>
             <BookCard item={book} navigation={navigation} shelf="3" />
           </View>
-        ))}
+        ))} */}
       </View>
     </ScrollView>
   );

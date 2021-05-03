@@ -14,7 +14,7 @@ const BookCard = ({
   shelf,
 }) => {
   const {
-    author,
+    authors,
     currentPage: itemCurrentPage,
     description,
     id,
@@ -32,7 +32,7 @@ const BookCard = ({
         !disabled &&
         (() =>
           navigation.navigate('Libro', {
-            author,
+            authors,
             currentPage,
             description,
             id,
@@ -74,9 +74,9 @@ const BookCard = ({
             <Text numberOfLines={1} style={material.body2}>
               {title}
             </Text>
-            {author && (
+            {authors && (
               <Text numberOfLines={1} style={material.body1}>
-                {author.join(', ')}
+                {authors.join(', ')}
               </Text>
             )}
           </View>
@@ -93,7 +93,7 @@ const BookCard = ({
                 mode="contained"
                 onPress={() =>
                   navigation.navigate('Leyendo', {
-                    author,
+                    authors,
                     pageCount,
                     thumbnail,
                     title,

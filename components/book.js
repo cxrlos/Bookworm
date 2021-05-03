@@ -5,13 +5,12 @@ import { material } from 'react-native-typography';
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = SLIDER_WIDTH - 280;
 
-const Book = ({ item }) => {
+const Book = ({ item, navigation }) => {
   const {
-    author,
+    authors,
     currentPage,
     description,
     id,
-    navigation,
     pageCount,
     publisher,
     shelf,
@@ -23,7 +22,7 @@ const Book = ({ item }) => {
     <TouchableOpacity
       onPress={() =>
         navigation.navigate('Libro', {
-          author,
+          authors,
           currentPage,
           description,
           id,
@@ -40,6 +39,7 @@ const Book = ({ item }) => {
           flex: 1,
           height: 128,
           marginBottom: 6,
+          // backgroundColor: 'red',
         }}
       >
         <Image
@@ -53,7 +53,12 @@ const Book = ({ item }) => {
       </View>
       <View>
         <Text style={{ ...material.body2, textAlign: 'center' }}>{title}</Text>
-        <Text style={{ ...material.body1, textAlign: 'center' }}>{author}</Text>
+        <Text
+          numberOfLines={1}
+          style={{ ...material.body1, textAlign: 'center' }}
+        >
+          {authors.join(', ')}
+        </Text>
       </View>
     </TouchableOpacity>
   );

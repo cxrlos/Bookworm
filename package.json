@@ -15,6 +15,7 @@
     "@react-navigation/material-bottom-tabs": "^6.0.0-next.2",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.4",
+    "@reduxjs/toolkit": "^1.5.1",
     "expo": "^40.0.1",
     "expo-status-bar": "~1.0.3",
     "formik": "^2.2.6",
@@ -41,7 +42,8 @@
     "react-native-svg": "^12.1.1",
     "react-native-typography": "^1.4.1",
     "react-native-web": "~0.13.12",
-    "react-native-webview": "11.0.0"
+    "react-native-webview": "11.0.0",
+    "react-redux": "^7.2.4"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

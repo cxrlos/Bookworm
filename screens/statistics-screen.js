@@ -7,8 +7,6 @@ import { material } from 'react-native-typography';
 
 import Time from '../components/time';
 
-import volumes from '../data/volumes';
-
 const StatisticsScreen = ({ navigation, route }) => {
   const { name } = route.params;
 
@@ -90,25 +88,6 @@ const StatisticsScreen = ({ navigation, route }) => {
 
   const closeMenu = () => setVisible(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      setBooks(
-        volumes.map(book => ({
-          author: book.volumeInfo.authors,
-          currentPage: book.currentPage,
-          description: book.volumeInfo.description,
-          id: book.id,
-          navigation: navigation,
-          pageCount: book.volumeInfo.pageCount,
-          publisher: book.volumeInfo.publisher,
-          thumbnail:
-            book.volumeInfo.imageLinks && book.volumeInfo.imageLinks.thumbnail,
-          title: book.volumeInfo.title,
-        }))
-      );
-    }, [])
-  );
-
   useLayoutEffect(() => {
     menu.includes(name) &&
       navigation.setOptions({
@@ -136,11 +115,9 @@ const StatisticsScreen = ({ navigation, route }) => {
   const width = name === 'Este año' ? 1177 : screenWidth;
 
   return (
-    <ScrollView
-      style={{ backgroundColor: 'white' }}
-      // contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
-    >
+    <ScrollView style={{ backgroundColor: 'white' }}>
       <View style={{ padding: 16 }}>
+        <Text style={{ ...material.display1, marginBottom: 32 }}>Mayo</Text>
         <Text style={{ ...material.title, marginBottom: 6 }}>Estadísticas</Text>
         <View
           style={{
@@ -150,7 +127,7 @@ const StatisticsScreen = ({ navigation, route }) => {
           }}
         >
           <Text style={{ ...material.subheading, marginRight: 8 }}>
-            Tiempo leído {name.toLowerCase()}:
+            Tiempo leído:
           </Text>
           <Time time={0} />
         </View>
@@ -161,71 +138,65 @@ const StatisticsScreen = ({ navigation, route }) => {
           }}
         >
           <Text style={{ ...material.subheading, marginRight: 8 }}>
-            Páginas leídas {name.toLowerCase()}:
+            Páginas leídas:
           </Text>
           <Text style={material.headline}>100</Text>
         </View>
       </View>
       {Object.keys(numDays).includes(name) ? (
-        <>
-          <Divider style={{ marginHorizontal: 16 }} />
-          <View key={name} style={{ paddingTop: 16 }}>
-            <Text
-              style={{
-                ...material.title,
-                marginBottom: 6,
-                paddingHorizontal: 16,
-              }}
-            >
-              Mapa de calor
-            </Text>
-            <ScrollView horizontal={true}>
-              <ContributionGraph
-                values={commitsData}
-                endDate={handleEndDate()}
-                numDays={numDays[name]}
-                width={width}
-                height={216}
-                chartConfig={chartConfig}
-                onDayPress={day =>
-                  navigation.push('Estadísticas', {
-                    name: `${day.date.toISOString().split('T')[0]}`,
-                  })
-                }
-                showOutOfRangeDays
-              />
-            </ScrollView>
-          </View>
-        </>
+        <View key={name} style={{ paddingTop: 16 }}>
+          <Text
+            style={{
+              ...material.title,
+              marginBottom: 6,
+              paddingHorizontal: 16,
+            }}
+          >
+            Mapa de calor
+          </Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <ContributionGraph
+              values={commitsData}
+              endDate={handleEndDate()}
+              numDays={numDays[name]}
+              width={width}
+              height={216}
+              chartConfig={chartConfig}
+              onDayPress={day =>
+                navigation.push('Estadísticas', {
+                  name: `${day.date.toISOString().split('T')[0]}`,
+                })
+              }
+              showOutOfRangeDays
+            />
+          </ScrollView>
+        </View>
       ) : (
-        <>
-          <Divider style={{ marginHorizontal: 16 }} />
-          <View key={name} style={{ padding: 16 }}>
-            <Text
-              style={{
-                ...material.title,
-                marginBottom: 6,
-              }}
-            >
-              Objetivo diario
-            </Text>
-            <Text style={{ ...material.subheading, marginBottom: 12 }}>
-              Te faltan 10 páginas para completar tu objetivo diario.
-            </Text>
-            <View
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}
-            >
-              <View style={{ flexGrow: 1, flexShrink: 1, marginRight: 8 }}>
-                <ProgressBar progress={0.0} />
-              </View>
-              <Text style={material.caption}>0 de 10</Text>
+        <View key={name} style={{ padding: 16 }}>
+          <Text
+            style={{
+              ...material.title,
+              marginBottom: 6,
+            }}
+          >
+            Objetivo diario
+          </Text>
+          <Text style={{ ...material.subheading, marginBottom: 12 }}>
+            Te faltan 10 páginas para completar tu objetivo diario.
+          </Text>
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
+            <View style={{ flexGrow: 1, flexShrink: 1, marginRight: 8 }}>
+              <ProgressBar progress={0.0} />
             </View>
+            <Text style={material.caption}>0 de 10</Text>
           </View>
-        </>
+        </View>
       )}
     </ScrollView>
   );

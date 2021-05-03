@@ -20,7 +20,7 @@ const SearchScreen = ({ navigation }) => {
             if (items.length > 0) {
               setBooks(
                 items.map(book => ({
-                  author: book.volumeInfo.authors,
+                  authors: book.volumeInfo.authors,
                   description: book.volumeInfo.description,
                   currentPage: book.currentPage,
                   id: book.id,

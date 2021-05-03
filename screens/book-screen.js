@@ -17,7 +17,7 @@ import Progress from '../components/progress';
 
 const BookScreen = ({ navigation, route }) => {
   const {
-    author,
+    authors,
     currentPage,
     description,
     pageCount,
@@ -147,9 +147,9 @@ const BookScreen = ({ navigation, route }) => {
               <Text style={{ ...material.title, textAlign: 'center' }}>
                 {title}
               </Text>
-              {author && (
+              {authors && (
                 <Text style={{ ...material.subheading, textAlign: 'center' }}>
-                  {author.join(', ')}
+                  {authors.join(', ')}
                 </Text>
               )}
             </View>
@@ -177,7 +177,7 @@ const BookScreen = ({ navigation, route }) => {
                   mode="contained"
                   onPress={() =>
                     navigation.navigate('Leyendo', {
-                      author,
+                      authors,
                       currentPage,
                       pageCount,
                       thumbnail,

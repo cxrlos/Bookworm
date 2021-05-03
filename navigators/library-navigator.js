@@ -2,7 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 
 import BookScreen from '../screens/book-screen';
-import LibraryScreen from '../screens/library-screen';
+import LibraryScreen from '../screens/library/library-screen';
 import ProgressScreen from '../screens/progress-screen';
 import ReadingScreen from '../screens/reading-screen';
 import ShelfScreen from '../screens/shelf-screen';
