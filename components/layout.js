@@ -1,10 +1,18 @@
 import React from 'react';
-import { View } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
-const Layout = ({ children }) => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    {children}
-  </View>
+const Layout = ({ children, isVerticallyCentered, onRefresh, refreshing }) => (
+  <ScrollView
+    contentContainerStyle={{
+      ...(isVerticallyCentered && { flex: 1, justifyContent: 'center' }),
+    }}
+    style={{ backgroundColor: 'white' }}
+    refreshControl={
+      <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+    }
+  >
+    {!refreshing && children}
+  </ScrollView>
 );
 
 export default Layout;

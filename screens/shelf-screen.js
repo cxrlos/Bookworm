@@ -1,22 +1,19 @@
-import { useFocusEffect } from '@react-navigation/core';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { ScrollView, View } from 'react-native';
 
 import BookCard from '../components/book-card';
 
 const ShelfScreen = ({ navigation, route }) => {
-  const { shelf } = route.params;
-
-  const [books, setBooks] = useState([]);
+  const { books, shelfId } = route.params;
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: 'white' }}>
       <View style={{ padding: 16 }}>
-        {/* {books.map(book => (
+        {books.map(book => (
           <View key={book.id} style={{ marginVertical: 6 }}>
-            <BookCard item={book} navigation={navigation} shelf={shelf} />
+            <BookCard item={book} navigation={navigation} shelfId={shelfId} />
           </View>
-        ))} */}
+        ))}
       </View>
     </ScrollView>
   );

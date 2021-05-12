@@ -1,40 +1,26 @@
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { Divider, TouchableRipple } from 'react-native-paper';
+import { TouchableRipple } from 'react-native-paper';
 import { material } from 'react-native-typography';
 
 import Book, { ITEM_WIDTH } from '../components/book';
+import { LIBRARY } from '../constants';
+import ShelfHeader from './shelf-header';
 
-const Shelf = ({ books, navigation, shelf, title }) => {
+const Shelf = ({ books, navigation, shelfId }) => {
+  const name = LIBRARY[shelfId];
+
   return (
     <TouchableRipple
-      onPress={() => navigation.navigate('Estantería', { name: title, shelf })}
+      onPress={() => navigation.navigate('Estantería', { books, shelfId })}
     >
       <View style={{ marginTop: 16 }}>
-        <View
-          style={{
-            flex: 1,
-            marginHorizontal: 16,
-          }}
-        >
-          <View
-            style={{
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Text style={material.title}>{title}</Text>
-            <Text style={material.subheading}>
-              {books.length}{' '}
-              {`libro${books.length > 1 || books.length === 0 ? 's' : ''}`}
-            </Text>
-          </View>
+        <View style={{ marginBottom: 12, marginHorizontal: 16 }}>
+          <ShelfHeader length={books.length} title={name} />
         </View>
         <ScrollView
           contentContainerStyle={{
             paddingBottom: 16,
-            paddingTop: 12,
             paddingHorizontal: 10,
           }}
           horizontal
@@ -48,7 +34,7 @@ const Shelf = ({ books, navigation, shelf, title }) => {
                 width: ITEM_WIDTH,
               }}
             >
-              <Book item={book} navigation={navigation} />
+              <Book item={book} navigation={navigation} shelfId={shelfId} />
             </View>
           ))}
         </ScrollView>

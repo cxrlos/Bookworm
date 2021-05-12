@@ -17,11 +17,9 @@ const Progress = ({ currentPage, pageCount }) => (
     <View style={{ flexGrow: 1, flexShrink: 1, marginRight: 8 }}>
       <ProgressBar progress={currentPage / pageCount} />
     </View>
-    {currentPage && (
-      <Text style={material.caption}>
-        página {currentPage} de {pageCount}
-      </Text>
-    )}
+    <Text style={material.caption}>
+      página {currentPage} de {pageCount}
+    </Text>
   </View>
 );
 

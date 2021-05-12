@@ -2,16 +2,20 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 
 import BookScreen from '../screens/book-screen';
-import LibraryScreen from '../screens/library/library-screen';
+import LibraryScreen from '../screens/library-screen';
 import ProgressScreen from '../screens/progress-screen';
 import ReadingScreen from '../screens/reading-screen';
+import SearchScreen from '../screens/search-screen';
 import ShelfScreen from '../screens/shelf-screen';
+
+import { LIBRARY } from '../constants';
 
 const Stack = createStackNavigator();
 
 const LibraryNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen name="Biblioteca" component={LibraryScreen} />
+    <Stack.Screen name="Buscar" component={SearchScreen} />
     <Stack.Screen
       name="Libro"
       component={BookScreen}
@@ -20,7 +24,7 @@ const LibraryNavigator = () => (
     <Stack.Screen
       name="Estantería"
       component={ShelfScreen}
-      options={({ route }) => ({ title: route.params.name })}
+      options={({ route }) => ({ title: LIBRARY[route.params.shelfId] })}
     />
     <Stack.Screen
       name="Leyendo"

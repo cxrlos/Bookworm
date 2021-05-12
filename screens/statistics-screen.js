@@ -1,9 +1,10 @@
-import { useFocusEffect } from '@react-navigation/core';
-import React, { useCallback, useLayoutEffect, useState } from 'react';
-import { Dimensions, ScrollView, Text, View } from 'react-native';
+import { DateTime } from 'luxon';
+import React, { useLayoutEffect, useState } from 'react';
+import { Dimensions, Image, ScrollView, Text, View } from 'react-native';
 import { ContributionGraph } from 'react-native-chart-kit';
 import { Divider, IconButton, Menu, ProgressBar } from 'react-native-paper';
 import { material } from 'react-native-typography';
+import Layout from '../components/layout';
 
 import Time from '../components/time';
 
@@ -55,18 +56,18 @@ const StatisticsScreen = ({ navigation, route }) => {
   };
 
   const commitsData = [
-    { date: '2017-01-02', count: 1 },
-    { date: '2017-01-02', count: 1 },
-    { date: '2017-01-03', count: 2 },
-    { date: '2017-01-04', count: 3 },
-    { date: '2017-01-05', count: 4 },
-    { date: '2017-01-06', count: 5 },
-    { date: '2017-01-30', count: 2 },
-    { date: '2017-01-31', count: 3 },
-    { date: '2017-03-01', count: 2 },
-    { date: '2017-04-02', count: 4 },
-    { date: '2017-03-05', count: 2 },
-    { date: '2017-02-30', count: 4 },
+    { date: '2020-01-01', count: 0 },
+    { date: '2021-01-02', count: 1 },
+    { date: '2021-01-03', count: 2 },
+    { date: '2021-01-04', count: 3 },
+    { date: '2021-01-05', count: 4 },
+    { date: '2021-01-06', count: 5 },
+    { date: '2021-01-30', count: 2 },
+    { date: '2021-01-31', count: 3 },
+    { date: '2021-03-01', count: 2 },
+    { date: '2021-04-02', count: 4 },
+    { date: '2021-03-05', count: 2 },
+    { date: '2021-02-30', count: 4 },
   ];
 
   const chartConfig = {
@@ -74,13 +75,11 @@ const StatisticsScreen = ({ navigation, route }) => {
     backgroundGradientFromOpacity: 1,
     backgroundGradientTo: '#fff',
     backgroundGradientToOpacity: 1,
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    color: (opacity = 1) => `rgba(108, 99, 255, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
   };
 
   const screenWidth = Dimensions.get('window').width;
-
-  const [books, setBooks] = useState([]);
 
   const [visible, setVisible] = useState(false);
 
@@ -114,37 +113,65 @@ const StatisticsScreen = ({ navigation, route }) => {
 
   const width = name === 'Este año' ? 1177 : screenWidth;
 
+  const Greeting = () => (
+    <>
+      <Image
+        resizeMode="center"
+        source={require('../assets/undraw_book_reading_kx9s.png')}
+        style={{
+          height: 192,
+          marginBottom: 6,
+          width: '100%',
+        }}
+      />
+      <Text
+        style={{
+          ...material.display1,
+          marginBottom: 6,
+          textAlign: 'center',
+        }}
+      >
+        2021
+      </Text>
+      <Divider style={{ marginVertical: 16 }} />
+    </>
+  );
+
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
+    <Layout>
       <View style={{ padding: 16 }}>
-        <Text style={{ ...material.display1, marginBottom: 32 }}>Mayo</Text>
-        <Text style={{ ...material.title, marginBottom: 6 }}>Estadísticas</Text>
-        <View
-          style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-          }}
-        >
-          <Text style={{ ...material.subheading, marginRight: 8 }}>
-            Tiempo leído:
+        <Greeting />
+        <View>
+          <Text style={{ ...material.title, marginBottom: 6 }}>
+            Estadísticas
           </Text>
-          <Time time={0} />
-        </View>
-        <View
-          style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}
-        >
-          <Text style={{ ...material.subheading, marginRight: 8 }}>
-            Páginas leídas:
-          </Text>
-          <Text style={material.headline}>100</Text>
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}
+          >
+            <Text style={{ ...material.subheading, marginRight: 8 }}>
+              Tiempo leído:
+            </Text>
+            <Time time={0} />
+          </View>
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}
+          >
+            <Text style={{ ...material.subheading, marginRight: 8 }}>
+              Páginas leídas:
+            </Text>
+            <Text style={material.headline}>100</Text>
+          </View>
         </View>
       </View>
       {Object.keys(numDays).includes(name) ? (
-        <View key={name} style={{ paddingTop: 16 }}>
+        <View key={name}>
           <Text
             style={{
               ...material.title,
@@ -164,7 +191,10 @@ const StatisticsScreen = ({ navigation, route }) => {
               chartConfig={chartConfig}
               onDayPress={day =>
                 navigation.push('Estadísticas', {
-                  name: `${day.date.toISOString().split('T')[0]}`,
+                  name:
+                    typeof day.date === 'string'
+                      ? day.date
+                      : day.date.toISOString().split('T')[0],
                 })
               }
               showOutOfRangeDays
@@ -172,7 +202,7 @@ const StatisticsScreen = ({ navigation, route }) => {
           </ScrollView>
         </View>
       ) : (
-        <View key={name} style={{ padding: 16 }}>
+        <View key={name} style={{ marginHorizontal: 16 }}>
           <Text
             style={{
               ...material.title,
@@ -182,7 +212,8 @@ const StatisticsScreen = ({ navigation, route }) => {
             Objetivo diario
           </Text>
           <Text style={{ ...material.subheading, marginBottom: 12 }}>
-            Te faltan 10 páginas para completar tu objetivo diario.
+            Te faltan <Text style={material.headline}>10</Text> páginas para
+            completar tu objetivo diario.
           </Text>
           <View
             style={{
@@ -198,7 +229,7 @@ const StatisticsScreen = ({ navigation, route }) => {
           </View>
         </View>
       )}
-    </ScrollView>
+    </Layout>
   );
 };
 

@@ -1,102 +1,119 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Image, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Alert, Image, Text, View } from 'react-native';
 import {
   Button,
-  Dialog,
+  Dialog as PaperDialog,
   Divider,
   IconButton,
-  Portal,
 } from 'react-native-paper';
 import { material } from 'react-native-typography';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Time from '../components/time';
+import {
+  incrementTime,
+  readingSelector,
+  resetTime,
+  setReadingStatus,
+  setUpdatingProgress,
+} from '../redux/slices/reading-slice';
+import {
+  closeDialog,
+  dialogSelector,
+  openDialog,
+} from '../redux/slices/dialog-slice';
+import Dialog from '../components/dialog';
 
 const ReadingScreen = ({ route, navigation }) => {
-  const { authors, currentPage, pageCount, thumbnail, title } = route.params;
+  const dispatch = useDispatch();
 
-  const [dialog, setDialog] = useState(false);
-  const [dialogContent, setDialogContent] = useState();
+  const { dialogContent } = useSelector(dialogSelector);
+  const { readingStatus, time, updatingProgress } = useSelector(
+    readingSelector
+  );
 
-  const [status, setStatus] = useState();
-  const prevStatusRef = useRef();
+  const { authors, thumbnail, title } = route.params;
 
-  useEffect(() => {
-    prevStatusRef.current = status;
-  });
+  useEffect(
+    () =>
+      navigation.addListener('beforeRemove', e => {
+        if (!readingStatus || updatingProgress) {
+          return;
+        }
+        e.preventDefault();
+        handlePause();
+        dispatch(openDialog('goBack'));
+      }),
+    [navigation, readingStatus, updatingProgress]
+  );
 
-  const prevStatus = prevStatusRef.current;
-
-  const [time, setTime] = useState(0);
   const countRef = useRef(null);
 
+  const handleAlert = action => {
+    handlePause();
+    dispatch(openDialog(action));
+  };
+
   const handlePause = () => {
-    if (dialog) setDialog(false);
     clearInterval(countRef.current);
-    setStatus('pause');
+    dispatch(setReadingStatus('pause'));
   };
 
   const handlePlay = () => {
-    if (dialog) setDialog(false);
-    setStatus('play');
+    dispatch(setReadingStatus('play'));
     countRef.current = setInterval(() => {
-      setTime(time => time + 1);
+      dispatch(incrementTime());
     }, 1000);
   };
 
-  const handleStop = () => {
-    setDialog(false);
-    navigation.navigate('Actualizar progreso', {
-      authors,
-      currentPage,
-      pageCount,
-      thumbnail,
-      time,
-      title,
-    });
-  };
-
   const handleReset = () => {
+    dispatch(closeDialog());
     clearInterval(countRef.current);
-    setTime(0);
-    setStatus();
-    setDialog(false);
+    dispatch(resetTime());
+    dispatch(setReadingStatus(''));
   };
 
-  const handleDialog = content => {
-    handlePause();
-    setDialog(true);
-    setDialogContent(content);
+  const handleStop = () => {
+    dispatch(closeDialog());
+    dispatch(setUpdatingProgress(true));
+    navigation.navigate('Actualizar progreso', { ...route.params });
   };
 
-  const dialogs = {
-    reset: (
-      <>
-        <Dialog.Title>¿Reiniciar sesión de lectura?</Dialog.Title>
-        <Dialog.Content>
-          <Text>Se reiniciará el tiempo leído durante la sesión.</Text>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={prevStatus === 'play' ? handlePlay : handlePause}>
-            Cancelar
-          </Button>
-          <Button onPress={handleReset}>Reiniciar</Button>
-        </Dialog.Actions>
-      </>
-    ),
-    stop: (
-      <>
-        <Dialog.Title>¿Finalizar sesión de lectura?</Dialog.Title>
-        <Dialog.Content>
-          <Text>Se registrará el tiempo leído durante la sesión.</Text>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={prevStatus === 'play' ? handlePlay : handlePause}>
-            Cancelar
-          </Button>
-          <Button onPress={handleStop}>Finalizar</Button>
-        </Dialog.Actions>
-      </>
-    ),
+  const alerts = {
+    reset: () =>
+      Alert.alert(
+        '¿Reiniciar?',
+        'Se reiniciará el tiempo leído durante la sesión.',
+        [
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+            onPress: () => {},
+          },
+          {
+            text: 'Reiniciar',
+            style: 'destructive',
+            onPress: handleReset,
+          },
+        ]
+      ),
+    stop: () =>
+      Alert.alert(
+        '¿Finalizar?',
+        'Se registrará el tiempo leído durante la sesión.',
+        [
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+            onPress: () => {},
+          },
+          {
+            text: 'Finalizar',
+            style: 'destructive',
+            onPress: handleStop,
+          },
+        ]
+      ),
   };
 
   const Buttons = () => (
@@ -110,72 +127,110 @@ const ReadingScreen = ({ route, navigation }) => {
       >
         <IconButton
           icon="restart"
-          disabled={!status}
-          onPress={() => handleDialog('reset')}
+          disabled={!readingStatus}
+          onPress={() => handleAlert('reset')}
         />
         <IconButton
-          icon={status === 'play' ? 'pause' : 'play'}
-          onPress={status === 'play' ? handlePause : handlePlay}
+          icon={readingStatus === 'play' ? 'pause' : 'play'}
+          onPress={readingStatus === 'play' ? handlePause : handlePlay}
           size={48}
         />
         <IconButton
           icon="stop"
-          disabled={!status}
-          onPress={() => handleDialog('stop')}
+          disabled={!readingStatus}
+          onPress={() => handleAlert('stop')}
         />
       </View>
-      {dialog === true && (
-        <Portal>
-          <Dialog visible={dialog} onDismiss={() => setDialog(false)}>
-            {dialogs[dialogContent]}
-          </Dialog>
-        </Portal>
-      )}
     </>
   );
 
+  const dialogs = {
+    goBack: (
+      <>
+        <PaperDialog.Title>¿Regresar?</PaperDialog.Title>
+        <PaperDialog.Content>
+          <Text>El tiempo leído durante la sesión no será registrado.</Text>
+        </PaperDialog.Content>
+        <PaperDialog.Actions>
+          <Button onPress={() => dispatch(closeDialog())}>Cancelar</Button>
+          <Button onPress={() => {}}>Regresar</Button>
+        </PaperDialog.Actions>
+      </>
+    ),
+    reset: (
+      <>
+        <PaperDialog.Title>¿Reiniciar?</PaperDialog.Title>
+        <PaperDialog.Content>
+          <Text>Se reiniciará el tiempo leído durante la sesión.</Text>
+        </PaperDialog.Content>
+        <PaperDialog.Actions>
+          <Button onPress={() => dispatch(closeDialog())}>Cancelar</Button>
+          <Button onPress={handleReset}>Reiniciar</Button>
+        </PaperDialog.Actions>
+      </>
+    ),
+    stop: (
+      <>
+        <PaperDialog.Title>¿Finalizar?</PaperDialog.Title>
+        <PaperDialog.Content>
+          <Text>Se registrará el tiempo leído durante la sesión.</Text>
+        </PaperDialog.Content>
+        <PaperDialog.Actions>
+          <Button onPress={() => dispatch(closeDialog())}>Cancelar</Button>
+          <Button onPress={handleStop}>Finalizar</Button>
+        </PaperDialog.Actions>
+      </>
+    ),
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'space-between',
-      }}
-    >
-      <View
-        style={{ alignItems: 'center', backgroundColor: 'white', padding: 16 }}
-      >
-        <View style={{ alignItems: 'center' }}>
-          <Text style={material.title}>{title}</Text>
-          <Text style={material.subheading}>{authors.join(', ')}</Text>
-        </View>
-      </View>
-      <View style={{ alignItems: 'center' }}>
-        <Image
-          source={{
-            uri: thumbnail,
-          }}
-          style={{
-            borderRadius: 2.5,
-            height: 256,
-            width: 256,
-            resizeMode: 'contain',
-          }}
-        />
-      </View>
+    <>
       <View
         style={{
-          backgroundColor: 'white',
-          paddingHorizontal: 16,
+          flex: 1,
+          justifyContent: 'space-between',
         }}
       >
-        <View style={{ alignItems: 'center', padding: 16 }}>
-          <Text style={material.subheading}>Tiempo leído:</Text>
-          <Time time={time} />
+        <View
+          style={{
+            alignItems: 'center',
+            backgroundColor: 'white',
+            padding: 16,
+          }}
+        >
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ ...material.title, textAlign: 'center' }}>
+              {title}
+            </Text>
+            <Text style={{ ...material.subheading, textAlign: 'center' }}>
+              {authors && authors.join(', ')}
+            </Text>
+          </View>
         </View>
-        <Divider />
-        <Buttons />
+        <View style={{ alignItems: 'center' }}>
+          <Image
+            source={{ uri: thumbnail }}
+            style={{
+              borderRadius: 2.5,
+              height: 256,
+              width: 256,
+              resizeMode: 'contain',
+            }}
+          />
+        </View>
+        <View style={{ backgroundColor: 'white', paddingHorizontal: 16 }}>
+          <View style={{ alignItems: 'center', padding: 16 }}>
+            <Text style={material.subheading}>Tiempo leído:</Text>
+            <Time time={time} />
+          </View>
+          <Divider />
+          <Buttons />
+        </View>
       </View>
-    </View>
+      {/* {Object.keys(dialogs).includes(dialogContent) && ( */}
+      <Dialog>{dialogs[dialogContent]}</Dialog>
+      {/* )} */}
+    </>
   );
 };
 

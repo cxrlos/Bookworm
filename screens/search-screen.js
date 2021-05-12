@@ -1,83 +1,83 @@
-import { useFocusEffect } from '@react-navigation/core';
-import React, { useCallback, useLayoutEffect, useState } from 'react';
-import { ScrollView, View } from 'react-native';
-import { Icon, TextInput } from 'react-native-paper';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { Image, Text, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
+import { material } from 'react-native-typography';
+import { useDispatch, useSelector } from 'react-redux';
 
 import BookCard from '../components/book-card';
+import Layout from '../components/layout';
+import {
+  clearSearch,
+  fetchGoogleBooks,
+  searchSelector,
+  setQuery,
+} from '../redux/slices/search-slice';
 
 const SearchScreen = ({ navigation }) => {
-  const [text, setText] = useState('');
-  const [books, setBooks] = useState([]);
+  const dispatch = useDispatch();
+  const { books, hasErrors, loading, query } = useSelector(searchSelector);
 
-  useFocusEffect(
-    useCallback(() => {
-      const fetchBooks = async () => {
-        try {
-          if (text.length > 0) {
-            const endpoint = `https://www.googleapis.com/books/v1/volumes?q=${text}&key=AIzaSyC9nmes7DMUcALkQD67YXX_BLPUuDXFikA`;
-            const res = await fetch(endpoint);
-            const { items } = await res.json();
-            if (items.length > 0) {
-              setBooks(
-                items.map(book => ({
-                  authors: book.volumeInfo.authors,
-                  description: book.volumeInfo.description,
-                  currentPage: book.currentPage,
-                  id: book.id,
-                  navigation: navigation,
-                  pageCount: book.volumeInfo.pageCount,
-                  publisher: book.volumeInfo.publisher,
-                  thumbnail:
-                    book.volumeInfo.imageLinks &&
-                    book.volumeInfo.imageLinks.thumbnail,
-                  title: book.volumeInfo.title,
-                }))
-              );
-            }
-          }
-        } catch (e) {
-          console.warn(e);
-        }
-      };
-      fetchBooks();
-    }, [text])
-  );
+  useEffect(() => {
+    dispatch(clearSearch());
+  }, []);
+
+  useEffect(() => {
+    dispatch(fetchGoogleBooks(query));
+  }, [dispatch, query]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      animationEnabled: false,
       headerTitle: () => (
         <TextInput
           autoFocus
           dense
-          onChangeText={text => setText(text)}
-          placeholder="Buscar libros"
-          ref={text => {
-            setText(text);
+          onChangeText={text => {
+            dispatch(setQuery(text));
           }}
-          right={
-            <TextInput.Icon
-              name="close"
-              onPress={() => {
-                text.clear();
-              }}
-            />
-          }
+          placeholder="Buscar libros"
+          right={<TextInput.Icon name="close" onPress={() => {}} />}
         />
       ),
     });
   });
 
-  return (
-    <ScrollView>
-      <View style={{ padding: 16 }}>
-        {books.map(book => (
-          <View key={book.id} style={{ marginVertical: 6 }}>
-            <BookCard item={book} navigation={navigation} />
-          </View>
-        ))}
+  if (hasErrors)
+    return (
+      <View>
+        <Text>Error</Text>
       </View>
-    </ScrollView>
+    );
+
+  return (
+    <Layout refreshing={query.length > 0 && loading}>
+      <View style={{ padding: 16 }}>
+        {query.length === 0 ? (
+          <View
+            style={{
+              alignItems: 'center',
+              flex: 1,
+              justifyContent: 'center',
+            }}
+          >
+            <Image
+              resizeMode="center"
+              source={require('../assets/undraw_searching_p5ux.png')}
+              style={{ height: 192, width: '100%', marginBottom: 12 }}
+            />
+            <Text style={{ ...material.subheading, textAlign: 'center' }}>
+              Busca libros por título, autor, editorial o ISBN.
+            </Text>
+          </View>
+        ) : (
+          books.length > 0 &&
+          books.map(book => (
+            <View key={book.id} style={{ marginVertical: 6 }}>
+              <BookCard item={book} navigation={navigation} shelfId="-1" />
+            </View>
+          ))
+        )}
+      </View>
+    </Layout>
   );
 };
 

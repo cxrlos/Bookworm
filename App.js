@@ -12,7 +12,7 @@ import { Provider } from 'react-redux';
 import HomeNavigator from './navigators/home-navigator';
 import LibraryNavigator from './navigators/library-navigator';
 import ProfileNavigator from './navigators/profile-navigator';
-import rootReducer from './root-reducer';
+import rootReducer from './redux/reducers';
 import StatisticsNavigator from './navigators/statistics-navigator';
 
 const Tab = createBottomTabNavigator();

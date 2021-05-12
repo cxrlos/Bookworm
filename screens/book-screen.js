@@ -1,36 +1,73 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { Image, ScrollView, Text, View } from 'react-native';
 import {
   Button,
-  Dialog,
   Divider,
+  Dialog as PaperDialog,
   IconButton,
-  Portal,
   RadioButton,
   Snackbar,
 } from 'react-native-paper';
 import HTML from 'react-native-render-html';
 import { material } from 'react-native-typography';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useDispatch, useSelector } from 'react-redux';
+import Dialog from '../components/dialog';
 
 import Progress from '../components/progress';
+import { LIBRARY, LIBRARY_ACTIONS } from '../constants';
+import {
+  bookSelector,
+  closeSnackBar,
+  setCurrentPage,
+  setSelectedShelf,
+  setShelfId,
+} from '../redux/slices/book-slice';
+import {
+  addToLibrary,
+  removeFromLibrary,
+  updateShelf,
+} from '../redux/slices/library-slice';
+import { dialogSelector, openDialog } from '../redux/slices/dialog-slice';
 
 const BookScreen = ({ navigation, route }) => {
+  const dispatch = useDispatch();
+
+  const {
+    adding,
+    currentPage,
+    isSnackBarVisible,
+    selectedShelf,
+    removing,
+    shelfId,
+    snackBarMessage,
+    updating,
+  } = useSelector(bookSelector);
+
+  const { dialogContent, isDialogVisible } = useSelector(dialogSelector);
+
   const {
     authors,
-    currentPage,
     description,
+    id: bookId,
     pageCount,
     publisher,
-    shelf: shelfId,
     thumbnail,
     title,
   } = route.params;
 
-  const [shelf, setShelf] = useState(shelfId || '-1');
-  const [visible, setVisible] = useState(false);
-  const [snackBarMessage, setSnackBarMessage] = useState('');
-  const [dialog, setDialog] = useState(false);
+  useEffect(() =>
+    navigation.addListener('beforeRemove', e => {
+      if (!isDialogVisible) return;
+      e.preventDefault();
+    })
+  );
+
+  useEffect(() => {
+    dispatch(setShelfId(route.params.shelfId || '-1'));
+    dispatch(setSelectedShelf(route.params.shelfId));
+    dispatch(setCurrentPage(route.params.currentPage || 0));
+  }, [dispatch]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -43,35 +80,14 @@ const BookScreen = ({ navigation, route }) => {
     });
   });
 
-  const handleAddToLibrary = () => {
-    setSnackBarMessage('add');
-    setVisible(true);
-    setShelf('2');
-  };
-
-  const handleRemoveFromLibrary = () => {
-    setSnackBarMessage('remove');
-    setVisible(true);
-    setShelf('-1');
-  };
-
-  const onDismissSnackBar = () => setVisible(false);
-
-  const Shelfs = {
-    0: 'Favoritos',
-    2: 'Por leer',
-    3: 'Leyendo ahora',
-    4: 'Leídos',
-  };
-
-  const snackBarMessages = {
-    add: 'Añadido a la biblioteca',
-    remove: 'Eliminado de la biblioteca',
-  };
-
   const BookStatus = () =>
-    shelf === '-1' ? (
-      <Button onPress={handleAddToLibrary}>Añadir a la biblioteca</Button>
+    shelfId === '-1' ? (
+      <Button
+        disabled={adding}
+        onPress={() => dispatch(addToLibrary(route.params))}
+      >
+        Añadir a la biblioteca
+      </Button>
     ) : (
       <>
         <Button
@@ -82,33 +98,41 @@ const BookScreen = ({ navigation, route }) => {
               size={size}
             />
           )}
-          onPress={() => setDialog(true)}
+          onPress={() => dispatch(openDialog('selectShelf'))}
         >
-          {Shelfs[shelf]}
+          {LIBRARY[shelfId]}
         </Button>
-        {dialog === true && (
-          <Portal>
-            <Dialog visible={dialog} onDismiss={() => setDialog(false)}>
-              <Dialog.Title>Seleccionar estantería</Dialog.Title>
-              <Dialog.Content>
-                <RadioButton.Group
-                  onValueChange={shelf => setShelf(shelf)}
-                  value={shelf}
-                >
-                  <RadioButton.Item label="Favoritos" value="0" />
-                  <RadioButton.Item label="Por leer" value="2" />
-                  <RadioButton.Item label="Leyendo ahora" value="3" />
-                  <RadioButton.Item label="Leídos" value="4" />
-                </RadioButton.Group>
-              </Dialog.Content>
-              <Dialog.Actions>
-                <Button onPress={() => setDialog(false)}>Seleccionar</Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
-        )}
       </>
     );
+
+  const selectShelf = () => (
+    <>
+      <PaperDialog.Title>Seleccionar estantería</PaperDialog.Title>
+      <PaperDialog.Content>
+        <RadioButton.Group
+          onValueChange={selectedShelf =>
+            dispatch(setSelectedShelf(selectedShelf))
+          }
+          value={selectedShelf}
+        >
+          <RadioButton.Item label="Favoritos" value="0" />
+          <RadioButton.Item label="Por leer" value="2" />
+          <RadioButton.Item label="Leyendo ahora" value="3" />
+          <RadioButton.Item label="Leídos" value="4" />
+        </RadioButton.Group>
+      </PaperDialog.Content>
+      <PaperDialog.Actions>
+        <Button
+          onPress={() => {
+            dispatch(updateShelf(route.params, selectedShelf, shelfId));
+          }}
+          disabled={updating}
+        >
+          Seleccionar
+        </Button>
+      </PaperDialog.Actions>
+    </>
+  );
 
   return (
     <>
@@ -155,7 +179,7 @@ const BookScreen = ({ navigation, route }) => {
             </View>
             <BookStatus />
           </View>
-          {shelf === '3' && (
+          {shelfId === '3' && (
             <>
               <View
                 style={{
@@ -176,13 +200,7 @@ const BookScreen = ({ navigation, route }) => {
                   )}
                   mode="contained"
                   onPress={() =>
-                    navigation.navigate('Leyendo', {
-                      authors,
-                      currentPage,
-                      pageCount,
-                      thumbnail,
-                      title,
-                    })
+                    navigation.navigate('Leyendo', { ...route.params })
                   }
                 >
                   Leer
@@ -224,13 +242,14 @@ const BookScreen = ({ navigation, route }) => {
               )}
             </View>
             <View>
-              {shelf !== '-1' && (
+              {shelfId !== '-1' && (
                 <View style={{ alignItems: 'center', flex: 1 }}>
                   <Button
                     color="red"
                     justifyContent="center"
-                    onPress={handleRemoveFromLibrary}
+                    onPress={() => dispatch(removeFromLibrary(bookId, shelfId))}
                     style={{ marginTop: 16 }}
+                    disabled={removing}
                   >
                     Eliminar de la biblioteca
                   </Button>
@@ -240,17 +259,18 @@ const BookScreen = ({ navigation, route }) => {
           </View>
         </View>
       </ScrollView>
+      <Dialog>{selectShelf()}</Dialog>
       <Snackbar
-        visible={visible}
-        onDismiss={onDismissSnackBar}
+        visible={isSnackBarVisible}
+        onDismiss={() => dispatch(closeSnackBar())}
         action={{
           label: 'Cerrar',
           onPress: () => {
-            setVisible(false);
+            dispatch(closeSnackBar());
           },
         }}
       >
-        {snackBarMessages[snackBarMessage]}
+        {LIBRARY_ACTIONS[snackBarMessage]}
       </Snackbar>
     </>
   );
