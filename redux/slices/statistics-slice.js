@@ -32,7 +32,7 @@ export const statisticsSlice = createSlice({
       state.hasErrors = true;
     },
     getReadingSessionsSuccess: (state, { payload }) => {
-      state.readingSessions = [...state.readingSessions, payload];
+      state.readingSessions = state.readingSessions.concat(payload);
       state.loading = false;
       state.hasErrors = false;
     },
@@ -68,13 +68,14 @@ export const addReadingSession = ({ pagesRead, sessionDuration }) => {
   return async dispatch => {
     dispatch(addingReadingSession());
     try {
+      const day = new Date().toISOString().split('T')[0];
       const readingSession = {
         pagesRead,
         sessionDuration,
-        day: new Date().toISOString().split('T')[0],
+        date: day,
       };
       await client.addReadingSession(readingSession);
-      dispatch(addReadingSessionSuccess({ pagesRead, sessionDuration }));
+      dispatch(addReadingSessionSuccess({ date: day, count: pagesRead }));
     } catch (error) {
       console.warn(error);
       dispatch(addReadingSessionFailure());
