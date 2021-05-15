@@ -1,10 +1,12 @@
-import React, { useEffect, useLayoutEffect } from 'react';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import { Image, Text, View } from 'react-native';
 import {
   Button,
+  Dialog,
   Divider,
-  Dialog as PaperDialog,
   IconButton,
+  Portal,
   RadioButton,
   Snackbar,
 } from 'react-native-paper';
@@ -12,23 +14,26 @@ import HTML from 'react-native-render-html';
 import { material } from 'react-native-typography';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
-import Dialog from '../components/dialog';
 
-import Progress from '../components/progress';
 import { LIBRARY, LIBRARY_ACTIONS } from '../constants';
 import {
   bookSelector,
   closeSnackBar,
-  setCurrentPage,
+  getBookStatus,
   setSelectedShelf,
-  setShelfId,
 } from '../redux/slices/book-slice';
+import {
+  closeDialog,
+  dialogSelector,
+  openDialog,
+} from '../redux/slices/dialog-slice';
 import {
   addToLibrary,
   removeFromLibrary,
   updateShelf,
 } from '../redux/slices/library-slice';
-import { dialogSelector, openDialog } from '../redux/slices/dialog-slice';
+import Progress from '../components/progress';
+import Layout from '../components/layout';
 
 const BookScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -37,14 +42,15 @@ const BookScreen = ({ navigation, route }) => {
     adding,
     currentPage,
     isSnackBarVisible,
+    loading,
     selectedShelf,
-    removing,
     shelfId,
+    removing,
     snackBarMessage,
     updating,
   } = useSelector(bookSelector);
 
-  const { dialogContent, isDialogVisible } = useSelector(dialogSelector);
+  const { isDialogVisible } = useSelector(dialogSelector);
 
   const {
     authors,
@@ -63,11 +69,16 @@ const BookScreen = ({ navigation, route }) => {
     })
   );
 
-  useEffect(() => {
-    dispatch(setShelfId(route.params.shelfId || '-1'));
-    dispatch(setSelectedShelf(route.params.shelfId));
-    dispatch(setCurrentPage(route.params.currentPage || 0));
-  }, [dispatch]);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(
+        getBookStatus({
+          currentPage: route.params.currentPage,
+          shelfId: route.params.shelfId,
+        })
+      );
+    }, [dispatch])
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -81,7 +92,7 @@ const BookScreen = ({ navigation, route }) => {
   });
 
   const BookStatus = () =>
-    shelfId === '-1' ? (
+    !shelfId ? (
       <Button
         disabled={adding}
         onPress={() => dispatch(addToLibrary(route.params))}
@@ -89,83 +100,51 @@ const BookScreen = ({ navigation, route }) => {
         Añadir a la biblioteca
       </Button>
     ) : (
-      <>
-        <Button
-          icon={({ size, color }) => (
-            <MaterialCommunityIcons
-              color={color}
-              name="chevron-down"
-              size={size}
-            />
-          )}
-          onPress={() => dispatch(openDialog('selectShelf'))}
-        >
-          {LIBRARY[shelfId]}
-        </Button>
-      </>
+      <Button
+        icon={({ size, color }) => (
+          <MaterialCommunityIcons
+            color={color}
+            name="chevron-down"
+            size={size}
+          />
+        )}
+        onPress={() => dispatch(openDialog())}
+      >
+        {LIBRARY[shelfId]}
+      </Button>
     );
-
-  const selectShelf = () => (
-    <>
-      <PaperDialog.Title>Seleccionar estantería</PaperDialog.Title>
-      <PaperDialog.Content>
-        <RadioButton.Group
-          onValueChange={selectedShelf =>
-            dispatch(setSelectedShelf(selectedShelf))
-          }
-          value={selectedShelf}
-        >
-          <RadioButton.Item label="Favoritos" value="0" />
-          <RadioButton.Item label="Por leer" value="2" />
-          <RadioButton.Item label="Leyendo ahora" value="3" />
-          <RadioButton.Item label="Leídos" value="4" />
-        </RadioButton.Group>
-      </PaperDialog.Content>
-      <PaperDialog.Actions>
-        <Button
-          onPress={() => {
-            dispatch(updateShelf(route.params, selectedShelf, shelfId));
-          }}
-          disabled={updating}
-        >
-          Seleccionar
-        </Button>
-      </PaperDialog.Actions>
-    </>
-  );
 
   return (
     <>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <Layout refreshing={loading}>
         {thumbnail && (
           <View
             style={{
+              backgroundColor: 'gray',
               flex: 1,
               paddingVertical: 16,
             }}
           >
             <View
               style={{
+                alignItems: 'center',
                 flex: 1,
                 justifyContent: 'center',
-                alignItems: 'center',
               }}
             >
               <Image
-                source={{
-                  uri: thumbnail,
-                }}
+                source={{ uri: thumbnail }}
                 style={{
                   borderRadius: 2.5,
                   height: 192,
-                  width: 192,
                   resizeMode: 'contain',
+                  width: 192,
                 }}
               />
             </View>
           </View>
         )}
-        <View style={{ backgroundColor: 'white', padding: 16, flex: 2 }}>
+        <View style={{ padding: 16 }}>
           <View style={{ alignItems: 'center', marginBottom: 16 }}>
             <View style={{ marginBottom: 16 }}>
               <Text style={{ ...material.title, textAlign: 'center' }}>
@@ -177,18 +156,20 @@ const BookScreen = ({ navigation, route }) => {
                 </Text>
               )}
             </View>
-            <BookStatus />
+            {!loading && <BookStatus />}
           </View>
           {shelfId === '3' && (
             <>
-              <View
-                style={{
-                  marginHorizontal: 16,
-                  marginBottom: 16,
-                }}
-              >
-                <Progress currentPage={currentPage} pageCount={pageCount} />
-              </View>
+              {pageCount && (
+                <View
+                  style={{
+                    marginHorizontal: 16,
+                    marginBottom: 16,
+                  }}
+                >
+                  <Progress currentPage={currentPage} pageCount={pageCount} />
+                </View>
+              )}
               <View style={{ alignItems: 'center', marginBottom: 16 }}>
                 <Button
                   icon={({ size, color }) => (
@@ -242,10 +223,10 @@ const BookScreen = ({ navigation, route }) => {
               )}
             </View>
             <View>
-              {shelfId !== '-1' && (
+              {shelfId && (
                 <View style={{ alignItems: 'center', flex: 1 }}>
                   <Button
-                    color="red"
+                    color="#F50057"
                     justifyContent="center"
                     onPress={() => dispatch(removeFromLibrary(bookId, shelfId))}
                     style={{ marginTop: 16 }}
@@ -258,17 +239,50 @@ const BookScreen = ({ navigation, route }) => {
             </View>
           </View>
         </View>
-      </ScrollView>
-      <Dialog>{selectShelf()}</Dialog>
+      </Layout>
+      <Portal>
+        <Dialog
+          onDismiss={() => {
+            dispatch(closeDialog());
+            dispatch(setSelectedShelf(shelfId));
+          }}
+          visible={isDialogVisible}
+        >
+          <Dialog.Title>Seleccionar estantería</Dialog.Title>
+          <Dialog.Content>
+            <RadioButton.Group
+              onValueChange={selectedShelf =>
+                dispatch(setSelectedShelf(selectedShelf))
+              }
+              value={selectedShelf}
+            >
+              <RadioButton.Item label="Favoritos" value="0" />
+              <RadioButton.Item label="Por leer" value="2" />
+              <RadioButton.Item label="Leyendo ahora" value="3" />
+              <RadioButton.Item label="Leídos" value="4" />
+            </RadioButton.Group>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button
+              onPress={() => {
+                dispatch(updateShelf(route.params, selectedShelf, shelfId));
+              }}
+              disabled={updating}
+            >
+              Seleccionar
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
       <Snackbar
-        visible={isSnackBarVisible}
-        onDismiss={() => dispatch(closeSnackBar())}
         action={{
           label: 'Cerrar',
           onPress: () => {
             dispatch(closeSnackBar());
           },
         }}
+        onDismiss={() => dispatch(closeSnackBar())}
+        visible={isSnackBarVisible}
       >
         {LIBRARY_ACTIONS[snackBarMessage]}
       </Snackbar>

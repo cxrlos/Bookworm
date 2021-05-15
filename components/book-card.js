@@ -74,7 +74,7 @@ const BookCard = ({ disabled, item, navigation, shelfId, ...rest }) => {
               )}
             </View>
           </View>
-          {(disabled || shelfId === '3') && (
+          {(disabled || shelfId === '3') && pageCount && (
             <View style={{ marginTop: 12 }}>
               <Progress currentPage={currentPage} pageCount={pageCount} />
             </View>

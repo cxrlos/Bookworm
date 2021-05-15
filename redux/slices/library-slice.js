@@ -15,6 +15,8 @@ import {
   updatingShelf,
 } from './book-slice';
 
+import { addReadingSession } from './statistics-slice';
+
 import { closeDialog } from './dialog-slice';
 
 const initialState = {
@@ -43,32 +45,30 @@ export const librarySlice = createSlice({
     getLibrary: state => {
       state.loading = true;
     },
+    getLibraryFailure: state => {
+      state.loading = false;
+      state.hasErrors = true;
+    },
     getLibrarySuccess: (state, { payload }) => {
       state.library = payload;
       state.loading = false;
       state.hasErrors = false;
     },
-    getLibraryFailure: state => {
-      state.loading = false;
-      state.hasErrors = true;
-    },
     getShelf: state => {
       state.loading = true;
-    },
-    getShelfSuccess: (state, { payload }) => {
-      state.shelfId = payload;
     },
     getShelfFailure: state => {
       state.loading = false;
       state.hasErrors = true;
     },
-    removeFromShelf: (state, { payload }) => {
+    getShelfSuccess: (state, { payload }) => {
+      state.shelfId = payload;
+    },
+    removeFromShelf: (state, { payload: { bookId, oldShelfId } }) => {
       state.library = {
         ...state.library,
-        [payload.oldShelfId]: [
-          ...state.library[payload.oldShelfId].filter(
-            book => book.id !== payload.bookId
-          ),
+        [oldShelfId]: [
+          ...state.library[oldShelfId].filter(book => book.id !== bookId),
         ],
       };
     },
@@ -151,18 +151,30 @@ export const updateShelf = (book, newShelfId, oldShelfId) => {
       dispatch(updateShelfSuccess());
     } catch (error) {
       dispatch(updateShelfFailure());
+      console.warn(error);
     }
   };
 };
 
-export const updateReadingProgress = (book, currentPage, time) => {
+export const updateReadingProgress = (
+  book,
+  currentPage,
+  oldCurrentPage,
+  pageCount,
+  sessionDuration
+) => {
   return async dispatch => {
     try {
       await client.updateReadingProgress({
         bookId: book.id,
         currentPage,
-        time,
       });
+      dispatch(
+        addReadingSession({
+          pagesRead: currentPage - oldCurrentPage,
+          sessionDuration,
+        })
+      );
       dispatch(updateCurrentPage({ book, currentPage }));
       dispatch(setCurrentPage(currentPage));
     } catch (error) {

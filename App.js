@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native';
 import { configureStore } from '@reduxjs/toolkit';
 import React from 'react';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Provider } from 'react-redux';
 
@@ -18,7 +18,7 @@ import StatisticsNavigator from './navigators/statistics-navigator';
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  const hideRoutes = ['Leyendo', 'Actualizar progreso'];
+  const hideRoutes = ['Leyendo', 'Actualizar progreso', 'Formulario'];
 
   const getTabBarVisibility = route => {
     const routeName = getFocusedRouteNameFromRoute(route) || '';
@@ -30,11 +30,26 @@ const App = () => {
 
   const store = configureStore({ reducer: rootReducer });
 
+  const theme = {
+    ...DefaultTheme,
+    roundness: 2,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: '#6C63FF',
+      accent: '#00BFA6',
+    },
+  };
+
   return (
     <Provider store={store}>
-      <PaperProvider>
+      <PaperProvider theme={theme}>
         <NavigationContainer>
-          <Tab.Navigator screenOptions={{ default: false }}>
+          <Tab.Navigator
+            screenOptions={{ default: false }}
+            tabBarOptions={{
+              activeTintColor: '#000',
+            }}
+          >
             <Tab.Screen
               name="Inicio"
               component={HomeNavigator}
@@ -88,6 +103,7 @@ const App = () => {
                     size={26}
                   />
                 ),
+                tabBarVisible: getTabBarVisibility(route),
               })}
             />
           </Tab.Navigator>

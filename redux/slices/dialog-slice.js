@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  dialogContent: null,
   isDialogVisible: false,
 };
 
@@ -11,11 +10,9 @@ export const dialogSlice = createSlice({
   reducers: {
     closeDialog: state => {
       state.isDialogVisible = false;
-      state.dialogContent = null;
     },
-    openDialog: (state, { payload }) => {
+    openDialog: state => {
       state.isDialogVisible = true;
-      state.dialogContent = payload;
     },
   },
 });

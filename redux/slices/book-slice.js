@@ -2,12 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   adding: false,
-  currentPage: undefined,
+  currentPage: 0,
   isSnackBarVisible: false,
+  loading: false,
   removing: false,
-  selectedShelf: '',
-  shelfId: '',
-  snackBarMessage: '',
+  selectedShelf: null,
+  shelfId: null,
+  snackBarMessage: null,
   updating: false,
 };
 
@@ -30,12 +31,22 @@ export const bookSlice = createSlice({
       state.snackBarMessage = 'error';
       state.adding = false;
     },
+    cleanBookStatus: state => {
+      state.shelfId = null;
+      state.selectedShelf = null;
+    },
     closeSnackBar: state => {
       state.isSnackBarVisible = false;
     },
+    getBookStatusSuccess: state => {
+      state.loading = false;
+    },
+    gettingBookStatus: state => {
+      state.loading = true;
+    },
     removeFromLibrarySuccess: state => {
-      state.shelfId = '-1';
-      state.selectedShelf = '-1';
+      state.shelfId = null;
+      state.selectedShelf = null;
       state.isSnackBarVisible = true;
       state.snackBarMessage = 'remove';
       state.removing = false;
@@ -75,7 +86,10 @@ export const {
   addingToLibrary,
   addToLibrarySuccess,
   addToLibraryFailure,
+  cleanBookStatus,
   closeSnackBar,
+  getBookStatusSuccess,
+  gettingBookStatus,
   removeFromLibrarySuccess,
   removeFromLibraryFailure,
   removingFromLibrary,
@@ -90,3 +104,13 @@ export const {
 export const bookSelector = state => state.book;
 
 export default bookSlice.reducer;
+
+export const getBookStatus = ({ currentPage, shelfId }) => {
+  return dispatch => {
+    dispatch(gettingBookStatus());
+    dispatch(setShelfId(shelfId || null));
+    dispatch(setSelectedShelf(shelfId));
+    dispatch(setCurrentPage(currentPage || 0));
+    dispatch(getBookStatusSuccess());
+  };
+};

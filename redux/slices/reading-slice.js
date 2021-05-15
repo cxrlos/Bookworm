@@ -1,36 +1,40 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  readingStatus: '',
+  readingStatus: null,
+  sessionDuration: null,
   time: 0,
-  updatingProgress: false,
 };
 
 export const readingSlice = createSlice({
   name: 'reading',
   initialState,
   reducers: {
+    clearSessionDuration: state => {
+      state.sessionDuration = null;
+    },
     incrementTime: state => {
       state.time += 1;
     },
     resetTime: state => {
       state.time = 0;
-      state.readingStatus = '';
+      state.readingStatus = null;
     },
     setReadingStatus: (state, { payload }) => {
       state.readingStatus = payload;
     },
-    setUpdatingProgress: (state, { payload }) => {
-      state.updatingProgress = payload;
+    setSessionDuration: (state, { payload }) => {
+      state.sessionDuration = payload;
     },
   },
 });
 
 export const {
+  clearSessionDuration,
   incrementTime,
   resetTime,
   setReadingStatus,
-  setUpdatingProgress,
+  setSessionDuration,
 } = readingSlice.actions;
 
 export const readingSelector = state => state.reading;

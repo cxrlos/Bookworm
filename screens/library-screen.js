@@ -1,6 +1,5 @@
-import { useFocusEffect } from '@react-navigation/native';
-import React, { Fragment, useCallback, useEffect } from 'react';
-import { Image, Text, View } from 'react-native';
+import React, { Fragment, useEffect } from 'react';
+import { Image, Text } from 'react-native';
 import { Button, Divider } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,19 +11,20 @@ import Shelf from '../components/shelf';
 
 const LibraryScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+
   const { hasErrors, library, loading } = useSelector(librarySelector);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     dispatch(fetchLibrary());
-  //   }, [dispatch])
-  // );
+  useEffect(() => {
+    dispatch(fetchLibrary());
+  }, [dispatch]);
 
-  const shelves = Object.keys(library);
+  const shelves = library && Object.keys(library);
 
-  const totalBooks = shelves
-    .map(shelfId => library[shelfId].length)
-    .reduce((acc, curr) => acc + curr);
+  const totalBooks =
+    library &&
+    shelves
+      .map(shelfId => library[shelfId].length)
+      .reduce((acc, curr) => acc + curr);
 
   const Hero = () => (
     <>

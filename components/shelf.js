@@ -1,7 +1,6 @@
 import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
-import { material } from 'react-native-typography';
 
 import Book, { ITEM_WIDTH } from '../components/book';
 import { LIBRARY } from '../constants';

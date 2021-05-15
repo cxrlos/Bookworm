@@ -7,9 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import BookCard from '../components/book-card';
 import Time from '../components/time';
 import {
+  clearSessionDuration,
   readingSelector,
-  resetTime,
-  setUpdatingProgress,
 } from '../redux/slices/reading-slice';
 
 import { updateReadingProgress } from '../redux/slices/library-slice';
@@ -18,12 +17,15 @@ import { bookSelector } from '../redux/slices/book-slice';
 const ProgressScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const selector = useSelector(bookSelector);
-  const { time } = useSelector(readingSelector);
+  const { sessionDuration } = useSelector(readingSelector);
 
   const { pageCount } = route.params;
 
   const textInputRef = useRef();
-  const [currentPage, setCurrentPage] = useState(selector.currentPage);
+
+  const oldCurrentPage = selector.currentPage;
+
+  const [currentPage, setCurrentPage] = useState(oldCurrentPage);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -31,8 +33,7 @@ const ProgressScreen = ({ route, navigation }) => {
         <IconButton
           icon="close"
           onPress={() => {
-            dispatch(resetTime());
-            dispatch(setUpdatingProgress(false));
+            dispatch(clearSessionDuration());
             navigation.navigate('Libro', { ...route.params });
           }}
         />
@@ -41,12 +42,19 @@ const ProgressScreen = ({ route, navigation }) => {
         <IconButton
           icon="check"
           onPress={() => {
-            dispatch(resetTime());
-            dispatch(setUpdatingProgress(false));
-            dispatch(updateReadingProgress(route.params, currentPage, time));
+            dispatch(
+              updateReadingProgress(
+                route.params,
+                currentPage,
+                oldCurrentPage,
+                pageCount,
+                sessionDuration
+              )
+            );
+            dispatch(clearSessionDuration());
             navigation.navigate('Libro', { ...route.params });
           }}
-          disabled={!currentPage}
+          disabled={pageCount && !currentPage}
         />
       ),
     });
@@ -75,36 +83,38 @@ const ProgressScreen = ({ route, navigation }) => {
             <Text style={{ ...material.subheading, marginRight: 8 }}>
               Tiempo leído:
             </Text>
-            <Time time={time} />
+            <Time time={sessionDuration} />
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={{ ...material.subheading, marginRight: 8 }}>
-              En la página
-            </Text>
-            <TextInput
-              dense
-              keyboardType="numeric"
-              mode="flat"
-              onChangeText={currentPage =>
-                currentPage <= pageCount &&
-                setCurrentPage(currentPage.replace(/^0+/, ''))
-              }
-              ref={textInputRef}
+          {pageCount && (
+            <View
               style={{
-                ...material.headline,
-                marginRight: 8,
-                width: 64,
-                textAlign: 'center',
+                flexDirection: 'row',
+                alignItems: 'center',
               }}
-              value={currentPage.toString()}
-            />
-            <Text style={material.subheading}>de {pageCount}</Text>
-          </View>
+            >
+              <Text style={{ ...material.subheading, marginRight: 8 }}>
+                En la página
+              </Text>
+              <TextInput
+                dense
+                keyboardType="numeric"
+                mode="flat"
+                onChangeText={currentPage =>
+                  currentPage <= pageCount &&
+                  setCurrentPage(currentPage.replace(/^0+/, ''))
+                }
+                ref={textInputRef}
+                style={{
+                  ...material.headline,
+                  marginRight: 8,
+                  width: 64,
+                  textAlign: 'center',
+                }}
+                value={currentPage.toString()}
+              />
+              <Text style={material.subheading}>de {pageCount}</Text>
+            </View>
+          )}
         </View>
       </View>
     </View>

@@ -1,11 +1,7 @@
+import { StackActions } from '@react-navigation/native';
 import React, { useEffect, useRef } from 'react';
 import { Alert, Image, Text, View } from 'react-native';
-import {
-  Button,
-  Dialog as PaperDialog,
-  Divider,
-  IconButton,
-} from 'react-native-paper';
+import { Divider, IconButton } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,43 +11,48 @@ import {
   readingSelector,
   resetTime,
   setReadingStatus,
-  setUpdatingProgress,
+  setSessionDuration,
 } from '../redux/slices/reading-slice';
-import {
-  closeDialog,
-  dialogSelector,
-  openDialog,
-} from '../redux/slices/dialog-slice';
-import Dialog from '../components/dialog';
+import { dialogContent } from '../redux/slices/dialog-slice';
 
 const ReadingScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
 
-  const { dialogContent } = useSelector(dialogSelector);
-  const { readingStatus, time, updatingProgress } = useSelector(
-    readingSelector
-  );
+  const { readingStatus, time } = useSelector(readingSelector);
 
   const { authors, thumbnail, title } = route.params;
 
   useEffect(
     () =>
       navigation.addListener('beforeRemove', e => {
-        if (!readingStatus || updatingProgress) {
-          return;
-        }
+        if (!readingStatus) return;
         e.preventDefault();
         handlePause();
-        dispatch(openDialog('goBack'));
+        Alert.alert(
+          '¿Regresar?',
+          'El tiempo leído durante la sesión no será registrado.',
+          [
+            { text: 'Cancelar', style: 'cancel', onPress: () => {} },
+            {
+              text: 'Regresar',
+              style: 'destructive',
+              onPress: () => {
+                dispatch(setSessionDuration(time));
+                dispatch(resetTime());
+                navigation.dispatch(e.data.action);
+              },
+            },
+          ]
+        );
       }),
-    [navigation, readingStatus, updatingProgress]
+    [navigation, readingStatus]
   );
 
   const countRef = useRef(null);
 
-  const handleAlert = action => {
+  const handleDialog = action => {
     handlePause();
-    dispatch(openDialog(action));
+    dialogs[action]();
   };
 
   const handlePause = () => {
@@ -67,19 +68,17 @@ const ReadingScreen = ({ route, navigation }) => {
   };
 
   const handleReset = () => {
-    dispatch(closeDialog());
     clearInterval(countRef.current);
     dispatch(resetTime());
-    dispatch(setReadingStatus(''));
   };
 
   const handleStop = () => {
-    dispatch(closeDialog());
-    dispatch(setUpdatingProgress(true));
-    navigation.navigate('Actualizar progreso', { ...route.params });
+    navigation.dispatch(
+      StackActions.replace('Actualizar progreso', { ...route.params })
+    );
   };
 
-  const alerts = {
+  const dialogs = {
     reset: () =>
       Alert.alert(
         '¿Reiniciar?',
@@ -128,7 +127,7 @@ const ReadingScreen = ({ route, navigation }) => {
         <IconButton
           icon="restart"
           disabled={!readingStatus}
-          onPress={() => handleAlert('reset')}
+          onPress={() => handleDialog('reset')}
         />
         <IconButton
           icon={readingStatus === 'play' ? 'pause' : 'play'}
@@ -138,50 +137,11 @@ const ReadingScreen = ({ route, navigation }) => {
         <IconButton
           icon="stop"
           disabled={!readingStatus}
-          onPress={() => handleAlert('stop')}
+          onPress={() => handleDialog('stop')}
         />
       </View>
     </>
   );
-
-  const dialogs = {
-    goBack: (
-      <>
-        <PaperDialog.Title>¿Regresar?</PaperDialog.Title>
-        <PaperDialog.Content>
-          <Text>El tiempo leído durante la sesión no será registrado.</Text>
-        </PaperDialog.Content>
-        <PaperDialog.Actions>
-          <Button onPress={() => dispatch(closeDialog())}>Cancelar</Button>
-          <Button onPress={() => {}}>Regresar</Button>
-        </PaperDialog.Actions>
-      </>
-    ),
-    reset: (
-      <>
-        <PaperDialog.Title>¿Reiniciar?</PaperDialog.Title>
-        <PaperDialog.Content>
-          <Text>Se reiniciará el tiempo leído durante la sesión.</Text>
-        </PaperDialog.Content>
-        <PaperDialog.Actions>
-          <Button onPress={() => dispatch(closeDialog())}>Cancelar</Button>
-          <Button onPress={handleReset}>Reiniciar</Button>
-        </PaperDialog.Actions>
-      </>
-    ),
-    stop: (
-      <>
-        <PaperDialog.Title>¿Finalizar?</PaperDialog.Title>
-        <PaperDialog.Content>
-          <Text>Se registrará el tiempo leído durante la sesión.</Text>
-        </PaperDialog.Content>
-        <PaperDialog.Actions>
-          <Button onPress={() => dispatch(closeDialog())}>Cancelar</Button>
-          <Button onPress={handleStop}>Finalizar</Button>
-        </PaperDialog.Actions>
-      </>
-    ),
-  };
 
   return (
     <>
@@ -227,9 +187,7 @@ const ReadingScreen = ({ route, navigation }) => {
           <Buttons />
         </View>
       </View>
-      {/* {Object.keys(dialogs).includes(dialogContent) && ( */}
-      <Dialog>{dialogs[dialogContent]}</Dialog>
-      {/* )} */}
+      {dialogs[dialogContent]}
     </>
   );
 };

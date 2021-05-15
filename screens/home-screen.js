@@ -6,16 +6,26 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import BookCard from '../components/book-card';
 import { LIBRARY } from '../constants';
+import ErrorScreen from './error-screen';
+import { fetchUserInfo, formSelector } from '../redux/slices/form-slice';
 import Layout from '../components/layout';
 import { fetchShelfById, librarySelector } from '../redux/slices/library-slice';
-import { getShelfLength, getGreeting } from '../utils';
 import ShelfHeader from '../components/shelf-header';
+import { getGreeting } from '../utils';
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { hasErrors, library, loading, shelfId } = useSelector(librarySelector);
+
+  const {
+    loading,
+    pagesRead,
+    userInfo: { firstName, dailyGoal },
+  } = useSelector(formSelector);
+
+  const { hasErrors, library, shelfId } = useSelector(librarySelector);
 
   useEffect(() => {
+    dispatch(fetchUserInfo());
     dispatch(fetchShelfById('3'));
   }, [dispatch]);
 
@@ -25,7 +35,7 @@ const HomeScreen = ({ navigation }) => {
     <>
       <Image
         resizeMode="center"
-        source={require('../assets/undraw_reading_time_gvg0.png')}
+        source={require('../assets/undraw_Bibliophile_hwqc.png')}
         style={{
           height: 192,
           marginBottom: 16,
@@ -39,33 +49,22 @@ const HomeScreen = ({ navigation }) => {
           textAlign: 'center',
         }}
       >
-        {getGreeting()}
+        {getGreeting()}, {firstName}
       </Text>
       <Text
         style={{
           ...material.subheading,
-          marginBottom: 16,
           textAlign: 'center',
         }}
       >
-        Tienes que leer <Text style={material.headline}>10</Text> páginas más
-        para completar tu objetivo diario.
+        Tienes que leer{' '}
+        <Text style={material.headline}>{dailyGoal - pagesRead}</Text> páginas
+        más para completar tu objetivo diario.
       </Text>
-      <Button
-        style={{ alignSelf: 'center' }}
-        onPress={() => navigation.navigate('Buscar')}
-      >
-        Buscar libros
-      </Button>
     </>
   );
 
-  if (hasErrors)
-    return (
-      <View>
-        <Text>Error</Text>
-      </View>
-    );
+  if (hasErrors) return <ErrorScreen />;
 
   return (
     <Layout
@@ -75,7 +74,14 @@ const HomeScreen = ({ navigation }) => {
     >
       <View style={{ padding: 16 }}>
         <Hero />
-        {shelf.length > 0 && (
+        {shelf.length === 0 ? (
+          <Button
+            style={{ alignSelf: 'center', marginTop: 16 }}
+            onPress={() => navigation.navigate('Buscar')}
+          >
+            Buscar libros
+          </Button>
+        ) : (
           <>
             <Divider style={{ marginVertical: 16 }} />
             <View style={{ marginBottom: 12 }}>

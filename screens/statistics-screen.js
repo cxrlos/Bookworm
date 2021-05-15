@@ -1,37 +1,62 @@
-import { DateTime } from 'luxon';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Dimensions, Image, ScrollView, Text, View } from 'react-native';
 import { ContributionGraph } from 'react-native-chart-kit';
 import { Divider, IconButton, Menu, ProgressBar } from 'react-native-paper';
 import { material } from 'react-native-typography';
-import Layout from '../components/layout';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { MONTHS } from '../constants';
+import ErrorScreen from './error-screen';
+import Layout from '../components/layout';
+import {
+  fetchReadingSessions,
+  statisticsSelector,
+} from '../redux/slices/statistics-slice';
 import Time from '../components/time';
+import {
+  getLastDateInCurrentMonth,
+  getFirstDateInCurrentWeek,
+  getLastDateInCurrentWeek,
+  getLastDateInCurrentYear,
+} from '../utils';
 
 const StatisticsScreen = ({ navigation, route }) => {
+  const dispatch = useDispatch();
+
+  const { hasErrors, readingSessions, loading } =
+    useSelector(statisticsSelector);
+
   const { name } = route.params;
 
   const menu = ['Hoy', 'Esta semana', 'Este mes', 'Este año'];
 
-  const getLastDateInCurrentWeek = () => {
-    const d = new Date().toISOString().split('T')[0];
-    const currentDate = new Date(d);
-    return new Date(
-      currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 6)
-    );
-  };
+  useEffect(() => {
+    dispatch(fetchReadingSessions());
+  }, [dispatch]);
 
-  const getLastDateInCurrentMonth = () => {
-    const d = new Date().toISOString().split('T')[0];
-    const currentDate = new Date(d);
-    const currentMonth = currentDate.getMonth();
-    const currentYear = currentDate.getFullYear();
-    return new Date(currentYear, currentMonth + 1, -1);
-  };
-
-  const getLastDateInCurrentYear = () => {
-    return new Date(new Date().getFullYear(), 11, 31);
-  };
+  useLayoutEffect(() => {
+    menu.includes(name) &&
+      navigation.setOptions({
+        headerRight: () => (
+          <Menu
+            anchor={<IconButton icon="calendar" onPress={openMenu} />}
+            onDismiss={closeMenu}
+            visible={visible}
+          >
+            {menu.map(name => (
+              <Menu.Item
+                key={name}
+                onPress={() => {
+                  navigation.navigate('Estadísticas', { name });
+                  closeMenu();
+                }}
+                title={name}
+              />
+            ))}
+          </Menu>
+        ),
+      });
+  });
 
   const handleEndDate = () => {
     let endDate;
@@ -49,26 +74,28 @@ const StatisticsScreen = ({ navigation, route }) => {
     return new Date(endDate.toISOString().split('T')[0]);
   };
 
+  const getHero = () => {
+    switch (name) {
+      case 'Hoy':
+        return new Date().toISOString().split('T')[0];
+      case 'Esta semana':
+        return `${getFirstDateInCurrentWeek().toISOString().split('T')[0]} a ${
+          getLastDateInCurrentWeek().toISOString().split('T')[0]
+        }`;
+      case 'Este mes':
+        return MONTHS[getLastDateInCurrentMonth().getMonth()];
+      case 'Este año':
+        return getLastDateInCurrentYear().getFullYear();
+      default:
+        return name;
+    }
+  };
+
   const numDays = {
     'Esta semana': 7,
     'Este mes': getLastDateInCurrentMonth().getDate() + 1,
     'Este año': 365,
   };
-
-  const commitsData = [
-    { date: '2020-01-01', count: 0 },
-    { date: '2021-01-02', count: 1 },
-    { date: '2021-01-03', count: 2 },
-    { date: '2021-01-04', count: 3 },
-    { date: '2021-01-05', count: 4 },
-    { date: '2021-01-06', count: 5 },
-    { date: '2021-01-30', count: 2 },
-    { date: '2021-01-31', count: 3 },
-    { date: '2021-03-01', count: 2 },
-    { date: '2021-04-02', count: 4 },
-    { date: '2021-03-05', count: 2 },
-    { date: '2021-02-30', count: 4 },
-  ];
 
   const chartConfig = {
     backgroundGradientFrom: '#fff',
@@ -87,87 +114,59 @@ const StatisticsScreen = ({ navigation, route }) => {
 
   const closeMenu = () => setVisible(false);
 
-  useLayoutEffect(() => {
-    menu.includes(name) &&
-      navigation.setOptions({
-        headerRight: () => (
-          <Menu
-            visible={visible}
-            onDismiss={closeMenu}
-            anchor={<IconButton icon="calendar" onPress={openMenu} />}
-          >
-            {menu.map(name => (
-              <Menu.Item
-                key={name}
-                onPress={() => {
-                  navigation.navigate('Estadísticas', { name });
-                  closeMenu();
-                }}
-                title={name}
-              />
-            ))}
-          </Menu>
-        ),
-      });
-  });
-
   const width = name === 'Este año' ? 1177 : screenWidth;
 
-  const Greeting = () => (
-    <>
-      <Image
-        resizeMode="center"
-        source={require('../assets/undraw_book_reading_kx9s.png')}
-        style={{
-          height: 192,
-          marginBottom: 6,
-          width: '100%',
-        }}
-      />
-      <Text
-        style={{
-          ...material.display1,
-          marginBottom: 6,
-          textAlign: 'center',
-        }}
-      >
-        2021
-      </Text>
-      <Divider style={{ marginVertical: 16 }} />
-    </>
-  );
+  if (hasErrors) return <ErrorScreen />;
 
   return (
-    <Layout>
+    <Layout
+      onRefresh={() => dispatch(fetchReadingSessions())}
+      refreshing={loading}
+    >
       <View style={{ padding: 16 }}>
-        <Greeting />
-        <View>
-          <Text style={{ ...material.title, marginBottom: 6 }}>
-            Estadísticas
+        <>
+          <Image
+            resizeMode="center"
+            source={require('../assets/undraw_book_lover_mkck.png')}
+            style={{
+              height: 192,
+              marginBottom: 6,
+              width: '100%',
+            }}
+          />
+          <Text
+            style={{
+              ...material.display1,
+              textAlign: 'center',
+            }}
+          >
+            {getHero()}
           </Text>
-          <View
-            style={{
-              alignItems: 'center',
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-            }}
-          >
-            <Text style={{ ...material.subheading, marginRight: 8 }}>
-              Tiempo leído:
-            </Text>
-            <Time time={0} />
-          </View>
-          <View
-            style={{
-              alignItems: 'center',
-              flexDirection: 'row',
-            }}
-          >
-            <Text style={{ ...material.subheading, marginRight: 8 }}>
-              Páginas leídas:
-            </Text>
-            <Text style={material.headline}>100</Text>
-          </View>
+          <Divider style={{ marginVertical: 16 }} />
+        </>
+        <Text style={{ ...material.title, marginBottom: 6 }}>Estadísticas</Text>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+          }}
+        >
+          <Text style={{ ...material.subheading, marginRight: 8 }}>
+            Tiempo leído:
+          </Text>
+          <Time time={0} />
+        </View>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}
+        >
+          <Text style={{ ...material.subheading, marginRight: 8 }}>
+            Páginas leídas:
+          </Text>
+          <Text style={material.headline}>100</Text>
         </View>
       </View>
       {Object.keys(numDays).includes(name) ? (
@@ -175,7 +174,6 @@ const StatisticsScreen = ({ navigation, route }) => {
           <Text
             style={{
               ...material.title,
-              marginBottom: 6,
               paddingHorizontal: 16,
             }}
           >
@@ -183,12 +181,10 @@ const StatisticsScreen = ({ navigation, route }) => {
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <ContributionGraph
-              values={commitsData}
-              endDate={handleEndDate()}
-              numDays={numDays[name]}
-              width={width}
-              height={216}
               chartConfig={chartConfig}
+              endDate={handleEndDate()}
+              height={216}
+              numDays={numDays[name]}
               onDayPress={day =>
                 navigation.push('Estadísticas', {
                   name:
@@ -198,6 +194,8 @@ const StatisticsScreen = ({ navigation, route }) => {
                 })
               }
               showOutOfRangeDays
+              values={readingSessions}
+              width={width}
             />
           </ScrollView>
         </View>
@@ -211,9 +209,14 @@ const StatisticsScreen = ({ navigation, route }) => {
           >
             Objetivo diario
           </Text>
-          <Text style={{ ...material.subheading, marginBottom: 12 }}>
-            Te faltan <Text style={material.headline}>10</Text> páginas para
-            completar tu objetivo diario.
+          <Text
+            style={{
+              ...material.subheading,
+              marginBottom: 12,
+            }}
+          >
+            Tienes que leer <Text style={material.headline}>10</Text> páginas
+            más para completar tu objetivo diario.
           </Text>
           <View
             style={{
@@ -225,7 +228,7 @@ const StatisticsScreen = ({ navigation, route }) => {
             <View style={{ flexGrow: 1, flexShrink: 1, marginRight: 8 }}>
               <ProgressBar progress={0.0} />
             </View>
-            <Text style={material.caption}>0 de 10</Text>
+            <Text style={material.caption}>0/10</Text>
           </View>
         </View>
       )}

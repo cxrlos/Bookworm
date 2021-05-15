@@ -1,7 +1,16 @@
+
 import { GOOGLE_BOOKS_URL } from '../constants';
 import library from '../data/library';
+import user from '../data/user';
 
 const client = {
+  addReadingSession: readingSession => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  },
   addToLibrary: book => {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -16,6 +25,13 @@ const client = {
       }, 1000);
     });
   },
+  getReadingSessions: () => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve([]);
+      }, 1000);
+    });
+  },
   getShelfById: shelfId => {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -24,7 +40,14 @@ const client = {
     });
   },
   getGoogleBooks: async query => {
-    return await fetch(GOOGLE_BOOKS_URL(query));
+    return fetch(GOOGLE_BOOKS_URL(query));
+  },
+  getUserInfo: () => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(user);
+      }, 1000);
+    });
   },
   removeFromLibrary: (bookId, shelfId) => {
     return new Promise(resolve => {
@@ -43,7 +66,14 @@ const client = {
   updateReadingProgress: (bookId, currentPage, time) => {
     return new Promise(resolve => {
       setTimeout(() => {
-        resolve(); // PASS IN CURR DATE WHEN MAKING AXIOS POST
+        resolve();
+      }, 1000);
+    });
+  },
+  updateUserInfo: form => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
       }, 1000);
     });
   },

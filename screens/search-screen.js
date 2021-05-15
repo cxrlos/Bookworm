@@ -15,6 +15,7 @@ import {
 
 const SearchScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+
   const { books, hasErrors, loading, query } = useSelector(searchSelector);
 
   useEffect(() => {
@@ -72,7 +73,7 @@ const SearchScreen = ({ navigation }) => {
           books.length > 0 &&
           books.map(book => (
             <View key={book.id} style={{ marginVertical: 6 }}>
-              <BookCard item={book} navigation={navigation} shelfId="-1" />
+              <BookCard item={book} navigation={navigation} />
             </View>
           ))
         )}

@@ -8,10 +8,13 @@ const Layout = ({ children, isVerticallyCentered, onRefresh, refreshing }) => (
     }}
     style={{ backgroundColor: 'white' }}
     refreshControl={
-      <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+      onRefresh ? (
+        <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+      ) : undefined
     }
   >
     {!refreshing && children}
+    {/* <Dialog /> */}
   </ScrollView>
 );
 
