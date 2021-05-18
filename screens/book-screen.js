@@ -12,6 +12,7 @@ import {
 import HTML from 'react-native-render-html';
 import { material } from 'react-native-typography';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+//import TransactionService from "../services/transactions";
 
 import Progress from '../components/progress';
 
@@ -47,6 +48,21 @@ const BookScreen = ({ navigation, route }) => {
     setSnackBarMessage('add');
     setVisible(true);
     setShelf('2');
+    //TransactionService.createUser(data)
+    //    .then(response => {
+    //      this.setState({
+    //        id: response.data.id,
+    //        title: response.data.title,
+    //        description: response.data.description,
+    //        published: response.data.published,
+
+    //        submitted: true
+    //      });
+    //      console.log(response.data);
+    //    })
+    // .catch(e => {
+    //   console.log(e);
+    // });
   };
 
   const handleRemoveFromLibrary = () => {
