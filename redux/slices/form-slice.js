@@ -6,7 +6,6 @@ const initialState = {
   editing: false,
   isSnackBarVisible: false,
   loading: false,
-  pagesRead: 0,
   saving: false,
   snackBarMessage: null,
   userInfo: {},

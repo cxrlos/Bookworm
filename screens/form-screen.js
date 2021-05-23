@@ -2,6 +2,7 @@ import { Formik } from 'formik';
 import React, { Fragment, useEffect, useLayoutEffect } from 'react';
 import { Text, View } from 'react-native';
 import { Button, IconButton, Snackbar, TextInput } from 'react-native-paper';
+import { material } from 'react-native-typography';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 
@@ -13,7 +14,6 @@ import {
   updateUserInfo,
 } from '../redux/slices/form-slice';
 import Layout from '../components/layout';
-import { material } from 'react-native-typography';
 
 const FormScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -37,9 +37,7 @@ const FormScreen = ({ navigation, route }) => {
         <IconButton
           disabled={editing}
           icon="arrow-left"
-          onPress={() => {
-            navigation.goBack();
-          }}
+          onPress={() => navigation.goBack()}
         />
       ),
     });
@@ -47,6 +45,18 @@ const FormScreen = ({ navigation, route }) => {
 
   const handleEdit = () => {
     dispatch(enterEditMode());
+  };
+
+  const handleShowPassword = field => {
+    if (isPassword(field)) {
+      if (showing) {
+        return (
+          <TextInput.Icon name="eye-off" onPress={() => setShowing(!showing)} />
+        );
+      }
+      return <TextInput.Icon name="eye" onPress={() => setShowing(!showing)} />;
+    }
+    return undefined;
   };
 
   const hasErrors = errors => {
@@ -104,12 +114,13 @@ const FormScreen = ({ navigation, route }) => {
             validationSchema={validationSchema}
           >
             {({ errors, handleChange, handleBlur, handleSubmit, values }) => (
-              <View>
+              <>
                 <View style={{ marginBottom: 4 }}>
                   {Object.keys(values).map(field => (
                     <Fragment key={field}>
                       <TextInput
                         defaultValue={values[field]}
+                        dense
                         disabled={!editing}
                         error={errors[field]}
                         label={constants[field]}
@@ -120,7 +131,6 @@ const FormScreen = ({ navigation, route }) => {
                           field === 'password' ||
                           field === 'passwordConfirmation'
                         }
-                        style={{ marginBottom: 4 }}
                       />
                       <View style={{ alignSelf: 'flex-end' }}>
                         {errors[field] ? (
@@ -128,7 +138,6 @@ const FormScreen = ({ navigation, route }) => {
                             style={{
                               ...material.caption,
                               color: '#F50057',
-                              marginBottom: 6,
                             }}
                           >
                             {errors[field]}
@@ -137,7 +146,6 @@ const FormScreen = ({ navigation, route }) => {
                           <Text
                             style={{
                               ...material.caption,
-                              marginBottom: 6,
                             }}
                           ></Text>
                         )}
@@ -149,11 +157,12 @@ const FormScreen = ({ navigation, route }) => {
                   <Button
                     disabled={saving || hasErrors(errors)}
                     onPress={editing ? handleSubmit : handleEdit}
+                    style={{ marginTop: 34 }}
                   >
                     {editing ? 'Guardar' : 'Editar'}
                   </Button>
                 </View>
-              </View>
+              </>
             )}
           </Formik>
         </View>

@@ -3,6 +3,15 @@ const constants = {
   DAILY_GOAL: {
     dailyGoal: 'Objetivo diario',
   },
+  FORM: {
+    invalidEmail: 'Introduce una dirección de correo electrónico válida.',
+    invalidPassword:
+      'La contraseña debe tener al menos ocho caracteres, contener al menos una letra mayúscula, al menos un número y al menos un carácter especial.',
+    invalidPasswordConfirmation: 'Las contraseñas deben coincidir.',
+    passwordRegex:
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+    requiredField: 'Este campo es obligatorio.',
+  },
   FORM_ACTIONS: {
     success: 'Guardado exitosamente',
     error: 'Error al guardar',
@@ -49,6 +58,7 @@ const constants = {
 
 export const {
   DAILY_GOAL,
+  FORM,
   FORM_ACTIONS,
   GOOGLE_BOOKS_URL,
   LIBRARY,

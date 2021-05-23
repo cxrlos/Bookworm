@@ -36,7 +36,6 @@ const SearchScreen = ({ navigation }) => {
             dispatch(setQuery(text));
           }}
           placeholder="Buscar libros"
-          right={<TextInput.Icon name="close" onPress={() => {}} />}
         />
       ),
     });

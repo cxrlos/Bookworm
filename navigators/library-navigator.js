@@ -14,7 +14,11 @@ const Stack = createStackNavigator();
 
 const LibraryNavigator = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Biblioteca" component={LibraryScreen} />
+    <Stack.Screen
+      name="Biblioteca"
+      component={LibraryScreen}
+      options={{ headerLeft: null }}
+    />
     <Stack.Screen name="Buscar" component={SearchScreen} />
     <Stack.Screen
       name="Libro"

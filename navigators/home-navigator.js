@@ -16,7 +16,7 @@ const HomeNavigator = () => (
     <Stack.Screen
       name="Inicio"
       component={HomeScreen}
-      options={() => ({ title: 'Bookworm' })}
+      options={() => ({ headerLeft: null, title: 'Bookworm' })}
     />
     <Stack.Screen name="Buscar" component={SearchScreen} />
     <Stack.Screen

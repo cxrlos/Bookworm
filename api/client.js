@@ -20,14 +20,26 @@ const client = {
   getLibrary: () => {
     return new Promise(resolve => {
       setTimeout(() => {
-        resolve({ 0: [], 2: [], 3: [], 4: [] });
+        // resolve({ 0: [], 2: [], 3: [], 4: [] });
+        resolve(library);
       }, 1000);
     });
   },
   getReadingSessions: () => {
     return new Promise(resolve => {
       setTimeout(() => {
-        resolve([]);
+        resolve([
+          { date: '2021-01-01', pagesRead: 10, timeRead: 100 },
+          { date: '2021-01-03', pagesRead: 10, timeRead: 100 },
+          { date: '2021-01-05', pagesRead: 10, timeRead: 100 },
+          { date: '2021-01-07', pagesRead: 10, timeRead: 100 },
+          { date: '2021-01-09', pagesRead: 10, timeRead: 100 },
+          { date: '2021-05-06', pagesRead: 5, timeRead: 100 },
+          { date: '2021-05-08', pagesRead: 5, timeRead: 100 },
+          { date: '2021-05-10', pagesRead: 10, timeRead: 100 },
+          { date: '2021-05-12', pagesRead: 15, timeRead: 100 },
+          { date: '2021-05-14', pagesRead: 5, timeRead: 100 },
+        ]);
       }, 1000);
     });
   },
@@ -62,7 +74,7 @@ const client = {
       }, 1000);
     });
   },
-  updateReadingProgress: (bookId, currentPage, time) => {
+  updateReadingProgress: (bookId, currentPage) => {
     return new Promise(resolve => {
       setTimeout(() => {
         resolve();

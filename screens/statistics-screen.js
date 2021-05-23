@@ -1,12 +1,19 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Dimensions, Image, ScrollView, Text, View } from 'react-native';
 import { ContributionGraph } from 'react-native-chart-kit';
-import { Divider, IconButton, Menu, ProgressBar } from 'react-native-paper';
+import {
+  Divider,
+  IconButton,
+  Menu,
+  ProgressBar,
+  withTheme,
+} from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { MONTHS } from '../constants';
 import ErrorScreen from './error-screen';
+import { formSelector } from '../redux/slices/form-slice';
 import Layout from '../components/layout';
 import {
   fetchReadingSessions,
@@ -14,14 +21,21 @@ import {
 } from '../redux/slices/statistics-slice';
 import Time from '../components/time';
 import {
-  getLastDateInCurrentMonth,
+  getFirstDateInCurrentMonth,
   getFirstDateInCurrentWeek,
+  getFirstDateInCurrentYear,
+  getLastDateInCurrentMonth,
   getLastDateInCurrentWeek,
   getLastDateInCurrentYear,
 } from '../utils';
+import { color } from 'react-native-reanimated';
 
-const StatisticsScreen = ({ navigation, route }) => {
+const StatisticsScreen = ({ navigation, route, theme: { colors } }) => {
   const dispatch = useDispatch();
+
+  const {
+    userInfo: { dailyGoal },
+  } = useSelector(formSelector);
 
   const { hasErrors, readingSessions, loading } =
     useSelector(statisticsSelector);
@@ -58,7 +72,16 @@ const StatisticsScreen = ({ navigation, route }) => {
       });
   });
 
-  const handleEndDate = () => {
+  const getDatesInBetween = (start, end) => {
+    let datesInBetween = [],
+      d;
+    for (d = new Date(start); d <= new Date(end); d.setDate(d.getDate() + 1)) {
+      datesInBetween.push(new Date(d).toISOString().split('T')[0]);
+    }
+    return datesInBetween;
+  };
+
+  const getEndDate = () => {
     let endDate;
     switch (name) {
       case 'Esta semana':
@@ -91,6 +114,67 @@ const StatisticsScreen = ({ navigation, route }) => {
     }
   };
 
+  const getStartDate = () => {
+    let startDate;
+    switch (name) {
+      case 'Esta semana':
+        startDate = getFirstDateInCurrentWeek();
+        break;
+      case 'Este mes':
+        startDate = getFirstDateInCurrentMonth();
+        break;
+      case 'Este año':
+        startDate = getFirstDateInCurrentYear();
+        break;
+    }
+    return new Date(startDate.toISOString().split('T')[0]);
+  };
+
+  const getStatistics = type => {
+    switch (name) {
+      case 'Hoy':
+        return readingSessions
+          .filter(
+            session => session.date === new Date().toISOString().split('T')[0]
+          )
+          .reduce((acc, curr) => acc + curr[type], 0);
+      case 'Esta semana':
+        return readingSessions
+          .filter(session =>
+            getDatesInBetween(
+              getFirstDateInCurrentWeek().toISOString().split('T')[0],
+              getLastDateInCurrentWeek().toISOString().split('T')[0]
+            ).includes(session.date)
+          )
+          .reduce((acc, curr) => acc + curr[type], 0);
+      case 'Este mes':
+        return readingSessions
+          .filter(session =>
+            getDatesInBetween(
+              getFirstDateInCurrentMonth().toISOString().split('T')[0],
+              getLastDateInCurrentMonth().toISOString().split('T')[0]
+            ).includes(session.date)
+          )
+          .reduce((acc, curr) => acc + curr[type], 0);
+      case 'Este año':
+        return readingSessions
+          .filter(session =>
+            getDatesInBetween(
+              getFirstDateInCurrentYear().toISOString().split('T')[0],
+              getLastDateInCurrentYear().toISOString().split('T')[0]
+            ).includes(session.date)
+          )
+          .reduce((acc, curr) => acc + curr[type], 0);
+      default:
+        return readingSessions
+          .filter(
+            session =>
+              session.date === new Date(name).toISOString().split('T')[0]
+          )
+          .reduce((acc, curr) => acc + curr[type], 0);
+    }
+  };
+
   const numDays = {
     'Esta semana': 7,
     'Este mes': getLastDateInCurrentMonth().getDate() + 1,
@@ -98,11 +182,11 @@ const StatisticsScreen = ({ navigation, route }) => {
   };
 
   const chartConfig = {
-    backgroundGradientFrom: '#fff',
+    backgroundGradientFrom: colors.background,
     backgroundGradientFromOpacity: 1,
-    backgroundGradientTo: '#fff',
+    backgroundGradientTo: colors.background,
     backgroundGradientToOpacity: 1,
-    color: (opacity = 1) => `rgba(108, 99, 255, ${opacity})`,
+    color: (opacity = 1) => `rgba(0, 209, 178, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
   };
 
@@ -155,7 +239,7 @@ const StatisticsScreen = ({ navigation, route }) => {
           <Text style={{ ...material.subheading, marginRight: 8 }}>
             Tiempo leído:
           </Text>
-          <Time time={0} />
+          <Time time={getStatistics('time')} />
         </View>
         <View
           style={{
@@ -166,7 +250,7 @@ const StatisticsScreen = ({ navigation, route }) => {
           <Text style={{ ...material.subheading, marginRight: 8 }}>
             Páginas leídas:
           </Text>
-          <Text style={material.headline}>100</Text>
+          <Text style={material.headline}>{getStatistics('count')}</Text>
         </View>
       </View>
       {Object.keys(numDays).includes(name) ? (
@@ -182,7 +266,7 @@ const StatisticsScreen = ({ navigation, route }) => {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <ContributionGraph
               chartConfig={chartConfig}
-              endDate={handleEndDate()}
+              endDate={getEndDate()}
               height={216}
               numDays={numDays[name]}
               onDayPress={day =>
@@ -209,15 +293,6 @@ const StatisticsScreen = ({ navigation, route }) => {
           >
             Objetivo diario
           </Text>
-          <Text
-            style={{
-              ...material.subheading,
-              marginBottom: 12,
-            }}
-          >
-            Tienes que leer <Text style={material.headline}>10</Text> páginas
-            más para completar tu objetivo diario.
-          </Text>
           <View
             style={{
               alignItems: 'center',
@@ -226,9 +301,11 @@ const StatisticsScreen = ({ navigation, route }) => {
             }}
           >
             <View style={{ flexGrow: 1, flexShrink: 1, marginRight: 8 }}>
-              <ProgressBar progress={0.0} />
+              <ProgressBar progress={getStatistics('count') / dailyGoal} />
             </View>
-            <Text style={material.caption}>0/10</Text>
+            <Text style={material.caption}>
+              {getStatistics('count')}/{dailyGoal}
+            </Text>
           </View>
         </View>
       )}
@@ -236,4 +313,4 @@ const StatisticsScreen = ({ navigation, route }) => {
   );
 };
 
-export default StatisticsScreen;
+export default withTheme(StatisticsScreen);

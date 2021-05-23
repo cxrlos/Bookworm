@@ -160,21 +160,16 @@ export const updateReadingProgress = (
   book,
   currentPage,
   oldCurrentPage,
-  pageCount,
   sessionDuration
 ) => {
   return async dispatch => {
     try {
+      const pagesRead = currentPage - oldCurrentPage;
       await client.updateReadingProgress({
         bookId: book.id,
         currentPage,
       });
-      dispatch(
-        addReadingSession({
-          pagesRead: currentPage - oldCurrentPage,
-          sessionDuration,
-        })
-      );
+      dispatch(addReadingSession({ pagesRead, sessionDuration }));
       dispatch(updateCurrentPage({ book, currentPage }));
       dispatch(setCurrentPage(currentPage));
     } catch (error) {

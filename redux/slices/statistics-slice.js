@@ -4,8 +4,8 @@ import client from '../../api/client';
 
 const initialState = {
   hasErrors: false,
-  readingSessions: [{ date: '2020-01-01', count: 0 }],
   loading: false,
+  readingSessions: [],
 };
 
 export const statisticsSlice = createSlice({
@@ -32,7 +32,10 @@ export const statisticsSlice = createSlice({
       state.hasErrors = true;
     },
     getReadingSessionsSuccess: (state, { payload }) => {
-      state.readingSessions = state.readingSessions.concat(payload);
+      state.readingSessions = [
+        { date: '2020-01-01', count: 0, time: 0 },
+        ...payload,
+      ];
       state.loading = false;
       state.hasErrors = false;
     },
@@ -68,14 +71,20 @@ export const addReadingSession = ({ pagesRead, sessionDuration }) => {
   return async dispatch => {
     dispatch(addingReadingSession());
     try {
-      const day = new Date().toISOString().split('T')[0];
+      const date = new Date().toISOString().split('T')[0];
       const readingSession = {
+        date,
         pagesRead,
         sessionDuration,
-        date: day,
       };
       await client.addReadingSession(readingSession);
-      dispatch(addReadingSessionSuccess({ date: day, count: pagesRead }));
+      dispatch(
+        addReadingSessionSuccess({
+          date,
+          count: pagesRead,
+          time: sessionDuration,
+        })
+      );
     } catch (error) {
       console.warn(error);
       dispatch(addReadingSessionFailure());

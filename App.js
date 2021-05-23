@@ -1,42 +1,33 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {
-  getFocusedRouteNameFromRoute,
-  NavigationContainer,
-} from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 import { configureStore } from '@reduxjs/toolkit';
 import React from 'react';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Provider } from 'react-redux';
 
-import HomeNavigator from './navigators/home-navigator';
-import LibraryNavigator from './navigators/library-navigator';
-import ProfileNavigator from './navigators/profile-navigator';
 import rootReducer from './redux/reducers';
-import StatisticsNavigator from './navigators/statistics-navigator';
+import SignInScreen from './screens/sign-in-screen';
+import SignUpScreen from './screens/sign-up-screen';
+import TabNavigator from './navigators/tab-navigator';
+import StartScreen from './screens/start-screen';
 
-const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 const App = () => {
-  const hideRoutes = ['Leyendo', 'Actualizar progreso', 'Formulario'];
-
-  const getTabBarVisibility = route => {
-    const routeName = getFocusedRouteNameFromRoute(route) || '';
-    if (hideRoutes.includes(routeName)) {
-      return false;
-    }
-    return true;
-  };
-
   const store = configureStore({ reducer: rootReducer });
 
   const theme = {
     ...DefaultTheme,
-    roundness: 2,
+    roundness: 4,
     colors: {
       ...DefaultTheme.colors,
-      primary: '#6C63FF',
-      accent: '#00BFA6',
+      accent: '#3e8ed0',
+      background: '#fff',
+      danger: '#f14668',
+      error: '#f14668',
+      greyLight: '#b5b5b5',
+      greyLighter: '#dbdbdb',
+      primary: '#00d1b2',
     },
   };
 
@@ -44,69 +35,20 @@ const App = () => {
     <Provider store={store}>
       <PaperProvider theme={theme}>
         <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={{ default: false }}
-            tabBarOptions={{
-              activeTintColor: '#000',
-            }}
-          >
-            <Tab.Screen
-              name="Inicio"
-              component={HomeNavigator}
-              options={({ route }) => ({
-                tabBarLabel: 'Inicio',
-                tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons name="home" color={color} size={26} />
-                ),
-                tabBarVisible: getTabBarVisibility(route),
-              })}
+          <Stack.Navigator>
+            <Stack.Screen
+              component={StartScreen}
+              name="Bienvenida"
+              options={{ headerShown: false }}
             />
-            <Tab.Screen
-              name="Biblioteca"
-              component={LibraryNavigator}
-              options={({ route }) => ({
-                tabBarLabel: 'Biblioteca',
-                tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons
-                    name="book-multiple"
-                    color={color}
-                    size={26}
-                  />
-                ),
-                tabBarVisible: getTabBarVisibility(route),
-              })}
+            <Stack.Screen component={SignInScreen} name="Inicio de sesión" />
+            <Stack.Screen component={SignUpScreen} name="Registro" />
+            <Stack.Screen
+              component={TabNavigator}
+              name="App"
+              options={{ headerShown: false }}
             />
-            <Tab.Screen
-              name="Estadísticas"
-              component={StatisticsNavigator}
-              options={({ route }) => ({
-                tabBarLabel: 'Estadísticas',
-                tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons
-                    name="google-analytics"
-                    color={color}
-                    size={26}
-                  />
-                ),
-                tabBarVisible: getTabBarVisibility(route),
-              })}
-            />
-            <Tab.Screen
-              name="Perfil"
-              component={ProfileNavigator}
-              options={({ route }) => ({
-                tabBarLabel: 'Perfil',
-                tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons
-                    name="face-woman"
-                    color={color}
-                    size={26}
-                  />
-                ),
-                tabBarVisible: getTabBarVisibility(route),
-              })}
-            />
-          </Tab.Navigator>
+          </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>
     </Provider>

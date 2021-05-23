@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { ScrollView, View } from 'react-native';
+import { IconButton, withTheme } from 'react-native-paper';
 
 import BookCard from '../components/book-card';
 
-const ShelfScreen = ({ navigation, route }) => {
+const ShelfScreen = ({ navigation, route, theme: { colors } }) => {
   const { books, shelfId } = route.params;
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IconButton
+          icon="magnify"
+          onPress={() => navigation.navigate('Buscar')}
+        />
+      ),
+    });
+  });
+
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
+    <ScrollView style={{ backgroundColor: colors.background }}>
       <View style={{ padding: 16 }}>
         {books.map(book => (
           <View key={book.id} style={{ marginVertical: 6 }}>
@@ -19,4 +31,4 @@ const ShelfScreen = ({ navigation, route }) => {
   );
 };
 
-export default ShelfScreen;
+export default withTheme(ShelfScreen);

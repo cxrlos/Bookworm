@@ -7,6 +7,4 @@ export default {
   sex: 'F',
   password: 'password',
   dailyGoal: 10,
-  pagesRead: 6,
-  library,
 };

@@ -9,6 +9,7 @@ import {
   Portal,
   RadioButton,
   Snackbar,
+  withTheme,
 } from 'react-native-paper';
 import HTML from 'react-native-render-html';
 import { material } from 'react-native-typography';
@@ -35,7 +36,7 @@ import {
 import Progress from '../components/progress';
 import Layout from '../components/layout';
 
-const BookScreen = ({ navigation, route }) => {
+const BookScreen = ({ navigation, route, theme: { colors } }) => {
   const dispatch = useDispatch();
 
   const {
@@ -120,7 +121,7 @@ const BookScreen = ({ navigation, route }) => {
         {thumbnail && (
           <View
             style={{
-              backgroundColor: 'gray',
+              backgroundColor: colors.greyLighter,
               flex: 1,
               paddingVertical: 16,
             }}
@@ -172,6 +173,7 @@ const BookScreen = ({ navigation, route }) => {
               )}
               <View style={{ alignItems: 'center', marginBottom: 16 }}>
                 <Button
+                  dark
                   icon={({ size, color }) => (
                     <MaterialCommunityIcons
                       color={color}
@@ -181,7 +183,7 @@ const BookScreen = ({ navigation, route }) => {
                   )}
                   mode="contained"
                   onPress={() =>
-                    navigation.navigate('Leyendo', { ...route.params })
+                    navigation.replace('Leyendo', { ...route.params })
                   }
                 >
                   Leer
@@ -226,7 +228,7 @@ const BookScreen = ({ navigation, route }) => {
               {shelfId && (
                 <View style={{ alignItems: 'center', flex: 1 }}>
                   <Button
-                    color="#F50057"
+                    color={colors.danger}
                     justifyContent="center"
                     onPress={() => dispatch(removeFromLibrary(bookId, shelfId))}
                     style={{ marginTop: 16 }}
@@ -290,4 +292,4 @@ const BookScreen = ({ navigation, route }) => {
   );
 };
 
-export default BookScreen;
+export default withTheme(BookScreen);

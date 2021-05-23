@@ -34,7 +34,7 @@ const ProgressScreen = ({ route, navigation }) => {
           icon="close"
           onPress={() => {
             dispatch(clearSessionDuration());
-            navigation.navigate('Libro', { ...route.params });
+            navigation.replace('Libro', { ...route.params });
           }}
         />
       ),
@@ -47,12 +47,11 @@ const ProgressScreen = ({ route, navigation }) => {
                 route.params,
                 currentPage,
                 oldCurrentPage,
-                pageCount,
                 sessionDuration
               )
             );
             dispatch(clearSessionDuration());
-            navigation.navigate('Libro', { ...route.params });
+            navigation.replace('Libro', { ...route.params });
           }}
           disabled={pageCount && !currentPage}
         />

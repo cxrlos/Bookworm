@@ -9,6 +9,13 @@ const utils = {
     }
     return 'Buenas noches';
   },
+  getFirstDateInCurrentMonth: () => {
+    const d = new Date().toISOString().split('T')[0];
+    const currentDate = new Date(d);
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    return new Date(currentYear, currentMonth, 1);
+  },
   getLastDateInCurrentMonth: () => {
     const d = new Date().toISOString().split('T')[0];
     const currentDate = new Date(d);
@@ -30,16 +37,21 @@ const utils = {
       currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 6)
     );
   },
+  getFirstDateInCurrentYear: () => new Date(new Date().getFullYear(), 0, 1),
   getLastDateInCurrentYear: () => new Date(new Date().getFullYear(), 11, 31),
   getShelfHeader: length =>
     `${length} libro${length > 1 || length === 0 ? 's' : ''}`,
+  isPassword: field => field === 'password' || field === 'passwordConfirmation',
 };
 
 export const {
   getGreeting,
+  getFirstDateInCurrentMonth,
   getFirstDateInCurrentWeek,
   getLastDateInCurrentMonth,
   getLastDateInCurrentWeek,
+  getFirstDateInCurrentYear,
   getLastDateInCurrentYear,
   getShelfHeader,
+  isPassword,
 } = utils;

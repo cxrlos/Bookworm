@@ -25,7 +25,7 @@ const ProfileScreen = ({ navigation }) => {
     'Configuración de la cuenta': [
       {
         constants: PERSONAL_INFORMATION,
-        icon: 'face-woman',
+        icon: 'information',
         label: 'Datos personales',
         fields: {
           firstName,
@@ -57,11 +57,7 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <Layout
-      // isVerticallyCentered
-      onRefresh={() => dispatch(fetchUserInfo())}
-      refreshing={loading}
-    >
+    <Layout onRefresh={() => dispatch(fetchUserInfo())} refreshing={loading}>
       <View
         style={{
           justifyContent: 'space-around',
@@ -76,12 +72,16 @@ const ProfileScreen = ({ navigation }) => {
           }}
         >
           <Image
-            source={require('../assets/profile.png')}
+            source={
+              sex === 'F'
+                ? require('../assets/undraw_female_avatar_w3jk.png')
+                : require('../assets/undraw_male_avatar_323b.png')
+            }
             style={{
-              borderRadius: 92 / 2,
-              height: 92,
-              marginBottom: 16,
-              width: 92,
+              // borderRadius: 128 / 2,
+              height: 128,
+              // marginBottom: 16,
+              width: 128,
             }}
           />
           <View style={{ marginBottom: 12, alignItems: 'center' }}>

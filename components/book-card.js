@@ -58,6 +58,7 @@ const BookCard = ({ disabled, item, navigation, shelfId, ...rest }) => {
               {shelfId === '3' && (
                 <View style={{ alignItems: 'flex-start', paddingTop: 12 }}>
                   <Button
+                    dark
                     icon={({ size, color }) => (
                       <MaterialCommunityIcons
                         color={color}

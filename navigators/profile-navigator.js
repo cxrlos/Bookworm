@@ -8,7 +8,11 @@ const Stack = createStackNavigator();
 
 const ProfileNavigator = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Perfil" component={ProfileScreen} />
+    <Stack.Screen
+      name="Perfil"
+      component={ProfileScreen}
+      options={{ headerLeft: null }}
+    />
     <Stack.Screen
       name="Formulario"
       component={FormScreen}

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { Image, Text, View } from 'react-native';
-import { Button, Divider } from 'react-native-paper';
+import { Button, Divider, IconButton } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,6 +11,7 @@ import { fetchUserInfo, formSelector } from '../redux/slices/form-slice';
 import Layout from '../components/layout';
 import { fetchShelfById, librarySelector } from '../redux/slices/library-slice';
 import ShelfHeader from '../components/shelf-header';
+import { statisticsSelector } from '../redux/slices/statistics-slice';
 import { getGreeting } from '../utils';
 
 const HomeScreen = ({ navigation }) => {
@@ -18,18 +19,36 @@ const HomeScreen = ({ navigation }) => {
 
   const {
     loading,
-    pagesRead,
-    userInfo: { firstName, dailyGoal },
+    userInfo: { dailyGoal, firstName },
   } = useSelector(formSelector);
 
   const { hasErrors, library, shelfId } = useSelector(librarySelector);
+
+  const { readingSessions } = useSelector(statisticsSelector);
 
   useEffect(() => {
     dispatch(fetchUserInfo());
     dispatch(fetchShelfById('3'));
   }, [dispatch]);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IconButton
+          icon="magnify"
+          onPress={() => navigation.navigate('Buscar')}
+        />
+      ),
+    });
+  });
+
   const shelf = library[shelfId] || [];
+
+  const pagesRead = readingSessions
+    .filter(session => session.date === new Date().toISOString().split('T')[0])
+    .reduce((acc, curr) => acc + curr.count, 0);
+
+  const pagesLeft = dailyGoal - pagesRead;
 
   const Hero = () => (
     <>
@@ -51,16 +70,27 @@ const HomeScreen = ({ navigation }) => {
       >
         {getGreeting()}, {firstName}
       </Text>
-      <Text
-        style={{
-          ...material.subheading,
-          textAlign: 'center',
-        }}
-      >
-        Tienes que leer{' '}
-        <Text style={material.headline}>{dailyGoal - pagesRead}</Text> páginas
-        más para completar tu objetivo diario.
-      </Text>
+      {pagesLeft > 0 ? (
+        <Text
+          style={{
+            ...material.subheading,
+            textAlign: 'center',
+          }}
+        >
+          Tienes que leer{' '}
+          <Text style={material.headline}>{dailyGoal - pagesRead}</Text> páginas
+          más para completar tu objetivo diario.
+        </Text>
+      ) : (
+        <Text
+          style={{
+            ...material.subheading,
+            textAlign: 'center',
+          }}
+        >
+          ¡Enhorabuena! Has completado tu objetivo diario.
+        </Text>
+      )}
     </>
   );
 

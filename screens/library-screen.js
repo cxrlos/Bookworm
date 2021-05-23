@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useLayoutEffect } from 'react';
 import { Image, Text } from 'react-native';
-import { Button, Divider } from 'react-native-paper';
+import { Button, Divider, IconButton } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -17,6 +17,17 @@ const LibraryScreen = ({ navigation }) => {
   useEffect(() => {
     dispatch(fetchLibrary());
   }, [dispatch]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IconButton
+          icon="magnify"
+          onPress={() => navigation.navigate('Buscar')}
+        />
+      ),
+    });
+  });
 
   const shelves = library && Object.keys(library);
 

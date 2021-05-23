@@ -1,7 +1,7 @@
 import { StackActions } from '@react-navigation/native';
 import React, { useEffect, useRef } from 'react';
 import { Alert, Image, Text, View } from 'react-native';
-import { Divider, IconButton } from 'react-native-paper';
+import { Divider, IconButton, withTheme } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,7 +15,7 @@ import {
 } from '../redux/slices/reading-slice';
 import { dialogContent } from '../redux/slices/dialog-slice';
 
-const ReadingScreen = ({ route, navigation }) => {
+const ReadingScreen = ({ navigation, route, theme: { colors } }) => {
   const dispatch = useDispatch();
 
   const { readingStatus, time } = useSelector(readingSelector);
@@ -73,6 +73,8 @@ const ReadingScreen = ({ route, navigation }) => {
   };
 
   const handleStop = () => {
+    dispatch(setSessionDuration(time));
+    dispatch(resetTime());
     navigation.dispatch(
       StackActions.replace('Actualizar progreso', { ...route.params })
     );
@@ -119,8 +121,8 @@ const ReadingScreen = ({ route, navigation }) => {
     <>
       <View
         style={{
-          flexDirection: 'row',
           alignItems: 'center',
+          flexDirection: 'row',
           justifyContent: 'space-around',
         }}
       >
@@ -147,6 +149,7 @@ const ReadingScreen = ({ route, navigation }) => {
     <>
       <View
         style={{
+          backgroundColor: colors.greyLighter,
           flex: 1,
           justifyContent: 'space-between',
         }}
@@ -154,18 +157,16 @@ const ReadingScreen = ({ route, navigation }) => {
         <View
           style={{
             alignItems: 'center',
-            backgroundColor: 'white',
+            backgroundColor: colors.background,
             padding: 16,
           }}
         >
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ ...material.title, textAlign: 'center' }}>
-              {title}
-            </Text>
-            <Text style={{ ...material.subheading, textAlign: 'center' }}>
-              {authors && authors.join(', ')}
-            </Text>
-          </View>
+          <Text style={{ ...material.title, textAlign: 'center' }}>
+            {title}
+          </Text>
+          <Text style={{ ...material.subheading, textAlign: 'center' }}>
+            {authors && authors.join(', ')}
+          </Text>
         </View>
         <View style={{ alignItems: 'center' }}>
           <Image
@@ -178,7 +179,9 @@ const ReadingScreen = ({ route, navigation }) => {
             }}
           />
         </View>
-        <View style={{ backgroundColor: 'white', paddingHorizontal: 16 }}>
+        <View
+          style={{ backgroundColor: colors.background, paddingHorizontal: 16 }}
+        >
           <View style={{ alignItems: 'center', padding: 16 }}>
             <Text style={material.subheading}>Tiempo leído:</Text>
             <Time time={time} />
@@ -192,4 +195,4 @@ const ReadingScreen = ({ route, navigation }) => {
   );
 };
 
-export default ReadingScreen;
+export default withTheme(ReadingScreen);
