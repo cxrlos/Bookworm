@@ -13,13 +13,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { MONTHS } from '../constants';
 import ErrorScreen from './error-screen';
-import { formSelector } from '../redux/slices/form-slice';
 import Layout from '../components/layout';
 import {
   fetchReadingSessions,
   statisticsSelector,
 } from '../redux/slices/statistics-slice';
 import Time from '../components/time';
+import { userSelector } from '../redux/slices/user-slice';
 import {
   getFirstDateInCurrentMonth,
   getFirstDateInCurrentWeek,
@@ -28,14 +28,13 @@ import {
   getLastDateInCurrentWeek,
   getLastDateInCurrentYear,
 } from '../utils';
-import { color } from 'react-native-reanimated';
 
 const StatisticsScreen = ({ navigation, route, theme: { colors } }) => {
   const dispatch = useDispatch();
 
   const {
-    userInfo: { dailyGoal },
-  } = useSelector(formSelector);
+    user: { dailyGoal },
+  } = useSelector(userSelector);
 
   const { hasErrors, readingSessions, loading } =
     useSelector(statisticsSelector);
@@ -239,7 +238,7 @@ const StatisticsScreen = ({ navigation, route, theme: { colors } }) => {
           <Text style={{ ...material.subheading, marginRight: 8 }}>
             Tiempo leído:
           </Text>
-          <Time time={getStatistics('time')} />
+          <Time time={getStatistics('timeRead')} />
         </View>
         <View
           style={{
@@ -250,7 +249,7 @@ const StatisticsScreen = ({ navigation, route, theme: { colors } }) => {
           <Text style={{ ...material.subheading, marginRight: 8 }}>
             Páginas leídas:
           </Text>
-          <Text style={material.headline}>{getStatistics('count')}</Text>
+          <Text style={material.headline}>{getStatistics('pagesRead')}</Text>
         </View>
       </View>
       {Object.keys(numDays).includes(name) ? (
@@ -265,6 +264,7 @@ const StatisticsScreen = ({ navigation, route, theme: { colors } }) => {
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <ContributionGraph
+              accessor="pagesRead"
               chartConfig={chartConfig}
               endDate={getEndDate()}
               height={216}
@@ -301,10 +301,10 @@ const StatisticsScreen = ({ navigation, route, theme: { colors } }) => {
             }}
           >
             <View style={{ flexGrow: 1, flexShrink: 1, marginRight: 8 }}>
-              <ProgressBar progress={getStatistics('count') / dailyGoal} />
+              <ProgressBar progress={getStatistics('pagesRead') / dailyGoal} />
             </View>
             <Text style={material.caption}>
-              {getStatistics('count')}/{dailyGoal}
+              {getStatistics('pagesRead')}/{dailyGoal}
             </Text>
           </View>
         </View>

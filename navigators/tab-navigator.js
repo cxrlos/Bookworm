@@ -2,9 +2,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { fetchUserInfo, formSelector } from '../redux/slices/form-slice';
+import { fetchUser } from '../redux/slices/user-slice';
 import HomeNavigator from '../navigators/home-navigator';
 import LibraryNavigator from '../navigators/library-navigator';
 import ProfileNavigator from '../navigators/profile-navigator';
@@ -13,17 +13,13 @@ import StatisticsNavigator from '../navigators/statistics-navigator';
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
-  const dispatch = useDispatch();
-
-  const {
-    userInfo: { sex },
-  } = useSelector(formSelector);
+  const hideRoutes = ['Leyendo', 'Libro', 'Actualizar progreso', 'Formulario'];
 
   useEffect(() => {
-    dispatch(fetchUserInfo());
+    dispatch(fetchUser());
   }, [dispatch]);
 
-  const hideRoutes = ['Leyendo', 'Libro', 'Actualizar progreso', 'Formulario'];
+  const dispatch = useDispatch();
 
   const getTabBarVisibility = route => {
     const routeName = getFocusedRouteNameFromRoute(route) || '';

@@ -39,6 +39,7 @@ const utils = {
   },
   getFirstDateInCurrentYear: () => new Date(new Date().getFullYear(), 0, 1),
   getLastDateInCurrentYear: () => new Date(new Date().getFullYear(), 11, 31),
+  getPages: pages => `página${pages > 1 ? 's' : ''}`,
   getShelfHeader: length =>
     `${length} libro${length > 1 || length === 0 ? 's' : ''}`,
   isPassword: field => field === 'password' || field === 'passwordConfirmation',
@@ -48,10 +49,11 @@ export const {
   getGreeting,
   getFirstDateInCurrentMonth,
   getFirstDateInCurrentWeek,
+  getFirstDateInCurrentYear,
   getLastDateInCurrentMonth,
   getLastDateInCurrentWeek,
-  getFirstDateInCurrentYear,
   getLastDateInCurrentYear,
+  getPages,
   getShelfHeader,
   isPassword,
 } = utils;

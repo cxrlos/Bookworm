@@ -19,6 +19,7 @@ export const statisticsSlice = createSlice({
       state.readingSessions = [...state.readingSessions, payload];
       state.loading = false;
       state.hasErrors = false;
+      console.warn(state.readingSessions);
     },
     addReadingSessionFailure: state => {
       state.loading = false;
@@ -33,7 +34,7 @@ export const statisticsSlice = createSlice({
     },
     getReadingSessionsSuccess: (state, { payload }) => {
       state.readingSessions = [
-        { date: '2020-01-01', count: 0, time: 0 },
+        { date: '2020-01-01', pagesRead: 0, timeRead: 0 },
         ...payload,
       ];
       state.loading = false;
@@ -67,7 +68,7 @@ export const fetchReadingSessions = () => {
   };
 };
 
-export const addReadingSession = ({ pagesRead, sessionDuration }) => {
+export const addReadingSession = ({ pagesRead, timeRead }) => {
   return async dispatch => {
     dispatch(addingReadingSession());
     try {
@@ -75,14 +76,14 @@ export const addReadingSession = ({ pagesRead, sessionDuration }) => {
       const readingSession = {
         date,
         pagesRead,
-        sessionDuration,
+        timeRead,
       };
       await client.addReadingSession(readingSession);
       dispatch(
         addReadingSessionSuccess({
           date,
-          count: pagesRead,
-          time: sessionDuration,
+          pagesRead,
+          timeRead,
         })
       );
     } catch (error) {

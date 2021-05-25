@@ -1,4 +1,5 @@
 import { GOOGLE_BOOKS_URL } from '../constants';
+import firebase from '../firebase/firebase';
 import library from '../data/library';
 import user from '../data/user';
 
@@ -16,6 +17,9 @@ const client = {
         resolve();
       }, 1000);
     });
+  },
+  createUser: ({ email, password }) => {
+    return firebase.auth().createUserWithEmailAndPassword(email, password);
   },
   getLibrary: () => {
     return new Promise(resolve => {
@@ -53,7 +57,7 @@ const client = {
   getGoogleBooks: async query => {
     return fetch(GOOGLE_BOOKS_URL(query));
   },
-  getUserInfo: () => {
+  getUser: () => {
     return new Promise(resolve => {
       setTimeout(() => {
         resolve(user);
@@ -66,6 +70,9 @@ const client = {
         resolve();
       }, 1000);
     });
+  },
+  signIn: ({ email, password }) => {
+    return firebase.auth().signInWithEmailAndPassword(email, password);
   },
   updateShelf: (book, newShelfId, oldShelfId) => {
     return new Promise(resolve => {
@@ -81,7 +88,7 @@ const client = {
       }, 1000);
     });
   },
-  updateUserInfo: form => {
+  updateUser: form => {
     return new Promise(resolve => {
       setTimeout(() => {
         resolve();

@@ -160,7 +160,7 @@ export const updateReadingProgress = (
   book,
   currentPage,
   oldCurrentPage,
-  sessionDuration
+  timeRead
 ) => {
   return async dispatch => {
     try {
@@ -169,7 +169,7 @@ export const updateReadingProgress = (
         bookId: book.id,
         currentPage,
       });
-      dispatch(addReadingSession({ pagesRead, sessionDuration }));
+      dispatch(addReadingSession({ pagesRead, timeRead }));
       dispatch(updateCurrentPage({ book, currentPage }));
       dispatch(setCurrentPage(currentPage));
     } catch (error) {

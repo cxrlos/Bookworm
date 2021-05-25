@@ -7,27 +7,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import BookCard from '../components/book-card';
 import { LIBRARY } from '../constants';
 import ErrorScreen from './error-screen';
-import { fetchUserInfo, formSelector } from '../redux/slices/form-slice';
+import { fetchUser, userSelector } from '../redux/slices/user-slice';
 import Layout from '../components/layout';
 import { fetchShelfById, librarySelector } from '../redux/slices/library-slice';
 import ShelfHeader from '../components/shelf-header';
 import { statisticsSelector } from '../redux/slices/statistics-slice';
-import { getGreeting } from '../utils';
+import { getGreeting, getPages } from '../utils';
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const {
-    loading,
-    userInfo: { dailyGoal, firstName },
-  } = useSelector(formSelector);
-
-  const { hasErrors, library, shelfId } = useSelector(librarySelector);
-
-  const { readingSessions } = useSelector(statisticsSelector);
-
   useEffect(() => {
-    dispatch(fetchUserInfo());
+    dispatch(fetchUser());
     dispatch(fetchShelfById('3'));
   }, [dispatch]);
 
@@ -42,11 +33,20 @@ const HomeScreen = ({ navigation }) => {
     });
   });
 
+  const { hasErrors, library, shelfId } = useSelector(librarySelector);
+
+  const { readingSessions } = useSelector(statisticsSelector);
+
+  const {
+    loading,
+    user: { dailyGoal, firstName },
+  } = useSelector(userSelector);
+
   const shelf = library[shelfId] || [];
 
   const pagesRead = readingSessions
     .filter(session => session.date === new Date().toISOString().split('T')[0])
-    .reduce((acc, curr) => acc + curr.count, 0);
+    .reduce((acc, curr) => acc + curr.pagesRead, 0);
 
   const pagesLeft = dailyGoal - pagesRead;
 
@@ -78,8 +78,8 @@ const HomeScreen = ({ navigation }) => {
           }}
         >
           Tienes que leer{' '}
-          <Text style={material.headline}>{dailyGoal - pagesRead}</Text> páginas
-          más para completar tu objetivo diario.
+          <Text style={material.headline}>{dailyGoal - pagesRead}</Text>{' '}
+          {getPages(pagesLeft)} más para completar tu objetivo diario.
         </Text>
       ) : (
         <Text

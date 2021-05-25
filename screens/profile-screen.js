@@ -7,18 +7,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../components/layout';
 
 import { PERSONAL_INFORMATION, PASSWORD, DAILY_GOAL } from '../constants';
-import { fetchUserInfo, formSelector } from '../redux/slices/form-slice';
+import { fetchUser, userSelector } from '../redux/slices/user-slice';
 
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const {
     loading,
-    userInfo: { firstName, lastName, email, sex, password, dailyGoal },
-  } = useSelector(formSelector);
+    user: { firstName, lastName, email, sex, password, dailyGoal },
+  } = useSelector(userSelector);
 
   useEffect(() => {
-    dispatch(fetchUserInfo());
+    dispatch(fetchUser());
   }, [dispatch]);
 
   const menu = {
@@ -57,13 +57,8 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <Layout onRefresh={() => dispatch(fetchUserInfo())} refreshing={loading}>
-      <View
-        style={{
-          justifyContent: 'space-around',
-          padding: 16,
-        }}
-      >
+    <Layout onRefresh={() => dispatch(fetchUser())} refreshing={loading}>
+      <View style={{ padding: 16 }}>
         <View
           style={{
             alignItems: 'center',
@@ -77,12 +72,7 @@ const ProfileScreen = ({ navigation }) => {
                 ? require('../assets/undraw_female_avatar_w3jk.png')
                 : require('../assets/undraw_male_avatar_323b.png')
             }
-            style={{
-              // borderRadius: 128 / 2,
-              height: 128,
-              // marginBottom: 16,
-              width: 128,
-            }}
+            style={{ height: 128, width: 128 }}
           />
           <View style={{ marginBottom: 12, alignItems: 'center' }}>
             <Text style={material.title}>

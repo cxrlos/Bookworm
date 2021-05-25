@@ -4,6 +4,16 @@ const constants = {
     dailyGoal: 'Objetivo diario',
   },
   FORM: {
+    firebaseErrors: {
+      'auth/successful-registration': 'Registro exitoso',
+      'auth/email-already-in-use':
+        'La dirección de correo electrónico proporcionada ya está en uso.',
+      'auth/weak-password':
+        'La contraseña debe tener al menos ocho caracteres, contener al menos una letra mayúscula, al menos un número y al menos un carácter especial.',
+      'auth/user-not-found': 'Usuario no encontrado',
+      success: 'Guardado exitosamente',
+      error: 'Error al guardar',
+    },
     invalidEmail: 'Introduce una dirección de correo electrónico válida.',
     invalidPassword:
       'La contraseña debe tener al menos ocho caracteres, contener al menos una letra mayúscula, al menos un número y al menos un carácter especial.',
