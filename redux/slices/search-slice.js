@@ -59,9 +59,9 @@ export const fetchGoogleBooks = query => {
             getGoogleBooksSuccess(
               items.map(book => ({
                 authors: book.volumeInfo.authors,
-                description: book.volumeInfo.description,
+                bookId: book.id,
                 currentPage: 0,
-                id: book.id,
+                description: book.volumeInfo.description,
                 pageCount: book.volumeInfo.pageCount,
                 publisher: book.volumeInfo.publisher,
                 thumbnail:
