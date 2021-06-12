@@ -24,7 +24,6 @@ const client = {
   getLibrary: () => {
     return new Promise(resolve => {
       setTimeout(() => {
-        // resolve({ 0: [], 2: [], 3: [], 4: [] });
         resolve(library);
       }, 1000);
     });

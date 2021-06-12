@@ -76,7 +76,7 @@ const SearchScreen = ({ navigation }) => {
         ) : (
           books.length > 0 &&
           books.map(book => (
-            <View key={book.id} style={{ marginVertical: 6 }}>
+            <View key={book.bookId} style={{ marginVertical: 6 }}>
               <BookCard item={book} navigation={navigation} />
             </View>
           ))

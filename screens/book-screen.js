@@ -63,7 +63,7 @@ const BookScreen = ({ navigation, route, theme: { colors } }) => {
   const {
     authors,
     description,
-    id: bookId,
+    bookId,
     pageCount,
     publisher,
     thumbnail,
@@ -237,7 +237,7 @@ const BookScreen = ({ navigation, route, theme: { colors } }) => {
                   <Button
                     color={colors.danger}
                     justifyContent="center"
-                    onPress={() => dispatch(removeFromLibrary(bookId, shelfId))}
+                    onPress={() => dispatch(removeFromLibrary(bookId))}
                     style={{ marginTop: 16 }}
                     disabled={removing}
                   >
