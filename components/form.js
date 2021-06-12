@@ -14,6 +14,14 @@ import {
 import { isPassword } from '../utils';
 import validationRules from '../validation-rules';
 
+/**
+ * Represents the form where the user fills in the data.
+ * @param {Object} constants - The field's title
+ * @param {Object} initialValues - The forms initial values as they are prefilled after registration
+ * @param {String} label - The message shown to the user when the form is not loading
+ * @param {function} onSubmit - Function that saves the values of the form upon submit
+ */
+
 const Form = ({
   constants,
   initialValues,

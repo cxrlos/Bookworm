@@ -8,6 +8,12 @@ import { formSelector } from '../redux/slices/form-slice';
 import Layout from '../components/layout';
 import { updateUser } from '../redux/slices/user-slice';
 
+/**
+ * Represents the form screen
+ * @param {Object} navigation - To create the stack navigation
+ * @param {------} route -
+ */
+
 const FormScreen = ({ navigation, route }) => {
   const { constants, fields } = route.params;
 

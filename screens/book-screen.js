@@ -36,6 +36,13 @@ import {
 import Progress from '../components/progress';
 import Layout from '../components/layout';
 
+/**
+ * Represents the book screen (the information shown when selecting a book)
+ * @param {Object} navigation - To create the stack navigation
+ * @param {------} route -
+ * @param {------} colors -
+ */
+
 const BookScreen = ({ navigation, route, theme: { colors } }) => {
   const dispatch = useDispatch();
 

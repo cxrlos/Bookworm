@@ -3,6 +3,12 @@ import { Text, View } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 import { material } from 'react-native-typography';
 
+/**
+ * Represents the progress bar of the pages of a book that is currently being read
+ * @param {number} currentPage - The last page the user registered as being read
+ * @param {number} pageCount - The total number of pages in a book
+ */
+
 const Progress = ({ currentPage, pageCount }) => (
   <View
     style={{

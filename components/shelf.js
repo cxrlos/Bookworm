@@ -6,6 +6,13 @@ import Book, { ITEM_WIDTH } from '../components/book';
 import { LIBRARY } from '../constants';
 import ShelfHeader from './shelf-header';
 
+/**
+ * Represents a shelf
+ * @param {Array} books - The books that are in the shelf
+ * @param {Object} navigation - To create the stack navigation
+ * @param {string} shelfId - The shelf the book to open corresponds to
+ */
+
 const Shelf = ({ books, navigation, shelfId }) => {
   const name = LIBRARY[shelfId];
 

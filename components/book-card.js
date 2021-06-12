@@ -6,6 +6,15 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import Progress from '../components/progress';
 
+/**
+ * Represents a book in a card. It shows the title, book cover (thumbnail), the number of pages currently read (if the shelfId is "reading"), and the authors of the book.
+ * @param {boolean} disabled - To indicate if a button/ripple should be enabled or not
+ * @param {Object} item - Contains the book's data, such as authors, page count, title...
+ * @param {Object} navigation - To create the stack navigation
+ * @param {String} shelfId - The shelf the book to open corresponds to
+ * @param {Object} rest - Used to access the book's current page
+ */
+
 const BookCard = ({ disabled, item, navigation, shelfId, ...rest }) => {
   const { authors, pageCount, thumbnail, title } = item;
 

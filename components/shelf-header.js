@@ -4,6 +4,12 @@ import { material } from 'react-native-typography';
 
 import { getShelfHeader } from '../utils';
 
+/**
+ * Represents the title of a shelf
+ * @param {number} length - The number of books that are in the shelf
+ * @param {string} title - The title of the shelf (Por leer, leyendo, etc.)
+ */
+
 const ShelfHeader = ({ length, title }) => (
   <View
     style={{

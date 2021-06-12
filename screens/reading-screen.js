@@ -15,6 +15,13 @@ import {
 } from '../redux/slices/reading-slice';
 import { dialogContent } from '../redux/slices/dialog-slice';
 
+/**
+ * Represents the screen that is shown to the user when a reading session is going to start.
+ * @param {Object} navigation - To create the stack navigation
+ * @param {------} route -
+ * @param {------} colors -
+ */
+
 const ReadingScreen = ({ navigation, route, theme: { colors } }) => {
   const dispatch = useDispatch();
 

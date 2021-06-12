@@ -10,6 +10,12 @@ import Layout from '../components/layout';
 import { material } from 'react-native-typography';
 import { signIn } from '../redux/slices/user-slice';
 
+/**
+ * Represents the sign in screen to the application
+ * @param {Object} navigation - To create the stack navigation
+ * @param {------} colors -
+ */
+
 const SignInScreen = ({ navigation, theme: { colors } }) => {
   const constants = { ...PASSWORD, ...PERSONAL_INFORMATION };
 

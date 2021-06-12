@@ -9,6 +9,11 @@ import Layout from '../components/layout';
 import { PERSONAL_INFORMATION, PASSWORD, DAILY_GOAL } from '../constants';
 import { fetchUser, userSelector } from '../redux/slices/user-slice';
 
+/**
+ * Represents the user's profile screen
+ * @param {Object} navigation - To create the stack navigation
+ */
+
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 

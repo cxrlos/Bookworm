@@ -2,6 +2,11 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { material } from 'react-native-typography';
 
+/**
+ * Represents the hours, minutes, and seconds a book has been read
+ * @param {number} time - The time that a book was read
+ */
+
 const Time = ({ time }) => {
   const getSeconds = `0${time % 60}`.slice(-2);
   const minutes = `${Math.floor(time / 60)}`;

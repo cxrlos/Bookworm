@@ -14,6 +14,12 @@ import {
 import { updateReadingProgress } from '../redux/slices/library-slice';
 import { bookSelector } from '../redux/slices/book-slice';
 
+/**
+ * Represents the progress screen of a book that is being read. It allows the user to update the reading progess after a reading session has ended.
+ * @param {Object} navigation - To create the stack navigation
+ * @param {------} route -
+ */
+
 const ProgressScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const selector = useSelector(bookSelector);

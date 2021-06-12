@@ -31,10 +31,6 @@ export const bookSlice = createSlice({
       state.snackBarMessage = 'error';
       state.adding = false;
     },
-    cleanBookStatus: state => {
-      state.shelfId = null;
-      state.selectedShelf = null;
-    },
     closeSnackBar: state => {
       state.isSnackBarVisible = false;
     },
@@ -86,7 +82,6 @@ export const {
   addingToLibrary,
   addToLibrarySuccess,
   addToLibraryFailure,
-  cleanBookStatus,
   closeSnackBar,
   getBookStatusSuccess,
   gettingBookStatus,

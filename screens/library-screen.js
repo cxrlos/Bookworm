@@ -9,6 +9,11 @@ import Layout from '../components/layout';
 import { fetchLibrary, librarySelector } from '../redux/slices/library-slice';
 import Shelf from '../components/shelf';
 
+/**
+ * Represents the user's library screen with the shelves
+ * @param {Object} navigation - To create the stack navigation
+ */
+
 const LibraryScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 

@@ -1,6 +1,10 @@
 import React from 'react';
 import { Searchbar } from 'react-native-paper';
 
+/**
+ * Represents the search bar at the top of the screens.
+ */
+
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
 

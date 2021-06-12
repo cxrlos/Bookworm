@@ -3,6 +3,12 @@ import { Image, Text, View } from 'react-native';
 import { Button, withTheme } from 'react-native-paper';
 import { material } from 'react-native-typography';
 
+/**
+ * Represents the initial screen to the application
+ * @param {Object} navigation - To create the stack navigation
+ * @param {------} colors -
+ */
+
 const StartScreen = ({ navigation, theme: { colors } }) => {
   return (
     <View

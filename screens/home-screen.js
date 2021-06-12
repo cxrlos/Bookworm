@@ -14,6 +14,11 @@ import ShelfHeader from '../components/shelf-header';
 import { statisticsSelector } from '../redux/slices/statistics-slice';
 import { getGreeting, getPages } from '../utils';
 
+/**
+ * Represents the home screen of the application
+ * @param {Object} navigation - To create the stack navigation
+ */
+
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 

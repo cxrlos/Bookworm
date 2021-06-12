@@ -13,6 +13,11 @@ import {
   setQuery,
 } from '../redux/slices/search-slice';
 
+/**
+ * Represents the screen shown when the user is searching for a book
+ * @param {Object} navigation - To create the stack navigation
+ */
+
 const SearchScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 

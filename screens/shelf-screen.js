@@ -4,6 +4,13 @@ import { IconButton, withTheme } from 'react-native-paper';
 
 import BookCard from '../components/book-card';
 
+/**
+ * Represents the screen containing the shelves of a user
+ * @param {Object} navigation - To create the stack navigation
+ * @param {------} route -
+ * @param {------} colors -
+ */
+
 const ShelfScreen = ({ navigation, route, theme: { colors } }) => {
   const { books, shelfId } = route.params;
 

@@ -29,6 +29,13 @@ import {
   getLastDateInCurrentYear,
 } from '../utils';
 
+/**
+ * Represents the statistics screen of the user (contains the graphs, and total page count)
+ * @param {Object} navigation - To create the stack navigation
+ * @param {------} route -
+ * @param {------} colors -
+ */
+
 const StatisticsScreen = ({ navigation, route, theme: { colors } }) => {
   const dispatch = useDispatch();
 

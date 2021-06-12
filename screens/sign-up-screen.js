@@ -9,6 +9,11 @@ import { formSelector } from '../redux/slices/form-slice';
 import Layout from '../components/layout';
 import { createUser } from '../redux/slices/user-slice';
 
+/**
+ * Represents the sign up screen
+ * @param {Object} navigation - To create the stack navigation
+ */
+
 const SignUpScreen = ({ navigation }) => {
   const constants = { ...DAILY_GOAL, ...PASSWORD, ...PERSONAL_INFORMATION };
 
@@ -47,7 +52,7 @@ const SignUpScreen = ({ navigation }) => {
   const { submitting } = useSelector(formSelector);
 
   const onSubmit = (values, actions) => dispatch(createUser(values, actions));
-  
+
   return (
     <Layout isVerticallyCentered>
       <View style={{ padding: 16 }}>
