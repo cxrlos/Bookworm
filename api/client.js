@@ -26,11 +26,27 @@ const client = {
       .auth()
       .createUserWithEmailAndPassword(values.email, values.password);
     // Replace following call by adding created user values to DB
-    await new Promise(resolve => {
-      setTimeout(() => {
-        resolve(alert('done'));
-      }, 10000);
+    db.collection("users-dev").doc(values.email).set({
+      dailyGoal: values.dailyGoal,
+      email: values.email,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      sex: values.sex,
+      library: [],
+      sessions: []
+    })
+    .then(() => {
+      console.warn("Document successfully written!");
+    })
+    .catch((error) => {
+        console.error("Error writing document: ", error);
     });
+    // await new Promise(resolve => {
+    //   setTimeout(() => {
+    //     resolve(alert('done'));
+
+    //   }, 10000);
+    // });
   },
   getLibrary: () => {
     let docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
@@ -68,11 +84,7 @@ const client = {
     return fetch(GOOGLE_BOOKS_URL(query));
   },
   getUser: () => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(user);
-      }, 1000);
-    });
+    
   },
   removeFromLibrary: (bookId) => {
     var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
