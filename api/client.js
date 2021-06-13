@@ -49,21 +49,19 @@ const client = {
       });
   },
   getReadingSessions: () => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve([
-          { date: '2021-01-01', pagesRead: 10, timeRead: 100 },
-          { date: '2021-01-03', pagesRead: 10, timeRead: 100 },
-          { date: '2021-01-05', pagesRead: 10, timeRead: 100 },
-          { date: '2021-01-07', pagesRead: 10, timeRead: 100 },
-          { date: '2021-01-09', pagesRead: 10, timeRead: 100 },
-          { date: '2021-05-06', pagesRead: 5, timeRead: 100 },
-          { date: '2021-05-08', pagesRead: 5, timeRead: 100 },
-          { date: '2021-05-10', pagesRead: 10, timeRead: 100 },
-          { date: '2021-05-12', pagesRead: 15, timeRead: 100 },
-          { date: '2021-05-14', pagesRead: 5, timeRead: 100 },
-        ]);
-      }, 1000);
+    let docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    return docRef
+    .get()
+    .then(doc => {
+      if (doc.exists) {
+        // console.warn('Document data: ', doc.data()['library']);
+        return doc.data()['sessions'];
+      } else {
+        console.warn('There is no document with ID wLLPvNDfVyunKbrBPMtL');
+      }
+    })
+    .catch(error => {
+      console.warn('Error getting document', error);
     });
   },
   getGoogleBooks: async query => {
