@@ -84,11 +84,27 @@ const client = {
     return fetch(GOOGLE_BOOKS_URL(query));
   },
   getUser: () => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(user);
-      }, 1000);
-    });
+    let docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+
+    return docRef
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          // console.warn('Document data: ', doc.data()['library']);
+          return {
+            firstName: doc.data()['firstName'],
+            lastName: doc.data()['lastName'],
+            email: doc.data()['email'],
+            sex: doc.data()['sex'],
+            dailyGoal: doc.data()['dailyGoal']
+          };
+        } else {
+          console.warn('There is no document with ID wLLPvNDfVyunKbrBPMtL');
+        }
+      })
+      .catch(error => {
+        console.warn('Error getting document', error);
+      });
   },
   removeFromLibrary: (bookId) => {
     var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
