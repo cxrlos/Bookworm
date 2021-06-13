@@ -101,10 +101,10 @@ const client = {
   signIn: ({ email, password }) => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   },
-  updateShelf: (bookId, shelfId) => {
+  updateShelf: async (bookId, shelfId) => {
     var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
     
-    userDoc.get().then((doc) => {
+    await userDoc.get().then((doc) => {
       if (doc.exists) {
         userDoc.update({
           library: doc.data().library.map(book => book.bookId === bookId ? { ...book, shelfId } : book)
@@ -122,10 +122,10 @@ const client = {
     //   }, 1000);
     // });
   },
-  updateReadingProgress: ({bookId, currentPage}) => {
+  updateReadingProgress: async ({bookId, currentPage}) => {
     var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
     
-    userDoc.get().then((doc) => {
+    await userDoc.get().then((doc) => {
       if (doc.exists) {
         userDoc.update({
           library: doc.data().library.map(book => book.bookId === bookId ? { ...book, currentPage } : book)
