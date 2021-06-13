@@ -40,7 +40,7 @@ const Shelf = ({ books, navigation, shelfId }) => {
                 width: ITEM_WIDTH,
               }}
             >
-              <Book item={book} navigation={navigation} shelfId={shelfId} />
+              <Book item={book} navigation={navigation} />
             </View>
           ))}
         </ScrollView>

@@ -28,8 +28,8 @@ export const librarySlice = createSlice({
   name: 'library',
   initialState,
   reducers: {
-    addToShelf: (state, { payload: { book } }) => {
-      state.library = [...state.library, book];
+    addToShelf: (state, { payload }) => {
+      state.library = [...state.library, payload];
     },
     clearShelf: state => {
       state.shelfId = null;
@@ -57,25 +57,26 @@ export const librarySlice = createSlice({
       state.shelfId = payload;
     },
     removeFromShelf: (state, { payload }) => {
-      console.warn(payload)
       state.library = [
         ...state.library.filter(book => book.bookId !== payload),
       ];
     },
-    updateCurrentPage: (state, { payload }) => {
-      state.library = {
-        ...state.library,
-        3: [
-          { ...payload.book, currentPage: payload.currentPage },
-          ...state.library[3].filter(book => book.id !== payload.book.id),
-        ],
-      };
+    updateCurrentPage: (state, { payload: { bookId, currentPage } }) => {
+      state.library = state.library.map(book =>
+        book.bookId === bookId ? { ...book, currentPage } : book
+      );
+    },
+    changeShelf: (state, { payload: { bookId, selectedShelf: shelfId } }) => {
+      state.library = state.library.map(book =>
+        book.bookId === bookId ? { ...book, shelfId } : book
+      );
     },
   },
 });
 
 export const {
   addToShelf,
+  changeShelf,
   getLibrary,
   getLibrarySuccess,
   getLibraryFailure,
@@ -127,16 +128,16 @@ export const removeFromLibrary = bookId => {
       dispatch(removeFromLibraryFailure());
     }
   };
+  l;
 };
 
-export const updateShelf = (book, newShelfId, oldShelfId) => {
+export const updateShelf = (bookId, shelfId) => {
   return async dispatch => {
     dispatch(updatingShelf());
     try {
-      await client.updateShelf(book, newShelfId, oldShelfId);
-      dispatch(removeFromShelf({ bookId: book.bookId, oldShelfId }));
-      dispatch(addToShelf({ book, newShelfId }));
-      dispatch(setShelfId(newShelfId));
+      await client.updateShelf(bookId, shelfId);
+      dispatch(changeShelf({ bookId, selectedShelf: shelfId }));
+      dispatch(setShelfId(shelfId));
       dispatch(closeDialog());
       dispatch(updateShelfSuccess());
     } catch (error) {
@@ -147,7 +148,7 @@ export const updateShelf = (book, newShelfId, oldShelfId) => {
 };
 
 export const updateReadingProgress = (
-  book,
+  bookId,
   currentPage,
   oldCurrentPage,
   timeRead
@@ -155,12 +156,9 @@ export const updateReadingProgress = (
   return async dispatch => {
     try {
       const pagesRead = currentPage - oldCurrentPage;
-      await client.updateReadingProgress({
-        bookId: book.id,
-        currentPage,
-      });
+      await client.updateReadingProgress({ bookId, currentPage });
       dispatch(addReadingSession({ pagesRead, timeRead }));
-      dispatch(updateCurrentPage({ book, currentPage }));
+      dispatch(updateCurrentPage({ bookId, currentPage }));
       dispatch(setCurrentPage(currentPage));
     } catch (error) {
       console.warn(error);

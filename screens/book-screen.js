@@ -52,8 +52,8 @@ const BookScreen = ({ navigation, route, theme: { colors } }) => {
     isSnackBarVisible,
     loading,
     selectedShelf,
-    shelfId,
     removing,
+    shelfId,
     snackBarMessage,
     updating,
   } = useSelector(bookSelector);
@@ -77,16 +77,15 @@ const BookScreen = ({ navigation, route, theme: { colors } }) => {
     })
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(
-        getBookStatus({
-          currentPage: route.params.currentPage,
-          shelfId: route.params.shelfId,
-        })
-      );
-    }, [dispatch])
-  );
+  useEffect(() => {
+    dispatch(
+      getBookStatus({
+        currentPage: route.params.currentPage,
+        shelfId: route.params.shelfId,
+      })
+    );
+  }, [dispatch]);
+
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -274,7 +273,7 @@ const BookScreen = ({ navigation, route, theme: { colors } }) => {
           <Dialog.Actions>
             <Button
               onPress={() => {
-                dispatch(updateShelf(route.params, selectedShelf, shelfId));
+                dispatch(updateShelf(bookId, selectedShelf));
               }}
               disabled={updating}
             >

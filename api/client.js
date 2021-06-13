@@ -3,6 +3,8 @@ import firebase from '../firebase/firebase';
 import library from '../data/library';
 import user from '../data/user';
 
+const db = firebase.firestore();
+
 const client = {
   addReadingSession: readingSession => {
     return new Promise(resolve => {

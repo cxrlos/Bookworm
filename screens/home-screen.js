@@ -120,7 +120,7 @@ const HomeScreen = ({ navigation }) => {
             </View>
             {shelf.map(book => (
               <View key={book.bookId} style={{ marginVertical: 6 }}>
-                <BookCard item={book} navigation={navigation} shelfId="3" />
+                <BookCard item={book} navigation={navigation} />
               </View>
             ))}
           </>
