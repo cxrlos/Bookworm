@@ -84,7 +84,11 @@ const client = {
     return fetch(GOOGLE_BOOKS_URL(query));
   },
   getUser: () => {
-    
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(user);
+      }, 1000);
+    });
   },
   removeFromLibrary: (bookId) => {
     var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
@@ -139,10 +143,18 @@ const client = {
     });
   },
   updateUser: form => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
+    console.warn(form);
+    var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
+
+    return userDoc.update(
+      form
+    )
+    .then(() => {
+        console.log("Document successfully updated!");
+    })
+    .catch((error) => {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
     });
   },
 };
