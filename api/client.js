@@ -92,11 +92,6 @@ const client = {
     }).catch((error) => {
         console.log("Error getting document:", error);
     });
-    // return new Promise(resolve => {
-    //   setTimeout(() => {
-    //     resolve();
-    //   }, 1000);
-    // });
   },
   signIn: ({ email, password }) => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
@@ -116,11 +111,6 @@ const client = {
     }).catch((error) => {
         console.log("Error getting document:", error);
     });
-    // return new Promise(resolve => {
-    //   setTimeout(() => {
-    //     resolve();
-    //   }, 1000);
-    // });
   },
   updateReadingProgress: async ({bookId, currentPage}) => {
     var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
@@ -137,11 +127,6 @@ const client = {
     }).catch((error) => {
         console.log("Error getting document:", error);
     });
-    // return new Promise(resolve => {
-    //   setTimeout(() => {
-    //     resolve();
-    //   }, 1000);
-    // });
   },
   updateUser: form => {
     return new Promise(resolve => {
