@@ -101,25 +101,21 @@ const client = {
   signIn: ({ email, password }) => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   },
-  updateShelf: (bookId, shelfId) => {
+  updateShelf: ({bookId, shelfId}) => {
     return new Promise(resolve => {
       setTimeout(() => {
         resolve();
       }, 1000);
     });
   },
-  updateReadingProgress: (bookId, currentPage) => {
+  updateReadingProgress: ({bookId, currentPage}) => {
     var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
     
     userDoc.get().then((doc) => {
       if (doc.exists) {
         userDoc.update({
-          library: firebase.firestore.FieldValue.arrayRemove()
+          library: doc.data().library.map(book => book.bookId === bookId ? { ...book, currentPage } : book)
         });
-        // userDoc.update({
-        //   library: doc.data().library.map(book => book.bookId === bookId ? { ...book, currentPage } : book)
-        // });
-        // console.log("Document data:", doc.data());
       } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
