@@ -20,15 +20,32 @@ const client = {
       }, 1000);
     });
   },
-  createUser: ({ email, password }) => {
-    return firebase.auth().createUserWithEmailAndPassword(email, password);
+  createUser: async values => {
+    await firebase
+      .auth()
+      .createUserWithEmailAndPassword(values.email, values.password);
+    // Replace following call by adding created user values to DB
+    await new Promise(resolve => {
+      setTimeout(() => {
+        resolve(alert('done'));
+      }, 10000);
+    });
   },
   getLibrary: () => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(library);
-      }, 1000);
-    });
+    let docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    return docRef
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          console.warn('Document data: ', doc.data()['library']);
+          return doc.data()['library'];
+        } else {
+          console.warn('There is no document with ID wLLPvNDfVyunKbrBPMtL');
+        }
+      })
+      .catch(error => {
+        console.warn('Error getting document', error);
+      });
   },
   getReadingSessions: () => {
     return new Promise(resolve => {
@@ -48,13 +65,6 @@ const client = {
       }, 1000);
     });
   },
-  getShelfById: shelfId => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
-  },
   getGoogleBooks: async query => {
     return fetch(GOOGLE_BOOKS_URL(query));
   },
@@ -65,7 +75,7 @@ const client = {
       }, 1000);
     });
   },
-  removeFromLibrary: (bookId, shelfId) => {
+  removeFromLibrary: bookId => {
     return new Promise(resolve => {
       setTimeout(() => {
         resolve();
@@ -75,7 +85,7 @@ const client = {
   signIn: ({ email, password }) => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   },
-  updateShelf: (book, newShelfId, oldShelfId) => {
+  updateShelf: (bookId, shelfId) => {
     return new Promise(resolve => {
       setTimeout(() => {
         resolve();

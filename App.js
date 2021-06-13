@@ -40,8 +40,8 @@ const App = () => {
               component={StartScreen}
               name="Bienvenida"
               options={{ headerShown: false }}
-            /> */}
-            {/* <Stack.Screen component={SignInScreen} name="Inicio de sesión" />
+            />
+            <Stack.Screen component={SignInScreen} name="Inicio de sesión" />
             <Stack.Screen component={SignUpScreen} name="Registro" /> */}
             <Stack.Screen
               component={TabNavigator}

@@ -96,9 +96,11 @@ export const fetchLibrary = () => {
     dispatch(getLibrary());
     try {
       const library = await client.getLibrary();
+      console.warn(library);
       dispatch(getLibrarySuccess(library));
     } catch (error) {
       dispatch(getLibraryFailure());
+      console.warn(error);
     }
   };
 };
