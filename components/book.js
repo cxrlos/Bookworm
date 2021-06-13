@@ -12,13 +12,11 @@ export const ITEM_WIDTH = SLIDER_WIDTH - 280;
  * @param {String} shelfId - The shelf the book to open corresponds to
  */
 
-const Book = ({ item, navigation, shelfId }) => {
+const Book = ({ item, navigation }) => {
   const { authors, thumbnail, title } = item;
 
   return (
-    <TouchableOpacity
-      onPress={() => navigation.navigate('Libro', { ...item, shelfId })}
-    >
+    <TouchableOpacity onPress={() => navigation.navigate('Libro', { ...item })}>
       <View
         style={{
           flex: 1,

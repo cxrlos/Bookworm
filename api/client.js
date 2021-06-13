@@ -3,6 +3,8 @@ import firebase from '../firebase/firebase';
 import library from '../data/library';
 import user from '../data/user';
 
+const db = firebase.firestore();
+
 const client = {
   addReadingSession: readingSession => {
     return new Promise(resolve => {
@@ -24,7 +26,6 @@ const client = {
   getLibrary: () => {
     return new Promise(resolve => {
       setTimeout(() => {
-        // resolve({ 0: [], 2: [], 3: [], 4: [] });
         resolve(library);
       }, 1000);
     });

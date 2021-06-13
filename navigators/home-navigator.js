@@ -7,8 +7,6 @@ import ProgressScreen from '../screens/progress-screen';
 import ReadingScreen from '../screens/reading-screen';
 import SearchScreen from '../screens/search-screen';
 
-import Search from '../components/search';
-
 const Stack = createStackNavigator();
 
 const HomeNavigator = () => (

@@ -25,7 +25,7 @@ const ProgressScreen = ({ route, navigation }) => {
   const selector = useSelector(bookSelector);
   const { sessionDuration } = useSelector(readingSelector);
 
-  const { pageCount } = route.params;
+  const { bookId, pageCount } = route.params;
 
   const textInputRef = useRef();
 
@@ -50,7 +50,7 @@ const ProgressScreen = ({ route, navigation }) => {
           onPress={() => {
             dispatch(
               updateReadingProgress(
-                route.params,
+                bookId,
                 currentPage,
                 oldCurrentPage,
                 sessionDuration

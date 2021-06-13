@@ -34,13 +34,13 @@ const Shelf = ({ books, navigation, shelfId }) => {
         >
           {books.map(book => (
             <View
-              key={book.id}
+              key={book.bookId}
               style={{
                 marginHorizontal: 6,
                 width: ITEM_WIDTH,
               }}
             >
-              <Book item={book} navigation={navigation} shelfId={shelfId} />
+              <Book item={book} navigation={navigation} />
             </View>
           ))}
         </ScrollView>

@@ -29,7 +29,7 @@ const ShelfScreen = ({ navigation, route, theme: { colors } }) => {
     <ScrollView style={{ backgroundColor: colors.background }}>
       <View style={{ padding: 16 }}>
         {books.map(book => (
-          <View key={book.id} style={{ marginVertical: 6 }}>
+          <View key={book.bookId} style={{ marginVertical: 6 }}>
             <BookCard item={book} navigation={navigation} shelfId={shelfId} />
           </View>
         ))}

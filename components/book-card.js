@@ -15,8 +15,8 @@ import Progress from '../components/progress';
  * @param {Object} rest - Used to access the book's current page
  */
 
-const BookCard = ({ disabled, item, navigation, shelfId, ...rest }) => {
-  const { authors, pageCount, thumbnail, title } = item;
+const BookCard = ({ disabled, item, navigation, ...rest}) => {
+  const { authors, pageCount, shelfId, thumbnail, title } = item;
 
   const currentPage = rest.currentPage || item.currentPage;
 
@@ -25,7 +25,7 @@ const BookCard = ({ disabled, item, navigation, shelfId, ...rest }) => {
       <TouchableRipple
         borderless
         disabled={disabled}
-        onPress={() => navigation.push('Libro', { ...item, shelfId })}
+        onPress={() => navigation.push('Libro', { ...item })}
         style={{ borderRadius: 4, padding: 12 }}
       >
         <>

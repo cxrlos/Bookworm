@@ -34,13 +34,18 @@ const LibraryScreen = ({ navigation }) => {
     });
   });
 
-  const shelves = library && Object.keys(library);
-
-  const totalBooks =
-    library &&
-    shelves
-      .map(shelfId => library[shelfId].length)
-      .reduce((acc, curr) => acc + curr);
+  const shelves =
+    library.length > 0
+      ? library.reduce((r, a) => {
+          let shelfId = a.shelfId;
+          if (!r[shelfId]) {
+            r[shelfId] = [a];
+          } else {
+            r[shelfId].push(a);
+          }
+          return r;
+        }, {})
+      : [];
 
   const Hero = () => (
     <>
@@ -84,19 +89,19 @@ const LibraryScreen = ({ navigation }) => {
 
   return (
     <Layout
-      isVerticallyCentered={totalBooks === 0}
+      isVerticallyCentered={library.length === 0}
       onRefresh={() => dispatch(fetchLibrary())}
       refreshing={loading}
     >
-      {totalBooks === 0 ? (
+      {library.length === 0 ? (
         <Hero />
       ) : (
-        shelves.map(shelfId => (
+        Object.keys(shelves).map(shelfId => (
           <Fragment key={shelfId}>
-            {library[shelfId].length > 0 && (
+            {shelves[shelfId].length > 0 && (
               <>
                 <Shelf
-                  books={library[shelfId]}
+                  books={shelves[shelfId]}
                   navigation={navigation}
                   shelfId={shelfId}
                 />

@@ -9,7 +9,7 @@ import { LIBRARY } from '../constants';
 import ErrorScreen from './error-screen';
 import { fetchUser, userSelector } from '../redux/slices/user-slice';
 import Layout from '../components/layout';
-import { fetchShelfById, librarySelector } from '../redux/slices/library-slice';
+import { fetchLibrary, librarySelector } from '../redux/slices/library-slice';
 import ShelfHeader from '../components/shelf-header';
 import { statisticsSelector } from '../redux/slices/statistics-slice';
 import { getGreeting, getPages } from '../utils';
@@ -24,7 +24,7 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     dispatch(fetchUser());
-    dispatch(fetchShelfById('3'));
+    dispatch(fetchLibrary());
   }, [dispatch]);
 
   useLayoutEffect(() => {
@@ -38,7 +38,7 @@ const HomeScreen = ({ navigation }) => {
     });
   });
 
-  const { hasErrors, library, shelfId } = useSelector(librarySelector);
+  const { hasErrors, library } = useSelector(librarySelector);
 
   const { readingSessions } = useSelector(statisticsSelector);
 
@@ -47,7 +47,7 @@ const HomeScreen = ({ navigation }) => {
     user: { dailyGoal, firstName },
   } = useSelector(userSelector);
 
-  const shelf = library[shelfId] || [];
+  const shelf = library.filter(book => book.shelfId === '3') || [];
 
   const pagesRead = readingSessions
     .filter(session => session.date === new Date().toISOString().split('T')[0])
@@ -55,60 +55,56 @@ const HomeScreen = ({ navigation }) => {
 
   const pagesLeft = dailyGoal - pagesRead;
 
-  const Hero = () => (
-    <>
-      <Image
-        resizeMode="center"
-        source={require('../assets/undraw_Bibliophile_hwqc.png')}
-        style={{
-          height: 192,
-          marginBottom: 16,
-          width: '100%',
-        }}
-      />
-      <Text
-        style={{
-          ...material.display1,
-          marginBottom: 6,
-          textAlign: 'center',
-        }}
-      >
-        {getGreeting()}, {firstName}
-      </Text>
-      {pagesLeft > 0 ? (
-        <Text
-          style={{
-            ...material.subheading,
-            textAlign: 'center',
-          }}
-        >
-          Tienes que leer{' '}
-          <Text style={material.headline}>{dailyGoal - pagesRead}</Text>{' '}
-          {getPages(pagesLeft)} más para completar tu objetivo diario.
-        </Text>
-      ) : (
-        <Text
-          style={{
-            ...material.subheading,
-            textAlign: 'center',
-          }}
-        >
-          ¡Enhorabuena! Has completado tu objetivo diario.
-        </Text>
-      )}
-    </>
-  );
-
   if (hasErrors) return <ErrorScreen />;
 
   return (
     <Layout
       isVerticallyCentered={shelf.length === 0}
-      onRefresh={() => dispatch(fetchShelfById('3'))}
+      onRefresh={() => dispatch(fetchLibrary())}
       refreshing={loading}
     >
       <View style={{ padding: 16 }}>
-        <Hero />
+        <>
+          <Image
+            resizeMode="center"
+            source={require('../assets/undraw_Bibliophile_hwqc.png')}
+            style={{
+              height: 192,
+              marginBottom: 16,
+              width: '100%',
+            }}
+          />
+          <Text
+            style={{
+              ...material.display1,
+              marginBottom: 6,
+              textAlign: 'center',
+            }}
+          >
+            {getGreeting()}, {firstName}
+          </Text>
+          {pagesLeft > 0 ? (
+            <Text
+              style={{
+                ...material.subheading,
+                textAlign: 'center',
+              }}
+            >
+              Tienes que leer{' '}
+              <Text style={material.headline}>{dailyGoal - pagesRead}</Text>{' '}
+              {getPages(pagesLeft)} más para completar tu objetivo diario.
+            </Text>
+          ) : (
+            <Text
+              style={{
+                ...material.subheading,
+                textAlign: 'center',
+              }}
+            >
+              ¡Enhorabuena! Has completado tu objetivo diario.
+            </Text>
+          )}
+        </>
         {shelf.length === 0 ? (
           <Button
             style={{ alignSelf: 'center', marginTop: 16 }}
@@ -123,8 +119,8 @@ const HomeScreen = ({ navigation }) => {
               <ShelfHeader length={shelf.length} title={LIBRARY['3']} />
             </View>
             {shelf.map(book => (
-              <View key={book.id} style={{ marginVertical: 6 }}>
-                <BookCard item={book} navigation={navigation} shelfId="3" />
+              <View key={book.bookId} style={{ marginVertical: 6 }}>
+                <BookCard item={book} navigation={navigation} />
               </View>
             ))}
           </>
