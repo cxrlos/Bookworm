@@ -2,8 +2,9 @@ import { GOOGLE_BOOKS_URL } from '../constants';
 import firebase from '../firebase/firebase';
 import library from '../data/library';
 import user from '../data/user';
+import book from '../data/book';
 
-const db = firebase.firestore();
+let db = firebase.firestore();
 
 const client = {
   addReadingSession: readingSession => {
@@ -37,7 +38,7 @@ const client = {
       .get()
       .then(doc => {
         if (doc.exists) {
-          console.warn('Document data: ', doc.data()['library']);
+          // console.warn('Document data: ', doc.data()['library']);
           return doc.data()['library'];
         } else {
           console.warn('There is no document with ID wLLPvNDfVyunKbrBPMtL');
@@ -75,12 +76,27 @@ const client = {
       }, 1000);
     });
   },
-  removeFromLibrary: bookId => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
+  removeFromLibrary: (bookId) => {
+    var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
+    
+    userDoc.get().then((doc) => {
+      if (doc.exists) {
+        userDoc.update({
+          library: doc.data().library.filter(book => book.bookId !== bookId)
+        });
+          // console.log("Document data:", doc.data());
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+      }
+    }).catch((error) => {
+        console.log("Error getting document:", error);
     });
+    // return new Promise(resolve => {
+    //   setTimeout(() => {
+    //     resolve();
+    //   }, 1000);
+    // });
   },
   signIn: ({ email, password }) => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
@@ -93,11 +109,29 @@ const client = {
     });
   },
   updateReadingProgress: (bookId, currentPage) => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
+    var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
+    
+    userDoc.get().then((doc) => {
+      if (doc.exists) {
+        userDoc.update({
+          library: firebase.firestore.FieldValue.arrayRemove()
+        });
+        // userDoc.update({
+        //   library: doc.data().library.map(book => book.bookId === bookId ? { ...book, currentPage } : book)
+        // });
+        // console.log("Document data:", doc.data());
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+      }
+    }).catch((error) => {
+        console.log("Error getting document:", error);
     });
+    // return new Promise(resolve => {
+    //   setTimeout(() => {
+    //     resolve();
+    //   }, 1000);
+    // });
   },
   updateUser: form => {
     return new Promise(resolve => {
