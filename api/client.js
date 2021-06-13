@@ -101,12 +101,26 @@ const client = {
   signIn: ({ email, password }) => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   },
-  updateShelf: ({bookId, shelfId}) => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
+  updateShelf: (bookId, shelfId) => {
+    var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
+    
+    userDoc.get().then((doc) => {
+      if (doc.exists) {
+        userDoc.update({
+          library: doc.data().library.map(book => book.bookId === bookId ? { ...book, shelfId } : book)
+        });
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+      }
+    }).catch((error) => {
+        console.log("Error getting document:", error);
     });
+    // return new Promise(resolve => {
+    //   setTimeout(() => {
+    //     resolve();
+    //   }, 1000);
+    // });
   },
   updateReadingProgress: ({bookId, currentPage}) => {
     var userDoc = db.collection('users-dev').doc("wLLPvNDfVyunKbrBPMtL");
