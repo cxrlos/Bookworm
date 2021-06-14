@@ -43,9 +43,20 @@ const client = {
   addToLibrary: async book => {
     book = { ...book, currentPage: 0 };
     const userDoc = db.collection('users-dev').doc(user.email);
-    await userDoc.update({
-      library: firebase.firestore.FieldValue.arrayUnion(book),
-    });
+    await userDoc
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          userDoc.update({
+            library: firebase.firestore.FieldValue.arrayUnion(book),
+          });
+        } else {
+          console.log('Could not add book to library');
+        }
+      })
+      .catch(error => {
+        console.log('Could not add book to library: ', error);
+      });
   },
   createUser: async values => {
     await firebase
