@@ -4,7 +4,16 @@ import firebase from '../firebase/firebase';
 const db = firebase.firestore();
 let user = firebase.auth().currentUser;
 
+
+/*
+ * Represents the user in the system and the functions that it requires
+ */
+
 const client = {
+  /*
+   * Function that adds a reading session after the chronometer is stopped
+   * @param {Object} readingSession - Used to push the session data to the DB from the fontend request
+   */
   addReadingSession: async readingSession => {
     const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
@@ -40,6 +49,11 @@ const client = {
         console.log('Could not add reading session:', error);
       });
   },
+
+  /*
+   * Function that adds a searched book to the a user's library
+   * @param {Object} book - Used to push the book data to the DB from the fontend request
+   */
   addToLibrary: async book => {
     book = { ...book, currentPage: 0 };
     const userDoc = db.collection('users-dev').doc(user.email);
@@ -58,6 +72,11 @@ const client = {
         console.log('Could not add book to library: ', error);
       });
   },
+
+  /*
+   * Function that creates a user
+   * @param {Object} values - Used to pass the authentication parameters
+   */
   createUser: async values => {
     await firebase
       .auth()
@@ -81,6 +100,9 @@ const client = {
         console.error('User could not be added ', error);
       });
   },
+  /*
+   * Function that returns the books added by the user
+   */
   getLibrary: () => {
     const docRef = db.collection('users-dev').doc(user.email);
     return docRef
@@ -96,6 +118,10 @@ const client = {
         console.warn('The library could not be retrieved ', error);
       });
   },
+
+  /*
+   * Function that returns all of the reading sessions stored in the user array
+   */
   getReadingSessions: () => {
     const docRef = db.collection('users-dev').doc(user.email);
     return docRef
@@ -111,9 +137,19 @@ const client = {
         console.warn('The reading sessions could not be retrieved ', error);
       });
   },
+
+  /*
+   * Function that requests the Google Books API and returns the google book object
+   * @param {Object} query - Contains the needed values to search the book
+   */
   getGoogleBooks: async query => {
     return fetch(GOOGLE_BOOKS_URL(query));
   },
+
+
+  /*
+   * Function that gets the current user's attributes
+   */
   getUser: () => {
     const docRef = db.collection('users-dev').doc(user.email);
     return docRef
@@ -135,6 +171,11 @@ const client = {
         console.warn('The user could not be retrieved ', error);
       });
   },
+
+  /*
+   * Function that removes a book from the library
+   * @param String bookId - Book identifier that is needed for the query
+   */
   removeFromLibrary: async bookId => {
     const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
@@ -152,15 +193,29 @@ const client = {
         console.log('The book could not be removed ', error);
       });
   },
+
+  /*
+   * Sign in function
+   */
   signIn: async ({ email, password }) => {
     await firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => (user = firebase.auth().currentUser));
   },
+
+  /*
+   * Sign out function
+   */
   signOut: async () => {
     await firebase.auth().signOut();
   },
+
+  /*
+   * Function that updates the shelf where a book can be found
+   * @param String bookId - Book identifier to execute the operation
+   * @param Integer shelfId - Shelf identifier to execute the operation
+   */
   updateShelf: async (bookId, shelfId) => {
     const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
@@ -184,6 +239,12 @@ const client = {
         console.log('The shelf could not be updated ', error);
       });
   },
+
+  /*
+   * Function that updates the last read page from a book 
+   * @param String bookId - Book identifier to execute the operation
+   * @param Integer currentPage - Last read page
+   */
   updateReadingProgress: async ({ bookId, currentPage }) => {
     const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
@@ -205,6 +266,11 @@ const client = {
         console.log('The reading progress could not be updated ', error);
       });
   },
+
+  /*
+   * Function that updates the user's data from a form 
+   * @param {Object} form - Contains the fields from the update request
+   */
   updateUser: async form => {
     const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc

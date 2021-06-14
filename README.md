@@ -23,15 +23,15 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
 ---------------------------------------
 ### Página principal
 #### Funcionalidades a implementar:
-- [ ] Barra de búsqueda
-- [ ] Mostrar las páginas restantes para completar la meta diaria del usuario
-- [ ] Despliegue de todos los libros que se están leyendo actualmente
+- [X] Barra de búsqueda
+- [X] Mostrar las páginas restantes para completar la meta diaria del usuario
+- [X] Despliegue de todos los libros que se están leyendo actualmente
     - Portada del libro
     - Título
     - Autor
     - Progreso (por páginas)
     - Botón para actualizar progreso
-- [ ] Al presionar un libro Go to > «Libro leyendo» 
+- [X] Al presionar un libro Go to > «Libro leyendo» 
 #### Elementos a utilizar:
 - Image 
 - Text
@@ -42,7 +42,7 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
 
 ### Libro en biblioteca
 #### Funcionalidades a implementar:
-- [ ] Visualizar los datos del libro: 
+- [X] Visualizar los datos del libro: 
     - Portada del libro
     - Título
     - Autor
@@ -52,10 +52,10 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
     - Número de páginas
     - ISBN
     - Año de la edición
-- [ ] Si se el estatus del libro es «Leyendo» 
+- [X] Si se el estatus del libro es «Leyendo» 
     - «Reanudar lectura» para que comience el timer
         - Al presionarlo el timer comienza a correr y se activan dos botones (pausar y detener lectura)
-- [ ] Botón para eliminar de la biblioteca
+- [X] Botón para eliminar de la biblioteca
 #### Elementos a utilizar:
 - Image 
 - Text
@@ -66,7 +66,7 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
 
 ### Libro buscado
 #### Funcionalidades a implementar:
-- [ ] Visualizar los datos del libro: 
+- [X] Visualizar los datos del libro: 
     - Portada del libro
     - Título
     - Autor
@@ -76,7 +76,7 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
     - Número de páginas
     - ISBN
     - Año de la edición
-- [ ] Botón para añadir a la biblioteca
+- [X] Botón para añadir a la biblioteca
 #### Elementos a utilizar:
 - View 
 - Image 
@@ -85,9 +85,9 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
 
 ### Actualizar progreso
 #### Funcionalidades a implementar:
-- [ ] Ingresar la página en la que el usuario se quedó
+- [X] Ingresar la página en la que el usuario se quedó
     - On page _ of 478
-- [ ] Mostrar el tiempo leído
+- [X] Mostrar el tiempo leído
 #### Elementos a utilizar:
 - Image
 - Text
@@ -95,7 +95,7 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
 
 ### Perfil/Settings
 #### Funcionalidades a implementar:
-- [ ] Crear/actualizar meta diaria (por páginas)
+- [X] Crear/actualizar meta diaria (por páginas)
 #### Elementos a utilizar:
 - Text
 - Text Input 
@@ -103,9 +103,9 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
 
 ### Biblioteca
 #### Funcionalidades a implementar:
-- [ ] Se pueden encontrar todos los libros que se han leído organizados en un estante de libros
-- [ ] Para poder visualizar los libros de una manera más específica, se podrán filtrar por estados
-- [ ] Al darle click a un libro, se podrá hacer lo siguiente:
+- [X] Se pueden encontrar todos los libros que se han leído organizados en un estante de libros
+- [X] Para poder visualizar los libros de una manera más específica, se podrán filtrar por estados
+- [X] Al darle click a un libro, se podrá hacer lo siguiente:
     - Si se está leyendo: Go to > Página del libro leyendo
     - Si se quiere leer: + botón para eliminar de la biblioteca
     - Si ya se leyó: + botón para eliminar de la biblioteca y fechas leídas
@@ -117,15 +117,15 @@ Se tomará como base la gama de colores llamada "gruvbox" ya que fue desarrollad
 
 ### Estadísticas
 #### Funcionalidades a implementar:
-- [ ] Generar un filtro que discrimine la información por los siguientes atributos:
+- [X] Generar un filtro que discrimine la información por los siguientes atributos:
     - Día: Minutos y páginas leídas en el día de la consulta
     - Últimos 7 días: Minutos, páginas y libros leídos (si es aplicable) en los pasados 7 días de la consulta
     - Mes: Minutos, páginas y libros leídos (si es aplicable) en el mes de la consulta
     - Año: Minutos, páginas y libros leídos (si es aplicable) en el año de la consulta
-- [ ] Mostrar un mapa de calor que represente el hábito lector mensual
+- [X] Mostrar un mapa de calor que represente el hábito lector mensual
     - Al darle click a un día te muestra lo que se leyó en ese día
-- [ ] Generar un log del libro que muestre los libros con mayor y menor número de páginas
-- [ ] Generar un log muestre el dia o mes con el mayor y menor número de páginas o tiempo de lectura.
+- [X] Generar un log del libro que muestre los libros con mayor y menor número de páginas
+- [X] Generar un log muestre el dia o mes con el mayor y menor número de páginas o tiempo de lectura.
 #### Elementos a utilizar:
 - Dropdown
 - Statistic graphs
@@ -137,47 +137,47 @@ A continuación se encuentra la división del trabajo por etapas y la leyenda pa
 ⚫ Carlos García | 🟠  Daniela Vignau | 🟣 Héctor Reyes | 🟡 Jesus González | 🟤 Sergio Hernández
 
 - Layout general de las pantallas
-    - [ ] Sidebar del menú. 🟣
-    - [ ] Barra de navegación inferior. 🟠
+    - [X] Sidebar del menú. 🟣
+    - [X] Barra de navegación inferior. 🟠
 - Desarrollo del contenido principal de las pantallas
-  - [ ] Log-in / Registro
-    - [ ] Desarrollo de la distribución de elementos en pantalla. 🟠
-    - [ ] Creación de formularios y botones para el ingreso de la información. 🟣
-  - [ ] Configuraciones
-    - [ ] Desarrollo de la distribución de elementos en pantalla. 🟣
-    - [ ] Creación de formularios y botones de funcionalidad. 🟠
-  - [ ] Biblioteca
-    - [ ] Desarrollo del componente unitario del libro. 🟣
-    - [ ] Inclusión de filtro para diferenciar libros por el criterio definido por el  usuario. 🟠
-    - [ ] Implementar barra de búsqueda. 🟠
-    - [ ] Crear el layout del menú para mostrar todos los libros del usuario. 🟣
-  - [ ] Home
-    - [ ] Desarrollo del layout general incorporando los componentes desarrollados anteriormente (la barra de búsqueda y componente unitario de libro). 🟠
-    - [ ] Creación de barra de progreso para identificar avance en los libros que el usuario esta leyendo.  🟣
-  - [ ] Vista del libro
-    - [ ] Desarrollo de la distribución de elementos en pantalla. 🟣
-    - [ ] Creación de menú dropdown para modificar el estatus del libro (leyendo, por leer, terminado). 🟠
-    - [ ] Desarrollo de la lógica en frontend del cronometro de lectura. 🟣
-    - [ ] Desarrollo de la lógica en frontend de los botones y paginas leídas . 🟠
-  - [ ]  Estadísticas
-    - [ ] Desarrollo de la distribución de elementos en pantalla. 🟠
-    - [ ] Creación del filtro basado en unidades temporales. 🟣
+  - [X] Log-in / Registro
+    - [X] Desarrollo de la distribución de elementos en pantalla. 🟠
+    - [X] Creación de formularios y botones para el ingreso de la información. 🟣
+  - [X] Configuraciones
+    - [X] Desarrollo de la distribución de elementos en pantalla. 🟣
+    - [X] Creación de formularios y botones de funcionalidad. 🟠
+  - [X] Biblioteca
+    - [X] Desarrollo del componente unitario del libro. 🟣
+    - [X] Inclusión de filtro para diferenciar libros por el criterio definido por el  usuario. 🟠
+    - [X] Implementar barra de búsqueda. 🟠
+    - [X] Crear el layout del menú para mostrar todos los libros del usuario. 🟣
+  - [X] Home
+    - [X] Desarrollo del layout general incorporando los componentes desarrollados anteriormente (la barra de búsqueda y componente unitario de libro). 🟠
+    - [X] Creación de barra de progreso para identificar avance en los libros que el usuario esta leyendo.  🟣
+  - [X] Vista del libro
+    - [X] Desarrollo de la distribución de elementos en pantalla. 🟣
+    - [X] Creación de menú dropdown para modificar el estatus del libro (leyendo, por leer, terminado). 🟠
+    - [X] Desarrollo de la lógica en frontend del cronometro de lectura. 🟣
+    - [X] Desarrollo de la lógica en frontend de los botones y paginas leídas . 🟠
+  - [X]  Estadísticas
+    - [X] Desarrollo de la distribución de elementos en pantalla. 🟠
+    - [X] Creación del filtro basado en unidades temporales. 🟣
 - Funcionalidades lógicas
-    - [ ] Base de datos
-        - [ ] Desarrollo de arquitectura de las bases de datos
-            - [ ] Base de datos para los usuarios. 🟡 🟤 ⚫
-        - [ ] APIs
-            - [ ] Operaciones CRUD para la base de datos de Google Books
-                - [ ] GET 🟡
-            - [ ] Operaciones CRUD para la base de datos de usuarios
-                - [ ] POST 🟤
-                - [ ] DELETE ⚫
-                - [ ] GET 🟤
-                - [ ] UPDATE ⚫
-                - [ ] PUT 🟡
-    - [ ] Desarrollo de funcionalidades lógicas de la aplicación
-        - [ ] Lógica para la obtención de datos desde los botones y barras de progreso. 🟤
-        - [ ] Transmisión de datos a los componentes que requieran información de las APIs. 🟡 ⚫
+    - [X] Base de datos
+        - [X] Desarrollo de arquitectura de las bases de datos
+            - [X] Base de datos para los usuarios. 🟡 🟤 ⚫
+        - [X] APIs
+            - [X] Operaciones CRUD para la base de datos de Google Books
+                - [X] GET 🟡
+            - [X] Operaciones CRUD para la base de datos de usuarios
+                - [X] POST 🟤
+                - [X] DELETE ⚫
+                - [X] GET 🟤
+                - [X] UPDATE ⚫
+                - [X] PUT 🟡
+    - [X] Desarrollo de funcionalidades lógicas de la aplicación
+        - [X] Lógica para la obtención de datos desde los botones y barras de progreso. 🟤
+        - [X] Transmisión de datos a los componentes que requieran información de las APIs. 🟡 ⚫
 
 
 
