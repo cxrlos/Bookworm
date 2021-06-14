@@ -68,7 +68,7 @@ export const librarySlice = createSlice({
     },
     changeShelf: (state, { payload: { bookId, selectedShelf: shelfId } }) => {
       state.library = state.library.map(book =>
-        book.bookId === bookId ? { ...book, shelfId } : book
+        book.bookId === bookId ? { ...book, currentPage: 0, shelfId } : book
       );
     },
   },
@@ -96,7 +96,6 @@ export const fetchLibrary = () => {
     dispatch(getLibrary());
     try {
       const library = await client.getLibrary();
-      console.warn(library);
       dispatch(getLibrarySuccess(library));
     } catch (error) {
       dispatch(getLibraryFailure());

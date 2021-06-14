@@ -16,10 +16,23 @@ export const statisticsSlice = createSlice({
       state.loading = true;
     },
     addReadingSessionSuccess: (state, { payload }) => {
-      state.readingSessions = [...state.readingSessions, payload];
+      const readingSession = state.readingSessions.find(
+        session => session.date === payload.date
+      );
+      if (readingSession) {
+        state.readingSessions = state.readingSessions.map(session =>
+          session.date === payload.date
+            ? {
+                ...session,
+                pagesRead: payload.pagesRead + readingSession.pagesRead,
+              }
+            : session
+        );
+      } else {
+        state.readingSessions = [...state.readingSessions, payload];
+      }
       state.loading = false;
       state.hasErrors = false;
-      console.warn(state.readingSessions);
     },
     addReadingSessionFailure: state => {
       state.loading = false;
@@ -63,6 +76,7 @@ export const fetchReadingSessions = () => {
       const readingSessions = await client.getReadingSessions();
       dispatch(getReadingSessionsSuccess(readingSessions));
     } catch (error) {
+      console.warn(error);
       dispatch(getReadingSessionsFailure());
     }
   };

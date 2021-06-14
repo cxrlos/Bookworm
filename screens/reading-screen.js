@@ -1,5 +1,5 @@
 import { StackActions } from '@react-navigation/native';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Alert, Image, Text, View } from 'react-native';
 import { Divider, IconButton, withTheme } from 'react-native-paper';
 import { material } from 'react-native-typography';
@@ -28,32 +28,6 @@ const ReadingScreen = ({ navigation, route, theme: { colors } }) => {
   const { readingStatus, time } = useSelector(readingSelector);
 
   const { authors, thumbnail, title } = route.params;
-
-  useEffect(
-    () =>
-      navigation.addListener('beforeRemove', e => {
-        if (!readingStatus) return;
-        e.preventDefault();
-        handlePause();
-        Alert.alert(
-          '¿Regresar?',
-          'El tiempo leído durante la sesión no será registrado.',
-          [
-            { text: 'Cancelar', style: 'cancel', onPress: () => {} },
-            {
-              text: 'Regresar',
-              style: 'destructive',
-              onPress: () => {
-                dispatch(setSessionDuration(time));
-                dispatch(resetTime());
-                navigation.dispatch(e.data.action);
-              },
-            },
-          ]
-        );
-      }),
-    [navigation, readingStatus]
-  );
 
   const countRef = useRef(null);
 

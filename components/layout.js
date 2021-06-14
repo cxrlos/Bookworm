@@ -59,7 +59,7 @@ const Layout = ({
         onDismiss={() => dispatch(closeSnackBar())}
         visible={isSnackBarVisible}
       >
-        {snackBarMessage}
+        {snackBarMessages[snackBarMessage]}
       </Snackbar>
     </>
   );

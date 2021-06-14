@@ -11,6 +11,7 @@ const constants = {
       'auth/weak-password':
         'La contraseña debe tener al menos ocho caracteres, contener al menos una letra mayúscula, al menos un número y al menos un carácter especial.',
       'auth/user-not-found': 'Usuario no encontrado',
+      'auth/wrong-password': 'Contraseña incorrecta',
       success: 'Guardado exitosamente',
       error: 'Error al guardar',
     },

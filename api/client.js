@@ -1,11 +1,10 @@
 import { GOOGLE_BOOKS_URL } from '../constants';
 import firebase from '../firebase/firebase';
-import library from '../data/library';
-import user from '../data/user';
 
 const db = firebase.firestore();
 
 const client = {
+  // TODO
   addReadingSession: readingSession => {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -13,6 +12,7 @@ const client = {
       }, 1000);
     });
   },
+  // TODO
   addToLibrary: book => {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -24,20 +24,31 @@ const client = {
     await firebase
       .auth()
       .createUserWithEmailAndPassword(values.email, values.password);
-    // Replace following call by adding created user values to DB
-    await new Promise(resolve => {
-      setTimeout(() => {
-        resolve(alert('done'));
-      }, 10000);
-    });
+    await db
+      .collection('users-dev')
+      .doc(values.email)
+      .set({
+        dailyGoal: values.dailyGoal,
+        email: values.email,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        sex: values.sex,
+        library: [],
+        sessions: [],
+      })
+      .then(() => {
+        console.warn('Document successfully written!');
+      })
+      .catch(error => {
+        console.error('Error writing document: ', error);
+      });
   },
   getLibrary: () => {
-    let docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
     return docRef
       .get()
       .then(doc => {
         if (doc.exists) {
-          console.warn('Document data: ', doc.data()['library']);
           return doc.data()['library'];
         } else {
           console.warn('There is no document with ID wLLPvNDfVyunKbrBPMtL');
@@ -48,66 +59,122 @@ const client = {
       });
   },
   getReadingSessions: () => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve([
-          { date: '2021-01-01', pagesRead: 10, timeRead: 100 },
-          { date: '2021-01-03', pagesRead: 10, timeRead: 100 },
-          { date: '2021-01-05', pagesRead: 10, timeRead: 100 },
-          { date: '2021-01-07', pagesRead: 10, timeRead: 100 },
-          { date: '2021-01-09', pagesRead: 10, timeRead: 100 },
-          { date: '2021-05-06', pagesRead: 5, timeRead: 100 },
-          { date: '2021-05-08', pagesRead: 5, timeRead: 100 },
-          { date: '2021-05-10', pagesRead: 10, timeRead: 100 },
-          { date: '2021-05-12', pagesRead: 15, timeRead: 100 },
-          { date: '2021-05-14', pagesRead: 5, timeRead: 100 },
-        ]);
-      }, 1000);
-    });
+    const docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    return docRef
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          return doc.data()['sessions'];
+        } else {
+          console.warn('There is no document with ID wLLPvNDfVyunKbrBPMtL');
+        }
+      })
+      .catch(error => {
+        console.warn('Error getting document', error);
+      });
   },
   getGoogleBooks: async query => {
     return fetch(GOOGLE_BOOKS_URL(query));
   },
   getUser: () => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(user);
-      }, 1000);
-    });
+    const docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    return docRef
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          return {
+            firstName: doc.data()['firstName'],
+            lastName: doc.data()['lastName'],
+            email: doc.data()['email'],
+            sex: doc.data()['sex'],
+            dailyGoal: doc.data()['dailyGoal'],
+          };
+        } else {
+          console.warn('There is no document with ID wLLPvNDfVyunKbrBPMtL');
+        }
+      })
+      .catch(error => {
+        console.warn('Error getting document', error);
+      });
   },
-  removeFromLibrary: bookId => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
+  removeFromLibrary: async bookId => {
+    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    await userDoc
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          userDoc.update({
+            library: doc.data().library.filter(book => book.bookId !== bookId),
+          });
+        } else {
+          console.log('No such document!');
+        }
+      })
+      .catch(error => {
+        console.log('Error getting document:', error);
+      });
   },
-  signIn: ({ email, password }) => {
-    return firebase.auth().signInWithEmailAndPassword(email, password);
+  signIn: async ({ email, password }) => {
+    await firebase.auth().signInWithEmailAndPassword(email, password);
   },
-  updateShelf: (bookId, shelfId) => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
+  signOut: async () => {
+    await firebase.auth().signOut();
   },
-  updateReadingProgress: (bookId, currentPage) => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
+  updateShelf: async (bookId, shelfId) => {
+    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    await userDoc
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          userDoc.update({
+            library: doc
+              .data()
+              .library.map(book =>
+                book.bookId === bookId
+                  ? { ...book, currentPage: 0, shelfId }
+                  : book
+              ),
+          });
+        } else {
+          console.log('No such document!');
+        }
+      })
+      .catch(error => {
+        console.log('Error getting document:', error);
+      });
   },
-  updateUser: form => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
+  updateReadingProgress: async ({ bookId, currentPage }) => {
+    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    await userDoc
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          userDoc.update({
+            library: doc
+              .data()
+              .library.map(book =>
+                book.bookId === bookId ? { ...book, currentPage } : book
+              ),
+          });
+        } else {
+          console.log('No such document!');
+        }
+      })
+      .catch(error => {
+        console.log('Error getting document:', error);
+      });
+  },
+  updateUser: async form => {
+    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    await userDoc
+      .update(form)
+      .then(() => {
+        console.log('Document successfully updated!');
+      })
+      .catch(error => {
+        console.error('Error updating document: ', error);
+      });
   },
 };
-
-export const { getLibrary, getShelfById } = client;
 
 export default client;
