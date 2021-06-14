@@ -2,22 +2,49 @@ import { GOOGLE_BOOKS_URL } from '../constants';
 import firebase from '../firebase/firebase';
 
 const db = firebase.firestore();
+let user = firebase.auth().currentUser;
 
 const client = {
-  // TODO
-  addReadingSession: readingSession => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
+  addReadingSession: async readingSession => {
+    const userDoc = db.collection('users-dev').doc(user.email);
+    await userDoc
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          const existingSession = doc
+            .data()
+            .sessions.find(session => session.date === readingSession.date);
+          if (existingSession) {
+            userDoc.update({
+              sessions: doc.data().sessions.map(session =>
+                session.date === readingSession.date
+                  ? {
+                      ...session,
+                      pagesRead: readingSession.pagesRead + session.pagesRead,
+                      timeRead: readingSession.timeRead + session.timeRead,
+                    }
+                  : session
+              ),
+            });
+          } else {
+            userDoc.update({
+              sessions:
+                firebase.firestore.FieldValue.arrayUnion(readingSession),
+            });
+          }
+        } else {
+          console.log('No such document!');
+        }
+      })
+      .catch(error => {
+        console.log('Error getting document:', error);
+      });
   },
-  // TODO
-  addToLibrary: book => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
+  addToLibrary: async book => {
+    book = { ...book, currentPage: 0 };
+    const userDoc = db.collection('users-dev').doc(user.email);
+    await userDoc.update({
+      library: firebase.firestore.FieldValue.arrayUnion(book),
     });
   },
   createUser: async values => {
@@ -44,7 +71,7 @@ const client = {
       });
   },
   getLibrary: () => {
-    const docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const docRef = db.collection('users-dev').doc(user.email);
     return docRef
       .get()
       .then(doc => {
@@ -59,7 +86,7 @@ const client = {
       });
   },
   getReadingSessions: () => {
-    const docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const docRef = db.collection('users-dev').doc(user.email);
     return docRef
       .get()
       .then(doc => {
@@ -77,7 +104,7 @@ const client = {
     return fetch(GOOGLE_BOOKS_URL(query));
   },
   getUser: () => {
-    const docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const docRef = db.collection('users-dev').doc(user.email);
     return docRef
       .get()
       .then(doc => {
@@ -98,7 +125,7 @@ const client = {
       });
   },
   removeFromLibrary: async bookId => {
-    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
       .get()
       .then(doc => {
@@ -115,13 +142,16 @@ const client = {
       });
   },
   signIn: async ({ email, password }) => {
-    await firebase.auth().signInWithEmailAndPassword(email, password);
+    await firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => (user = firebase.auth().currentUser));
   },
   signOut: async () => {
     await firebase.auth().signOut();
   },
   updateShelf: async (bookId, shelfId) => {
-    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
       .get()
       .then(doc => {
@@ -144,7 +174,7 @@ const client = {
       });
   },
   updateReadingProgress: async ({ bookId, currentPage }) => {
-    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
       .get()
       .then(doc => {
@@ -165,7 +195,7 @@ const client = {
       });
   },
   updateUser: async form => {
-    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
       .update(form)
       .then(() => {
