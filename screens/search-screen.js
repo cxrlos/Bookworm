@@ -3,6 +3,7 @@ import { Image, Text, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useDispatch, useSelector } from 'react-redux';
+import ErrorScreen from './error-screen';
 
 import BookCard from '../components/book-card';
 import Layout from '../components/layout';
@@ -46,12 +47,7 @@ const SearchScreen = ({ navigation }) => {
     });
   });
 
-  if (hasErrors)
-    return (
-      <View>
-        <Text>Error</Text>
-      </View>
-    );
+  if (hasErrors) return <ErrorScreen />;
 
   return (
     <Layout refreshing={query.length > 0 && loading}>
