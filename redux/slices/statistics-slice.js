@@ -69,6 +69,9 @@ export const statisticsSelector = state => state.statistics;
 
 export default statisticsSlice.reducer;
 
+/**
+ * Retrieves the user reading sesions fron the databse and saves them in the cleint.
+ */
 export const fetchReadingSessions = () => {
   return async dispatch => {
     dispatch(getReadingSessions());
@@ -81,6 +84,13 @@ export const fetchReadingSessions = () => {
     }
   };
 };
+
+/**
+ * Adds a new reading session to the user's data. It makes a call to the database and aftewards it adds it in the client-side
+ * @param {number} pagesRead - The total number of pages the user read
+ * @param {number} timeRead - The total time in seconds the user read
+ * @returns
+ */
 
 export const addReadingSession = ({ pagesRead, timeRead }) => {
   return async dispatch => {

@@ -12,12 +12,10 @@ import {
 
 /**
  * Represents the basic layout of any screen.
- * @param {Object} children -
- * @param {boolean} isVerticallyCentered -
+ * @param {Object} children - The components to be rendered
+ * @param {boolean} isVerticallyCentered - Used to indicate if the container sould be centered or not
  * @param {boolean} onRefresh - Used to indicate of the screen can be refreshed or not
  * @param {boolean} refreshing - Used when the children are being loaded or not
- * @param {-------} style -
- * @param {-------} colors -
  */
 
 const Layout = ({

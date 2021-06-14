@@ -47,6 +47,11 @@ export const searchSelector = state => state.search;
 
 export default searchSlice.reducer;
 
+/**
+ * It makes a call to Google's API according to the query. If a book is found, then an object containing the necessary data for the app is created.
+ * @param {String} query - String to search for in Google's API
+ */
+
 export const fetchGoogleBooks = query => {
   return async dispatch => {
     dispatch(getGoogleBooks());

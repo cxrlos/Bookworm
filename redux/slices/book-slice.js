@@ -100,6 +100,12 @@ export const bookSelector = state => state.book;
 
 export default bookSlice.reducer;
 
+/**
+ * Gets the status of a certain book; meaning that if it is being read, the pages are set, it's shelfId is also set.
+ * @param {number} currentPage - The current page the user has read
+ * @param {string} shelfId - The book's shelf id
+ */
+
 export const getBookStatus = ({ currentPage, shelfId }) => {
   return dispatch => {
     dispatch(gettingBookStatus());

@@ -11,7 +11,7 @@ import { updateUser } from '../redux/slices/user-slice';
 /**
  * Represents the form screen
  * @param {Object} navigation - To create the stack navigation
- * @param {------} route -
+ * @param {Object} route - Object that contains the data passed in the navigation. In this case it contains the constants and fields that should be updated in the form.
  */
 
 const FormScreen = ({ navigation, route }) => {

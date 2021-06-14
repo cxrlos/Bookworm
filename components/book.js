@@ -9,7 +9,6 @@ export const ITEM_WIDTH = SLIDER_WIDTH - 280;
  * Represents a book in a shelf. It shows the title, book cover (thumbnail), and the authors of the book.
  * @param {Object} item - Contains the book's data, such as authors, page count, title...
  * @param {Object} navigation - To create the stack navigation
- * @param {String} shelfId - The shelf the book to open corresponds to
  */
 
 const Book = ({ item, navigation }) => {
