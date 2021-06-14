@@ -32,8 +32,7 @@ import {
 /**
  * Represents the statistics screen of the user (contains the graphs, and total page count)
  * @param {Object} navigation - To create the stack navigation
- * @param {------} route -
- * @param {------} colors -
+ * @param {Object} route - Object that contains the data passed in the navigation. In this case it contains the type of filtering the user selects ('Hoy', 'Esta semana', 'Este mes', 'Este año')
  */
 
 const StatisticsScreen = ({ navigation, route, theme: { colors } }) => {

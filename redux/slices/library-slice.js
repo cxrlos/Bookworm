@@ -91,6 +91,10 @@ export const librarySelector = state => state.library;
 
 export default librarySlice.reducer;
 
+/**
+ * Fetches the user library and sets it on the client.
+ */
+
 export const fetchLibrary = () => {
   return async dispatch => {
     dispatch(getLibrary());
@@ -103,6 +107,11 @@ export const fetchLibrary = () => {
     }
   };
 };
+
+/**
+ * Adds a new book to the library. It makes a call so the book is added to the database, afterwards it adds the book client-side. The shelfId is always set to 2 ('Por leer'), when a new book is added.
+ * @param {Object} book - Data of the book (bookId, thumbnail, title, authors, etc)
+ */
 
 export const addToLibrary = book => {
   return async dispatch => {
@@ -118,6 +127,11 @@ export const addToLibrary = book => {
   };
 };
 
+/**
+ * Deletes a given book from the user library. It makes a call so the book is deleted from the database, afterwards it deletes the book client-side.
+ * @param {string} bookId - Book identifier to delete
+ */
+
 export const removeFromLibrary = bookId => {
   return async dispatch => {
     dispatch(removingFromLibrary());
@@ -131,6 +145,12 @@ export const removeFromLibrary = bookId => {
   };
   l;
 };
+
+/**
+ * Updates the shelfId from a given book to a new one. It makes a clal so the book is updated in the database, afterwards it changes the book client-side.
+ * @param {String} bookId  - Book identifier to update
+ * @param {String} shelfId  - Shelf to change the book to
+ */
 
 export const updateShelf = (bookId, shelfId) => {
   return async dispatch => {
@@ -147,6 +167,14 @@ export const updateShelf = (bookId, shelfId) => {
     }
   };
 };
+
+/**
+ * Updates the reading progress of a book. It makes a call to updatee the reading progress of a book on the database by changing the current page the user read. Afterwards, it updates the same data in the client-side as well as adding a new reading session client-side.
+ * @param {String} bookId - Book identifier
+ * @param {number} currentPage - The new page the user registered
+ * @param {number} oldCurrentPage - The previous page the user registered
+ * @param {number} timeRead - Total number in seconds the user read
+ */
 
 export const updateReadingProgress = (
   bookId,

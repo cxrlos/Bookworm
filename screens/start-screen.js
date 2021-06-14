@@ -6,7 +6,6 @@ import { material } from 'react-native-typography';
 /**
  * Represents the initial screen to the application
  * @param {Object} navigation - To create the stack navigation
- * @param {------} colors -
  */
 
 const StartScreen = ({ navigation, theme: { colors } }) => {

@@ -11,7 +11,6 @@ import Progress from '../components/progress';
  * @param {boolean} disabled - To indicate if a button/ripple should be enabled or not
  * @param {Object} item - Contains the book's data, such as authors, page count, title...
  * @param {Object} navigation - To create the stack navigation
- * @param {String} shelfId - The shelf the book to open corresponds to
  * @param {Object} rest - Used to access the book's current page
  */
 

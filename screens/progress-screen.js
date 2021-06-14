@@ -17,7 +17,7 @@ import { bookSelector } from '../redux/slices/book-slice';
 /**
  * Represents the progress screen of a book that is being read. It allows the user to update the reading progess after a reading session has ended.
  * @param {Object} navigation - To create the stack navigation
- * @param {------} route -
+ * @param {Object} route - Object that contains the data passed in the navigation. In this case, it contains the book's identifier that is slected as well as the pageCount for it.
  */
 
 const ProgressScreen = ({ route, navigation }) => {

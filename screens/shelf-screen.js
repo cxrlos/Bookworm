@@ -7,8 +7,7 @@ import BookCard from '../components/book-card';
 /**
  * Represents the screen containing the shelves of a user
  * @param {Object} navigation - To create the stack navigation
- * @param {------} route -
- * @param {------} colors -
+ * @param {Object} route - Object that contains the data passed in the navigation. In this case, it contains the books that are in the shelf selected as well as the shelfId
  */
 
 const ShelfScreen = ({ navigation, route, theme: { colors } }) => {

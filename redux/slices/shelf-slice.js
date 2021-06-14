@@ -30,24 +30,9 @@ export const shelfSlice = createSlice({
   },
 });
 
-export const {
-  getShelf,
-  getShelfSuccess,
-  getShelfFailure,
-} = shelfSlice.actions;
+export const { getShelf, getShelfSuccess, getShelfFailure } =
+  shelfSlice.actions;
 
 export const shelfSelector = state => state.shelf;
 
 export default shelfSlice.reducer;
-
-export const fetchShelfById = shelfId => {
-  return async dispatch => {
-    dispatch(getShelf());
-    try {
-      const shelf = await client.getShelfById(shelfId);
-      dispatch(getShelfSuccess(shelf));
-    } catch (error) {
-      dispatch(getShelfFailure());
-    }
-  };
-};

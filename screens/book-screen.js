@@ -39,8 +39,7 @@ import Layout from '../components/layout';
 /**
  * Represents the book screen (the information shown when selecting a book)
  * @param {Object} navigation - To create the stack navigation
- * @param {------} route -
- * @param {------} colors -
+ * @param {Object} route - Object that contains the data passed in the navigation. In this case, it contains the book's data that is selected.
  */
 
 const BookScreen = ({ navigation, route, theme: { colors } }) => {
@@ -85,7 +84,6 @@ const BookScreen = ({ navigation, route, theme: { colors } }) => {
       })
     );
   }, [dispatch]);
-
 
   useLayoutEffect(() => {
     navigation.setOptions({

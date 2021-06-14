@@ -13,7 +13,6 @@ import { signIn } from '../redux/slices/user-slice';
 /**
  * Represents the sign in screen to the application
  * @param {Object} navigation - To create the stack navigation
- * @param {------} colors -
  */
 
 const SignInScreen = ({ navigation, theme: { colors } }) => {
