@@ -36,13 +36,13 @@ const App = () => {
       <PaperProvider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator>
-            {/* <Stack.Screen
+            <Stack.Screen
               component={StartScreen}
               name="Bienvenida"
               options={{ headerShown: false }}
             />
             <Stack.Screen component={SignInScreen} name="Inicio de sesión" />
-            <Stack.Screen component={SignUpScreen} name="Registro" /> */}
+            <Stack.Screen component={SignUpScreen} name="Registro" />
             <Stack.Screen
               component={TabNavigator}
               name="App"
