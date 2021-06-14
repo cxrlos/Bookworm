@@ -35,7 +35,6 @@ const ProfileScreen = ({ navigation }) => {
         fields: {
           firstName,
           lastName,
-          email,
           sex,
         },
       },
