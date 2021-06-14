@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../components/layout';
 
 import { PERSONAL_INFORMATION, PASSWORD, DAILY_GOAL } from '../constants';
-import { fetchUser, userSelector } from '../redux/slices/user-slice';
+import { fetchUser, signOut, userSelector } from '../redux/slices/user-slice';
 
 /**
  * Represents the user's profile screen
@@ -114,7 +114,9 @@ const ProfileScreen = ({ navigation }) => {
           ))}
         </View>
         <View style={{ alignItems: 'center' }}>
-          <Button onPress={() => {}}>Cerrar sesión</Button>
+          <Button onPress={() => dispatch(signOut(navigation))}>
+            Cerrar sesión
+          </Button>
         </View>
       </View>
     </Layout>

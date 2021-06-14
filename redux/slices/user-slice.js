@@ -82,6 +82,18 @@ export const signIn = (values, { resetForm }, navigation) => {
   };
 };
 
+export const signOut = navigation => {
+  return async dispatch => {
+    try {
+      await client.signOut();
+      navigation.navigate('Bienvenida');
+    } catch (error) {
+      console.warn(error);
+      dispatch(openSnackBar(error.code));
+    }
+  };
+};
+
 export const updateUser = values => {
   return async dispatch => {
     dispatch(submitForm());

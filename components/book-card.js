@@ -15,7 +15,7 @@ import Progress from '../components/progress';
  * @param {Object} rest - Used to access the book's current page
  */
 
-const BookCard = ({ disabled, item, navigation, ...rest}) => {
+const BookCard = ({ disabled, item, navigation, ...rest }) => {
   const { authors, pageCount, shelfId, thumbnail, title } = item;
 
   const currentPage = rest.currentPage || item.currentPage;
@@ -64,7 +64,7 @@ const BookCard = ({ disabled, item, navigation, ...rest}) => {
                   </Text>
                 )}
               </View>
-              {shelfId === '3' && (
+              {shelfId === '3' && !disabled && (
                 <View style={{ alignItems: 'flex-start', paddingTop: 12 }}>
                   <Button
                     dark
