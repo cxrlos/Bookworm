@@ -2,22 +2,49 @@ import { GOOGLE_BOOKS_URL } from '../constants';
 import firebase from '../firebase/firebase';
 
 const db = firebase.firestore();
+let user = firebase.auth().currentUser;
 
 const client = {
-  // TODO
-  addReadingSession: readingSession => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
+  addReadingSession: async readingSession => {
+    const userDoc = db.collection('users-dev').doc(user.email);
+    await userDoc
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          const existingSession = doc
+            .data()
+            .sessions.find(session => session.date === readingSession.date);
+          if (existingSession) {
+            userDoc.update({
+              sessions: doc.data().sessions.map(session =>
+                session.date === readingSession.date
+                  ? {
+                      ...session,
+                      pagesRead: readingSession.pagesRead + session.pagesRead,
+                      timeRead: readingSession.timeRead + session.timeRead,
+                    }
+                  : session
+              ),
+            });
+          } else {
+            userDoc.update({
+              sessions:
+                firebase.firestore.FieldValue.arrayUnion(readingSession),
+            });
+          }
+        } else {
+          console.log('Could not add reading session');
+        }
+      })
+      .catch(error => {
+        console.log('Could not add reading session:', error);
+      });
   },
-  // TODO
-  addToLibrary: book => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
+  addToLibrary: async book => {
+    book = { ...book, currentPage: 0 };
+    const userDoc = db.collection('users-dev').doc(user.email);
+    await userDoc.update({
+      library: firebase.firestore.FieldValue.arrayUnion(book),
     });
   },
   createUser: async values => {
@@ -37,47 +64,47 @@ const client = {
         sessions: [],
       })
       .then(() => {
-        console.warn('Document successfully written!');
+        console.warn('User could not be added ');
       })
       .catch(error => {
-        console.error('Error writing document: ', error);
+        console.error('User could not be added ', error);
       });
   },
   getLibrary: () => {
-    const docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const docRef = db.collection('users-dev').doc(user.email);
     return docRef
       .get()
       .then(doc => {
         if (doc.exists) {
           return doc.data()['library'];
         } else {
-          console.warn('There is no document with ID wLLPvNDfVyunKbrBPMtL');
+          console.warn('The library could not be retrieved');
         }
       })
       .catch(error => {
-        console.warn('Error getting document', error);
+        console.warn('The library could not be retrieved ', error);
       });
   },
   getReadingSessions: () => {
-    const docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const docRef = db.collection('users-dev').doc(user.email);
     return docRef
       .get()
       .then(doc => {
         if (doc.exists) {
           return doc.data()['sessions'];
         } else {
-          console.warn('There is no document with ID wLLPvNDfVyunKbrBPMtL');
+          console.warn('The reading sessions could not be retrieved');
         }
       })
       .catch(error => {
-        console.warn('Error getting document', error);
+        console.warn('The reading sessions could not be retrieved ', error);
       });
   },
   getGoogleBooks: async query => {
     return fetch(GOOGLE_BOOKS_URL(query));
   },
   getUser: () => {
-    const docRef = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const docRef = db.collection('users-dev').doc(user.email);
     return docRef
       .get()
       .then(doc => {
@@ -90,15 +117,15 @@ const client = {
             dailyGoal: doc.data()['dailyGoal'],
           };
         } else {
-          console.warn('There is no document with ID wLLPvNDfVyunKbrBPMtL');
+          console.warn('The document does not exist');
         }
       })
       .catch(error => {
-        console.warn('Error getting document', error);
+        console.warn('The user could not be retrieved ', error);
       });
   },
   removeFromLibrary: async bookId => {
-    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
       .get()
       .then(doc => {
@@ -107,21 +134,24 @@ const client = {
             library: doc.data().library.filter(book => book.bookId !== bookId),
           });
         } else {
-          console.log('No such document!');
+          console.log('The book could not be removed');
         }
       })
       .catch(error => {
-        console.log('Error getting document:', error);
+        console.log('The book could not be removed ', error);
       });
   },
   signIn: async ({ email, password }) => {
-    await firebase.auth().signInWithEmailAndPassword(email, password);
+    await firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => (user = firebase.auth().currentUser));
   },
   signOut: async () => {
     await firebase.auth().signOut();
   },
   updateShelf: async (bookId, shelfId) => {
-    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
       .get()
       .then(doc => {
@@ -136,15 +166,15 @@ const client = {
               ),
           });
         } else {
-          console.log('No such document!');
+          console.log('The shelf could not be updated');
         }
       })
       .catch(error => {
-        console.log('Error getting document:', error);
+        console.log('The shelf could not be updated ', error);
       });
   },
   updateReadingProgress: async ({ bookId, currentPage }) => {
-    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
       .get()
       .then(doc => {
@@ -157,22 +187,22 @@ const client = {
               ),
           });
         } else {
-          console.log('No such document!');
+          console.log('The reading progress could not be updated');
         }
       })
       .catch(error => {
-        console.log('Error getting document:', error);
+        console.log('The reading progress could not be updated ', error);
       });
   },
   updateUser: async form => {
-    const userDoc = db.collection('users-dev').doc('wLLPvNDfVyunKbrBPMtL');
+    const userDoc = db.collection('users-dev').doc(user.email);
     await userDoc
       .update(form)
       .then(() => {
-        console.log('Document successfully updated!');
+        console.log('The user data could not be updated');
       })
       .catch(error => {
-        console.error('Error updating document: ', error);
+        console.error('The user data could not be updated ', error);
       });
   },
 };

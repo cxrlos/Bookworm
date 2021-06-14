@@ -25,6 +25,7 @@ export const statisticsSlice = createSlice({
             ? {
                 ...session,
                 pagesRead: payload.pagesRead + readingSession.pagesRead,
+                timeRead: payload.timeRead + readingSession.timeRead,
               }
             : session
         );

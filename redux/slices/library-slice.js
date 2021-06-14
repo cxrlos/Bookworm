@@ -147,7 +147,7 @@ export const removeFromLibrary = bookId => {
 };
 
 /**
- * Updates the shelfId from a given book to a new one. It makes a clal so the book is updated in the database, afterwards it changes the book client-side.
+ * Updates the shelfId from a given book to a new one. It makes a clal so the book is updated in the database, afterwards it changes the book and updates the shelfId, the current page (0) on the client-side.
  * @param {String} bookId  - Book identifier to update
  * @param {String} shelfId  - Shelf to change the book to
  */
@@ -159,6 +159,7 @@ export const updateShelf = (bookId, shelfId) => {
       await client.updateShelf(bookId, shelfId);
       dispatch(changeShelf({ bookId, selectedShelf: shelfId }));
       dispatch(setShelfId(shelfId));
+      dispatch(setCurrentPage(0));
       dispatch(closeDialog());
       dispatch(updateShelfSuccess());
     } catch (error) {
